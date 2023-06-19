@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+    <style>
+    .container {
+      border-bottom: 2px solid #000;
+    }
+
+    .board-item {
+         flex: 1;
+    width: 550px;
+    height: auto;
+    background-color: #f9f9f9;
+    margin: 5px;
+    position: inherit;
+    border: 1px solid grey;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: left;
+    }
+
+
+
+
+
+    .board-item img {
+         width: 28.5vw;
+    height: 29vh;
+    }
+
+    /* 네비게이션 바 영역 스타일 */
+    .Categories-area {
+      padding: 10px;
+      border-bottom: 2px solid #000;
+      border: 2px solid #000;
+      border-bottom: 2px solid #000;
+    }
+
+    /* 보드 영역 스타일 */
+    .board-area {
+      padding: 10px;
+      border: 2px solid #000;
+      height: 3000px;
+    }
+
+    .tab-button {
+      display: block;
+      padding: 10px 20px 10px 20px;
+      float: left;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: 'font';
+      margin-right: 10px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      background-color: white;
+      transition: color 0.5s, background-color 0.5s ease-in-out;
+      color: black;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 10px;
+    }
+
+    .show {
+      display: block;
+    }
+
+    .tab-button:hover {
+      background-color: #94E6DF;
+    }
+
+
+  </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="Categories">
+            <ul class="list">
+                <li class="tab-button o select">진행중</li>
+                <li class="tab-button e">종료</li>
+            </ul>
+        </div>
+
+        <div class="board-area">
+            <!--진행중-->
+            <div class="tab-content o show">
+                <div class="board-item">
+                    <a href="/attendance">
+                        <img th:src="@{../image/mainPage/main-2.png}" alt="출석이미지">
+                    </a>
+                </div>
+                <div class="board-item">
+                    <a href="/roulette">
+                        <img th:src="@{../image/eventmain1.jpg}" alt="룰렛이미지">
+                    </a>
+                </div>
+            </div>
+
+            <!--완료-->
+            <div class="tab-content e">
+                <div class="board-item">
+                    <img th:src="@{../image/eventPage/event1.jpg}" alt="이벤트1">
+                </div>
+                <div class="board-item">
+                    <img th:src="@{../image/eventPage/event2.jpg}" alt="이벤트2">
+                </div>
+                <div class="board-item">
+                    <img th:src="@{../image/eventPage/event3.png}" alt="이벤트3">
+                </div>
+                <div class="board-item">
+                    <img th:src="@{../image/eventPage/event4.jpg}" alt="이벤트4">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:src="@{/js/event.js}"></script>
+</div>
+
+</body>
+</html>

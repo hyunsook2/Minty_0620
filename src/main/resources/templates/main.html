@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<div layout:fragment="content" style="display: flex; justify-content: center; item-align: start; ">
+
+    <style>
+<!--     :root {-->
+<!--      scroll-behavior: auto;-->
+<!--    }-->
+<!--    .slide-container {-->
+<!--      width: 240vw;-->
+<!--      transition: all 1s;-->
+<!--      height: 30vw;-->
+<!--    }-->
+<!--    .slide-box {-->
+<!--      width: 80vw;-->
+<!--      float: left;-->
+<!--    }-->
+<!--    .slide-box img {-->
+<!--      width: 80%;-->
+<!--      margin-left:25%;-->
+<!--    }-->
+
+    .carousel {
+        position: relative;
+        width: 60vw;
+        margin: auto;
+    }
+  </style>
+
+    <div>
+        <!--    <div style="overflow: hidden">-->
+        <!--        <div>-->
+        <!--        <div class="slide-container">-->
+        <!--            <a href="roulette">-->
+        <!--                <div class="slide-box">-->
+        <!--                    <img src="/image/eventmain1.jpg"/>-->
+        <!--                </div>-->
+        <!--            </a>-->
+
+        <!--            <a href="attendance">-->
+        <!--                <div class="slide-box">-->
+        <!--                    <img src="/image/mainPage/main-2.png" />-->
+        <!--                </div>-->
+        <!--            </a>-->
+
+        <!--            <div class="slide-box">-->
+        <!--                <img src="/image/mainPage/main-3.png"/>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--        </div>-->
+
+        <div id="carouselExample" class="carousel slide">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <a href="roulette">
+                        <img src="/image/eventmain1.jpg" class="d-block w-100" alt="..." />
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="attendance">
+                        <img src="/image/mainPage/main-2.png" class="d-block w-100" alt="..." />
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <img src="/image/mainPage/main-3.png" class="d-block w-100" alt="..." />
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+        <script>
+
+  function autoSlide() {
+    var activeSlideIndex = $(".carousel-item.active").index();
+    $(".carousel").carousel("next");
+    if (activeSlideIndex === $(".carousel-item").length - 1) {
+      $(".carousel").carousel(0);
+    }
+  }
+
+  setInterval(autoSlide, 3000);
+</script>
+
+
+        <div style="margin-top:6%; width:100vw; text-align:center;">
+            <img src="/image/mainPage/main1.jpg" />
+        </div>
+
+        <div style="margin-top:2%; width:100vw; text-align:center;">
+            <img src="/image/mainPage/main2.jpg" />
+        </div>
+
+        <div style="margin-top:2%; width:100vw; text-align:center;">
+            <img src="/image/mainPage/main3.jpg" />
+        </div>
+
+        <div style="margin-top:2%; width:100vw; text-align:center;">
+            <img src="/image/mainPage/main4.jpg" />
+        </div>
+
+        <div style="margin-top:2%; width:100vw; text-align:center;">
+            <img src="/image/mainPage/main5.jpg" />
+        </div>
+
+        <div style="margin-top:2%; width:100vw; text-align:center;">
+            <img src="/image/mainPage/main6.jpg" />
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+        <script>
+
+<!--  var 지금사진 = 8;-->
+<!--  var timer;-->
+
+<!--  function slideTransition() {-->
+<!--    $('.slide-container').css('transform', 'translateX(-' + 지금사진 + '0vw)');-->
+<!--    지금사진 += 8;-->
+<!--    if (지금사진 === 32) {-->
+<!--      $('.slide-container').css('transform', 'translateX(-0vw)');-->
+<!--      지금사진 = 8;-->
+<!--    }-->
+<!--  }-->
+
+<!--  function resetTimer() {-->
+<!--    clearTimeout(timer);-->
+<!--    timer = setTimeout(function() {-->
+<!--      slideTransition();-->
+<!--      resetTimer();-->
+<!--    }, 3000);-->
+<!--  }-->
+
+<!--  $('.slide-box').on('click', function() {-->
+<!--    slideTransition();-->
+<!--    resetTimer();-->
+<!--  });-->
+
+<!--  resetTimer();-->
+  getUserIdFromServer();
+
+  // userId 가져오기\
+function getUserIdFromServer() {
+    $.ajax({
+        url: "/getchatting/getUserId",
+        type: "GET",
+        success: function(response) {
+            var userId = response; // 서버로부터 받은 userId 값
+            // 여기서 userId 값을 원하는 곳에서 사용할 수 있습니다.
+            // 예: localStorage에 저장
+            localStorage.setItem("userId", userId);
+        },
+        error: function(error) {
+            console.log("Error:", error);
+        }
+    });
+}
+</script>
+    </div>
+
+</div>
+</html>

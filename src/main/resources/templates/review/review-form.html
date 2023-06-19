@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:tj="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 작성</title>
+    <style>
+    .logo-container {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .logo-container img {
+            width: 150px;
+            height: auto;
+        }
+        .review-heading {
+            margin-left: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .rating {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            float: right;
+            color: grey;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .rating label img {
+            width: 30px;
+            height: 30px;
+            transition: transform 0.3s ease;
+        }
+
+
+        .rating label:hover img {
+            transform: scale(1.2);
+        }
+
+        .form-container {
+            margin-bottom: 20px;
+        }
+
+        .form-container h2 {
+            margin-top: 0;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-container textarea {
+            width: 100%;
+            resize: vertical;
+        }
+
+        .form-container .rating {
+            margin-top: 10px;
+        }
+
+        .form-container .rating label {
+            margin-left: 5px;
+        }
+
+        .form-container .button-container {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+
+         .product-info-container {
+        border: 2px solid black;
+        padding: 10px;
+    }
+     body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+     #confirmationPopup {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          z-index: 9999;
+        }
+
+        .confirmation-popup-content {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: white;
+          padding: 20px;
+          border-radius: 5px;
+          text-align: center;
+        }
+
+        .confirmation-popup-content h2 {
+          margin-top: 0;
+        }
+
+        .confirmation-popup-content button {
+          margin-top: 10px;
+        }
+
+    </style>
+    <script>
+        function showImage(event) {
+            var input = event.target;
+            var reader = new FileReader();
+            reader.onload = function () {
+                var imgElement = document.getElementById('previewImage');
+                imgElement.src = reader.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+<!--        상품 이미지 미리보기-->
+        function showProductImage(event) {
+            var input = event.target;
+            var reader = new FileReader();
+            reader.onload = function () {
+                var imgElement = document.getElementById('previewProductImage');
+                imgElement.src = reader.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+<!--        취소버튼-->
+        function goBack() {
+            window.history.back();
+        }
+
+<!--        리뷰작성후 팝업-->
+    var formSubmitted = false;
+    var popupTimeout;
+
+    function showConfirmationPopup() {
+        var popup = document.getElementById("confirmationPopup");
+        popup.style.display = "block";
+    }
+
+    function submitForm() {
+        if (!formSubmitted) {
+            formSubmitted = true;
+            showConfirmationMessage();
+        }
+    }
+
+    function showConfirmationMessage() {
+        var popupMessage = document.getElementById("popupMessage");
+        popupMessage.textContent = "후기가 정상적으로 등록되었습니다.";
+        var closeButton = document.getElementById("closeButton");
+        closeButton.style.display = "none";
+        popupTimeout = setTimeout(function() {
+            document.getElementById("reviewForm").submit();
+        }, 1000);
+    }
+
+    function closeConfirmationPopup() {
+            var popup = document.getElementById("confirmationPopup");
+            popup.style.display = "none";
+            clearTimeout(popupTimeout);
+        }
+
+        function closePopupAndRedirect() {
+            closeConfirmationPopup();
+            window.location.href = "/"; // 리뷰 작성 완료 후 리다이렉트할 페이지 URL 입력
+        }
+
+
+    <!-- 리뷰작성할 때 이미지 바뀌는거-->
+    var selectedRating = "";
+
+    function changeRatingImage(radioId) {
+        var imgElement = document.querySelector('label[for=' + radioId + '] img');
+        if (imgElement && radioId !== selectedRating) {
+            // 이미지를 변경
+            imgElement.src = "/image/review/reviewPage/gd.png";
+
+            // 이전에 선택된 라디오 버튼이 있다면 원래 이미지로 복원
+            if (selectedRating !== "") {
+                var prevImgElement = document.querySelector('label[for=' + selectedRating + '] img');
+                if (prevImgElement) {
+                    prevImgElement.src = "/image/review/reviewPage/" + selectedRating + ".png";
+                }
+            }
+
+            // 선택된 라디오 버튼 업데이트
+            selectedRating = radioId;
+        }
+    }
+
+    </script>
+</head>
+<body>
+<div id="confirmationPopup">
+    <div class="confirmation-popup-content">
+        <h2 id="popupMessage">작성완료 후 리뷰 수정이 불가능합니다.</h2>
+        <button onclick="showConfirmationMessage()">확인</button>
+        <button id="closeButton" onclick="closeConfirmationPopup()">닫기</button>
+    </div>
+</div>
+
+<div class="logo-container">
+    <a href="/" style="cursor:pointer;">
+    <img src="/image/logo.png">
+    </a>
+    <div class="review-heading">리뷰작성</div>
+</div>
+<div class="form-container">
+    <div class="product-info-container">
+        <form action="/" method="post" enctype="multipart/form-data">
+            <div class="info">
+                <div class="product-image">
+                    <img th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${trade.boardId.thumbnail}}" alt="Board Image" className="board-img" th:trade_id="${trade.boardId.id}" />
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name" th:text="${trade.boardId.title}"></h3>
+                    <p class="product-price" th:text="'￦' + ${trade.boardId.price}"></p>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+<br><br><br>
+
+
+<div class="divider"></div>
+<div class="form-container">
+    <form id="reviewForm" th:action="@{/reviews/{tradeId}(tradeId=${trade.id})}" method="post" enctype="multipart/form-data" onsubmit="event.preventDefault(); showConfirmationPopup();" >
+
+        <label for="imageFile">이미지 첨부</label>
+        <input type="file" id="imageFile" name="imageFile" accept="image/*" onchange="showImage(event)" ><br>
+        <img id="previewImage" style="max-width: 200px; max-height: 200px; margin-top: 10px;">
+
+        <label>평점</label>
+        <div class="rating">
+            <input type="radio" id="star5" name="rating" value="5" required onclick="changeRatingImage('star5')" />
+            <label for="star5"><img src="/image/review/reviewPage/star5.png"></label>
+            <input type="radio" id="star4" name="rating" value="4" onclick="changeRatingImage('star4')" />
+            <label for="star4"><img src="/image/review/reviewPage/star4.png"></label>
+            <input type="radio" id="star3" name="rating" value="3" onclick="changeRatingImage('star3')" />
+            <label for="star3"><img src="/image/review/reviewPage/star3.png"></label>
+            <input type="radio" id="star2" name="rating" value="2" onclick="changeRatingImage('star2')" />
+            <label for="star2"><img src="/image/review/reviewPage/star2.png"></label>
+            <input type="radio" id="star1" name="rating" value="1" onclick="changeRatingImage('star1')" />
+            <label for="star1"><img src="/image/review/reviewPage/star1.png"></label>
+        </div>
+        <div>
+            <!--                <label for="title">제목</label>-->
+            <!--                <input type="text" id="title" name="title" required>-->
+            <label for="contents">내용</label>
+            <textarea id="contents" name="contents" rows="10" cols="50" maxlength="100" required></textarea>
+        </div>
+        <!--    <label for="sellBoardId">게시글 ID:</label><br>-->
+        <!--    <input type="number" id="sellBoardId" name="sellBoardId" required><br><br>-->
+
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <input type="submit" value="작성완료" />
+        <button type="button" onclick="goBack()">취소</button>
+    </form>
+</div>
+</body>
+
+</html>

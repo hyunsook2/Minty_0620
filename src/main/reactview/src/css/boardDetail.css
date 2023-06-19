@@ -1,0 +1,60 @@
+.img-container {
+  width: 480px;
+  height: 480px;
+  overflow: hidden;
+}
+.carousel{
+    width: 480px !important;
+    height: 400px !important;
+}
+
+.board-img {
+  max-width: 480px !important;
+  max-height: 360px !important;
+  object-fit: contain;
+}
+
+.board-stats > span {
+   font-size: 16px;
+   margin-right: 20px;
+}
+
+.button-groups > Button {
+  margin-right: 20px;
+}
+
+.board-top {
+    margin-bottom: 10px;
+    border-bottom: 2px solid grey;
+}
+
+.modal-content{
+    width: 680px !important;
+        height: 600px !important;
+}
+.modal-img{
+    width: 650px !important;
+    height: 550px !important;
+}
+
+.board-content{
+    padding-bottom: 10px;
+    border-bottom: 2px solid grey;
+}
+.carousel-item{
+    text-align:center !important;
+}
+
+.carousel-indicators {
+    position: absolute;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+    margin-top: 40vh;
+}

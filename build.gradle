@@ -1,0 +1,145 @@
+plugins {
+	id 'java'
+	id 'war'
+	id 'org.springframework.boot' version '3.0.6'
+	id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group = 'com.Reboot'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+	mavenCentral()
+}
+
+// 6월 2일 gcp-storage
+ext {
+	set('springCloudGcpVersion', "4.3.1")
+	set('springCloudVersion', "2022.0.3")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16'
+	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.32'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.security:spring-security-oauth2-client'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'com.querydsl:querydsl-jpa'
+	implementation group: 'org.glassfish.web', name: 'jakarta.servlet.jsp.jstl', version: '2.0.0'
+	//레이아웃
+	implementation group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect'
+	//비 pay 추가
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	//chart.js 추가
+	implementation group: 'org.webjars.npm', name: 'chart.js', version: '4.3.0'
+	// https://mvnrepository.com/artifact/com.twilio.sdk/twilio
+	implementation group: 'com.twilio.sdk', name: 'twilio', version: '8.35.0'
+
+	//웹소켓
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'javax.websocket:javax.websocket-api:1.1'
+	implementation 'org.glassfish.tyrus:tyrus-core:1.14'
+	implementation 'org.glassfish.tyrus:tyrus-client:1.14'
+
+	// 6월 1일 model mapper
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.1'
+	// 6월 2일 gcp-storage
+	implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
+	// 6월 3일 이미지
+	implementation 'net.coobird:thumbnailator:0.4.14'
+	// 6월 6일 효진 메일
+	implementation 'javax.mail:javax.mail-api:1.6.2'
+	implementation 'com.sun.mail:javax.mail:1.6.2'
+	// 6월 8일 이미지 리사이징
+	implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
+
+	// 6월 10일 webclient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	testImplementation 'io.projectreactor:reactor-test'
+
+
+
+
+
+
+	runtimeOnly 'com.h2database:h2'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// 6월 2일 gcp-storage
+dependencyManagement {
+	imports {
+		mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+
+//// React
+def frontendDir = "$projectDir/src/main/reactview"
+
+sourceSets {
+	main {
+		resources {
+			srcDirs = ["$projectDir/src/main/resources"]
+		}
+	}
+}
+
+processResources {
+	dependsOn "copyReactBuildFiles"
+}
+
+task installReact(type: Exec) {
+	workingDir "$frontendDir"
+	inputs.dir "$frontendDir"
+	group = BasePlugin.BUILD_GROUP
+	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+		commandLine "npm.cmd", "audit", "fix"
+		commandLine 'npm.cmd', 'install'
+	} else {
+		commandLine "npm", "audit", "fix"
+		commandLine 'npm', 'install'
+	}
+}
+
+task buildReact(type: Exec) {
+	dependsOn "installReact"
+	workingDir "$frontendDir"
+	inputs.dir "$frontendDir"
+	group = BasePlugin.BUILD_GROUP
+	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+		commandLine "npm.cmd", "run-script", "build"
+	} else {
+		commandLine "npm", "run-script", "build"
+	}
+}
+
+task copyReactBuildFiles(type: Copy) {
+	dependsOn "buildReact"
+	from "$frontendDir/build"
+	into "$projectDir/src/main/resources/static"
+}

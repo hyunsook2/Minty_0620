@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <meta charset="UTF-8">
+  <title>출석체크</title>
+  <style>
+#calendar {
+            width: 640px;
+            margin: 0;
+            float: left;
+            position: absolute;
+            top: 81%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display:flex;
+        }
+        .attendance-image {
+            width: 90%;
+            height: 90%;
+            margin-left: 3px;
+        }
+        .check-button {
+            display: inline-block;
+            margin-top: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: auto;
+        height: auto;
+        border-bottom: 2px solid #000;
+      }
+      .calendar-container {
+        position: relative;
+      }
+
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/lib/moment.min.js'></script>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css' rel='stylesheet'/>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.css' rel='stylesheet' media='print'/>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js'></script>
+  <script>
+    var $j = jQuery.noConflict();
+    $j(document).ready(function() {
+      var token = $j("meta[name='_csrf']").attr("content");
+      var header = $j("meta[name='_csrf_header']").attr("content");
+      var today = moment().format('YYYY-MM-DD');
+
+      $j('#calendar').fullCalendar({
+        header: {
+          left: '',
+          center: 'title',
+          right: ''
+        },
+        dayRender: function(date, cell) {
+          var image = $j('<img>', {
+            class: 'attendance-image',
+            src: '../image/check_x.png',
+            click: function() {
+              var clickedDate = moment(date).format('YYYY-MM-DD');
+
+              if (clickedDate === 'favicon.ico') {
+                return;
+              }
+
+              if (clickedDate === today) {
+                var $image = $j(this);
+
+                $j.ajax({
+                  type: 'POST',
+                  url: 'attendance/save',
+                  contentType: 'application/json',
+                  data: JSON.stringify({ date: clickedDate }),
+                  success: function(response) {
+                    $image.attr('src', '../image/check2.png');
+                  },
+                  beforeSend: function(xhr) {
+                    xhr.setRequestHeader(header, token);
+                  },
+                  error: function(error) {
+                    console.log(error);
+                  }
+                });
+              } else {
+                console.log("출석체크는 당일만 가능합니다.");
+              }
+            }
+          });
+
+          var clickedDate = moment(date).format('YYYY-MM-DD');
+          $j.ajax({
+            type: 'GET',
+            url: 'attendance/checkStatus/' + clickedDate,
+            success: function(response) {
+              if (response) {
+                image.attr('src', '../image/check2.png');
+              }
+            },
+            beforeSend: function(xhr) {
+              xhr.setRequestHeader(header, token);
+            },
+            error: function(error) {
+              console.log(error);
+            }
+          });
+
+          $j(cell).append(image);
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+<div layout:fragment="content" class="content">
+
+  <div>
+    <a type="button"th:href="@{event}" style="margin-top:5vh; margin-left:83vw;">목록으로</a>
+  </div>
+
+  <div class="container">
+    <div class="calendar-container">
+      <div id="calendar">
+      </div>
+      <img class="att-img" th:src="@{../image/eventPage/attendanceform.jpg}">
+    </div>
+  </div>
+</div>
+</body>
+</html>

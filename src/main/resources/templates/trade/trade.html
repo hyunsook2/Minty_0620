@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<head>
+    <style>
+    .wrapper {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid black;
+        border-radius: 5px;
+    }
+
+    .space {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        flex-basis: 80%;
+    }
+
+    .line {
+        flex-basis: 100%;
+        border-bottom: 1px solid black;
+        margin-bottom: 10px;
+    }
+
+    .notification {
+        font-weight: bold;
+    }
+
+    .status-text {
+        margin-right: 10px;
+    }
+
+    .status-date {
+        font-size: 12px;
+    }
+
+    .info {
+        display: flex;
+        align-items: center;
+    }
+
+    .product-image img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        margin-right: 10px;
+    }
+
+    .product-info {
+        flex-grow: 1;
+    }
+
+    .product-name {
+        margin: 0;
+    }
+
+    .product-price {
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .buyer-seller-info {
+        margin-left: 10px;
+    }
+
+    .review-section p {
+        margin: 0;
+    }
+
+    .review-section img {
+        width: 200px;
+        height: auto;
+        margin-top: 10px;
+    }
+
+    .detail {
+        font-weight: bold;
+    }
+
+    .button-row {
+        justify-content: flex-end;
+    }
+
+    button[type="submit"] {
+        padding: 10px 20px;
+        font-weight: bold;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+<!--    후기-->
+
+    .review-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .review-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .review {
+        width: 500px;
+        min-height: 220px;
+        background-color: #F0FFF0;
+        border: 1px solid;
+        border-radius: 10px;
+        margin: auto;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: min-height 0.3s ease-in-out;
+    }
+
+    .review_imageUrl {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .review_content {
+        position: absolute;
+        top: 5px;
+        left: 100px;
+        width: 200px;
+        height: auto;
+        margin: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+        transition: -webkit-line-clamp 0.3s ease-in-out; /* Added transition for smooth animation */
+    }
+
+    .review_content_container {
+        position: relative;
+    }
+
+    .more-button {
+        display: none; /* Hide the "더 보기" button by default */
+        color: black;
+        border: none;
+        padding: 5px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-top: 5px;
+        position: absolute;
+        left: 285px;
+        top: 85px;
+        background-color: transparent; /* Make background transparent */
+    }
+
+    .review_bottom {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+        margin-top: 10px;
+    }
+
+    .review_score {
+        position: absolute;
+        bottom: 100px;
+        left: 40px;
+    }
+
+    .review_nickname {
+        position: absolute;
+        bottom: 60px;
+        left: 20px;
+    }
+
+    .review_createdAt {
+        position: absolute;
+        bottom: 60px;
+        left: 90px;
+    }
+
+    .product-view-container {
+        width: 485px;
+        height: 40px;
+        border: 1px solid black;
+        padding: 2px;
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        border-radius: 10px;
+    }
+
+    .expanded {
+        min-height: 350px;
+    }
+    .expand-width {
+    width: 350px;
+}
+</style>
+
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="wrapper">
+        <div class="space" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중'|| trade.status == '거래완료' || trade.status == '거래취소'}">
+            <div class="notification">
+                <span th:text="'[' + (${role} == 'buyer' ? ${seller.nickName} : ${buyer.nickName}) + ']'"></span>
+                <span th:if="${trade.status == '대화요청'}" th:text="'님과 [' + ${trade.boardId.title} + '] 에 대한 대화를 시작해보세요.'"></span>
+                <span th:if="${trade.status == '거래시작'}" th:text="'님과의 거래가 시작되었습니다.'"></span>
+                <span th:if="${trade.status == '거래중'}" th:text="'님과의 거래중입니다.'"></span>
+                <span th:if="${trade.status == '거래완료'}" th:text="'님과의 거래가 완료되었습니다.'"></span>
+                <span th:if="${trade.status == '거래취소'}" th:text="'님과의 거래가 취소되었습니다.'"></span>
+            </div>
+        </div>
+
+        <div class="line" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중'|| trade.status == '거래완료'}"></div>
+
+        <div class="space" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중'|| trade.status == '거래완료'}">
+            <div class="status">
+                <div class="status-text">
+                    <span th:if="${trade.status == '거래시작'}">거래시작</span>
+                    <span th:if="${trade.status == '거래중'}">거래중</span>
+                    <span th:if="${trade.status == '거래완료'}">거래완료</span>
+                </div>
+                <div class="status-date">
+                    <span th:if="${trade.status == '거래시작'}" th:text="${trade.startDate}"></span>
+                    <span th:if="${trade.status == '거래완료'}" th:text="${trade.endDate}"></span>
+                </div>
+                <div class="status-image">
+                    <img th:if="${trade.status == '대화요청'}" src="/image/trade/request.PNG" alt="대화요청">
+                    <img th:if="${trade.status == '거래시작'}" src="/image/trade/start.PNG" alt="거래시작">
+                    <img th:if="${trade.status == '거래중'}" src="/image/trade/progress.PNG" alt="거래중">
+                    <img th:if="${trade.status == '거래완료'}" src="/image/trade/end.PNG" alt="거래완료">
+                </div>
+            </div>
+        </div>
+
+        <div class="line" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중'|| trade.status == '거래완료'}"></div>
+
+        <div class="space" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중'|| trade.status == '거래완료'}">
+            <div class="info">
+                <div class="product-image">
+                    <img th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${trade.boardId.thumbnail}}" alt="Board Image" className="board-img" th:trade_id="${trade.boardId.id}" />
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name" th:text="${trade.boardId.title}"></h3>
+                    <p class="product-price" th:text="'￦' + ${trade.boardId.price}"></p>
+                </div>
+                <div class="buyer-seller-info">
+                    <span th:text="${role == 'buyer' ? '판매자' : '구매자'}"></span>:
+                    <span th:text="${role == 'buyer' ? seller.nickName : buyer.nickName}"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="line" th:if="${trade.status == '거래완료'}"></div>
+
+        <div class="space" th:if="${trade.status == '거래완료'}">
+            <div class="review">
+                <div class="review-section">
+                    <div th:if="${!isExistReview}">
+                        <p>거래 후기를 남겨주세요.</p>
+
+                        <div class="form-row button-row">
+                            <a th:href="@{/review/{tradeId}(tradeId=${trade.id})}"><button type="button">후기작성</button></a>
+                        </div>
+                    </div>
+
+                    <div th:if="${isExistReview}">
+                        <div>거래후기</div>
+
+                        <div class="reviewDetail">
+                            <th:block th:switch="${review.rating}">
+                                <img th:case="1" th:src="@{/image/review/reviewPage/star1.png}"
+                                     style="width: 70px; height: 70px; position: absolute; top: 10px; left: 10px;"/>
+                                <img th:case="2" th:src="@{/image/review/reviewPage/star2.png}"
+                                     style="width: 70px; height: 70px; position: absolute; top: 10px; left: 10px;"/>
+                                <img th:case="3" th:src="@{/image/review/reviewPage/star3.png}"
+                                     style="width: 70px; height: 70px; position: absolute; top: 10px; left: 10px;"/>
+                                <img th:case="4" th:src="@{/image/review/reviewPage/star4.png}"
+                                     style="width: 70px; height: 70px; position: absolute; top: 10px; left: 10px;"/>
+                                <img th:case="*" th:src="@{/image/review/reviewPage/star5.png}"
+                                     style="width: 70px; height: 70px; position: absolute; top: 10px; left: 10px;"/>
+                            </th:block>
+                            </img>
+                            <div class="review_content_container">
+                                <span class="review_content" th:text="${review.contents}" th:classappend="${review.imageUrl} ? '' : 'expand-width'"></span>
+                                <button class="more-button">더 보기</button>
+                            </div>
+                            <span class="review_createdAt" th:text="${T(com.Reboot.Minty.review.time.DateUtils).formatReviewDate(review.writeTime)}"></span>
+                            <div class="review_bottom">
+                                <span class="review_score" th:text="${review.rating}"></span>
+                                <span class="review_nickname" th:text="${review.nickname}"></span>
+                                <div class="product-view-container">
+                                    <form action="/product" method="post" enctype="multipart/form-data">
+                                        <a class="button" th:href="@{/boardDetail/{boardId}(boardId=${trade.boardId.id})}"><p class="product-name" th:text="${trade.boardId.title}"></p></a>
+                                    </form>
+                                </div>
+                            </div>
+                            <img class="review_imageUrl" th:if="${review.imageUrl != null}" th:src="@{${review.imageUrl}}"
+                                 width="150" height="150" alt="Review Image"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line" th:if="${trade.status == '거래시작' || trade.status == '거래중' || trade.status == '거래완료'}"></div>
+
+        <div class="space" th:if="${trade.status == '거래시작' || trade.status == '거래중' || trade.status == '거래완료'}">
+            <div class="detail">
+                상세정보
+                <form th:action="@{'/updateMode'}" method="post">
+                    거래방식:
+                    <input type="hidden" name="tradeId" th:value="${trade.id}" />
+
+                    <label>
+                        <input type="radio" name="modeIndex" value="0" th:checked="${trade.mode == '직거래' ? 'checked' : null}" /> 직거래
+                    </label>
+                    <label>
+                        <input type="radio" name="modeIndex" value="1" th:checked="${trade.mode == '안전거래' ? 'checked' : null}" /> 안전거래
+                    </label>
+                    <button type="submit">변경</button>
+                </form>
+                거래 일 :
+                <span class="trade_date" th:text="${trade.tradeDate}"></span>
+
+                거래 시간 :
+                <span class="trade_time" th:text="${trade.tradeTime}"></span>
+                <br>
+                거래 장소:
+                갓 민형이 해줄거임
+                <br>
+                <div class="form-row button-row">
+                    <a class="button" th:href="@{/schedule/{tradeId}(tradeId=${trade.id})}">일정 잡기</a>
+                    <form th:action="@{'/updateStatus'}" method="post">
+                        <input type="hidden" name="tradeId" th:value="${trade.id}" />
+                        <input type="hidden" name="statusIndex" th:value="4" />
+                        <button type="submit">거래취소</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="line" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중' || trade.status == '거래완료' || trade.status == '거래취소'}"></div>
+
+        <div class="form-row button-row" th:if="${trade.status == '대화요청' && role == 'buyer'}">
+            <a class="button" th:href="@{/boardDetail/{boardId}(boardId=${trade.boardId.id})}">상세보기</a>
+        </div>
+
+        <div class="form-row button-row" th:if="${trade.status == '대화요청' && role == 'seller'}">
+            <form th:action="@{'/updateStatus'}" method="post">
+                <input type="hidden" name="tradeId" th:value="${trade.id}" />
+                <input type="hidden" name="statusIndex" value="1" />
+                <button type="submit">거래하기</button>
+            </form>
+            <a class="button" th:href="@{/boardDetail/{boardId}(boardId=${trade.boardId.id})}">상세보기</a>
+        </div>
+
+        <div class="form-row button-row" th:if="${trade.status == '거래취소'}">
+            <form th:action="@{'/updateStatus'}" method="post">
+                <input type="hidden" name="tradeId" th:value="${trade.id}" />
+                <input type="hidden" name="statusIndex" value="0" />
+                <button type="submit">다시 거래하기</button>
+            </form>
+        </div>
+
+        <div class="form-row button-row" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중' || trade.status == '거래완료' || trade.status == '거래취소'}">
+            <form th:action="@{'/updateStatus'}" method="post">
+                <input type="hidden" name="tradeId" th:value="${trade.id}" />
+                <input type="hidden" name="statusIndex" value="3" />
+                <button type="submit">거래완료(임시)</button>
+            </form>
+        </div>
+
+        <div class="form-row button-row" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중' || trade.status == '거래완료' || trade.status == '거래취소'}">
+            <form th:action="@{'/updateStatus'}" method="post">
+                <input type="hidden" name="tradeId" th:value="${trade.id}" />
+                <input type="hidden" name="statusIndex" value="0" />
+                <button type="submit">거래초기화(임시)</button>
+            </form>
+        </div>
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+            integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script>
+        // URL 매개변수에서 reload 값 확인
+    const urlParams = new URLSearchParams(window.location.search);
+    const shouldReload = urlParams.get('reload');
+
+    // reload 값이 true인 경우 페이지 리로드
+    if (shouldReload === 'true') {
+        location.reload();
+    }
+
+</script>
+</div>
+</body>
+</html>

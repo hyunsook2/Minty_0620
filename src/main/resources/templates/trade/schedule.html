@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Minty</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css">
+    <style>
+      .container {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px;
+      }
+
+      .section {
+        flex-basis: 30%;
+        text-align: center;
+      }
+
+      #calendar {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      #weather-info {
+        position: absolute;
+        top: 65%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+      }
+
+      .container .section {
+        margin-right: 20px;
+      }
+
+      .fc-past {
+        pointer-events: none;
+        background-color: hsl(0, 0%, 90%);
+      }
+
+      .fc-today {
+        background-color: #a3c3ff;
+      }
+
+      .fc-selected {
+        background-color: hsl(120, 70%, 90%);
+      }
+
+      .weather-icon {
+        font-size: 48px;
+        margin: 10px auto;
+        display: block;
+      }
+
+      .weather-info-text {
+        margin-bottom: 10px;
+      }
+
+      .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      /* 알림 메시지 스타일 */
+      .notification {
+        background-color: #f8f8f8;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 18px;
+      }
+
+      /* 섹션 스타일 */
+      .section {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      /* 버튼 컨테이너 스타일 */
+      .button-container {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .button-container button {
+        margin-right: 10px;
+      }
+       #tradeForm{
+       display:flex;
+       float:left;
+       }
+    </style>
+</head>
+<body>
+
+<div class="notification">
+    <span th:text="'[' + (${role} == 'buyer' ? ${seller.nickName} : ${buyer.nickName}) + ']'"></span>
+    <span th:text="'님과 [' + ${trade.boardId.title} + '] 에 대한 거래 일정 잡기.'"></span>
+</div>
+
+<form id="tradeForm" method="post" action="/updateTradeSchedule">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <input type="hidden" name="tradeId" th:value="${tradeId}" />
+
+
+
+    <!-- 거래 가능 시간 섹션 -->
+    <div class="section">
+        <span th:text="'[' + (${role} == 'buyer' ? ${seller.nickName} : ${buyer.nickName}) + '] 님의 거래 희망 시간'"></span>
+        <!-- 여기에 거래 가능 시간 내용 추가 -->
+
+        <div class="userSchedule">
+            <div style="cursor: pointer; margin-top: 15px;" class="ad-item">
+                <div class="image-preview">
+                    <img th:src="@{../image/aaaa.png}" alt="이미지" width="40" height="40" style="border-radius: 50%; margin-left: 10px;">
+                    <span th:text="${role} == 'buyer' ? ${seller.nickName} : ${buyer.nickName}" style="color: #999;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 거래 희망 요일 -->
+        <div th:if="${role} == 'buyer'">
+            <div th:if="${!buyerCheckDay || !buyerSchedule.hasHopeDay()}">
+                <p>등록된 거래희망 요일 정보가 없습니다.</p>
+            </div>
+
+            <div th:if="${buyerCheckDay && buyerSchedule.hasHopeDay()}">
+                <div th:text="${buyerSchedule.getHopeDay()}"></div>
+            </div>
+        </div>
+
+        <div th:if="${role} == 'seller'">
+            <div th:if="${!sellerCheckDay || !sellerSchedule.hasHopeDay()}">
+                <p>등록된 거래희망 요일 정보가 없습니다.</p>
+            </div>
+
+            <div th:if="${sellerCheckDay && sellerSchedule.hasHopeDay()}">
+                <div th:text="${sellerSchedule.getHopeDay()}"></div>
+            </div>
+        </div>
+
+        <!-- 거래 희망 시간 -->
+        <div th:if="${role} == 'buyer'">
+            <div th:if="${!buyerCheckDuration || !buyerSchedule.hasHopeDuration()}">
+                <p>등록된 거래희망 시간 정보가 없습니다.</p>
+            </div>
+
+            <div th:if="${buyerCheckDuration && buyerSchedule.hasHopeDuration()}">
+                <div th:text="${buyerSchedule.getHopeDuration()}"></div>
+            </div>
+        </div>
+
+        <div th:if="${role} == 'seller'">
+            <div th:if="${!sellerCheckDuration || !sellerSchedule.hasHopeDuration()}">
+                <p>등록된 거래희망 시간 정보가 없습니다.</p>
+            </div>
+
+            <div th:if="${sellerCheckDuration && sellerSchedule.hasHopeDuration()}">
+                <div th:text="${sellerSchedule.getHopeDuration()}"></div>
+            </div>
+        </div>
+
+        <!-- 거래 희망 위치 -->
+        <div th:if="${role} == 'buyer'">
+            <div th:if="${!buyerCheckArea || !buyerSchedule.hasHopeArea()}">
+                <p>등록된 거래희망 위치 정보가 없습니다.</p>
+            </div>
+
+            <div th:if="${buyerCheckArea && buyerSchedule.hasHopeArea()}">
+                <div th:text="${buyerSchedule.getHopeArea()}"></div>
+            </div>
+        </div>
+
+        <div th:if="${role} == 'seller'">
+            <div th:if="${!sellerCheckArea || !sellerSchedule.hasHopeArea()}">
+                <p>등록된 거래희망 위치 정보가 없습니다.</p>
+            </div>
+
+            <div th:if="${sellerCheckArea && sellerSchedule.hasHopeArea()}">
+                <div th:text="${sellerSchedule.getHopeArea()}"></div>
+            </div>
+        </div>
+
+        <!-- 거래 희망 소개 -->
+        <div th:if="${role} == 'buyer'">
+            <div th:if="${!buyerCheckIntroduction || !buyerSchedule.hasIntroduction()}">
+                <p>등록된 거래희망 소개가 없습니다.</p>
+            </div>
+
+            <div th:if="${buyerCheckIntroduction && buyerSchedule.hasIntroduction()}">
+                <div th:text="${buyerSchedule.getIntroduction()}"></div>
+            </div>
+        </div>
+
+        <div th:if="${role} == 'seller'">
+            <div th:if="${!sellerCheckIntroduction || !sellerSchedule.hasIntroduction()}">
+                <p>등록된 거래희망 소개가 없습니다.</p>
+            </div>
+
+            <div th:if="${sellerCheckIntroduction && sellerSchedule.hasIntroduction()}">
+                <div th:text="${sellerSchedule.getIntroduction()}"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 캘린더 섹션 -->
+    <div class="section">
+        <h2>캘린더</h2>
+        <div id="calendar"></div>
+        <div class="weather-info">
+            <h3><i class="far fa-calendar-alt"></i> 선택된 날짜의 날씨 정보</h3>
+            <p class="weather-info-text" id="selected-date"></p>
+            <p class="weather-info-text" id="weather-description"></p>
+            <p class="weather-info-text" id="temperature"></p>
+            <p class="weather-info-text" id="humidity"></p>
+            <p id="error"></p>
+            <i class="weather-icon"></i><br>
+        </div>
+    </div>
+
+    <input type="hidden" id="selected-time" name="tradeTime" value="">
+
+    <!-- 시간 선택 섹션 -->
+    <div class="section">
+        <h2>시간 선택</h2>
+        <div id="selected-date-display"></div>
+
+        <select id="selected-ampm" name="tradeAMPM" onchange="updateText()">
+            <option value="AM">오전</option>
+            <option value="PM">오후</option>
+        </select>
+
+        <select id="selected-hour" name="tradeHour" onchange="updateText()">
+            <option value="1">1시</option>
+            <option value="2">2시</option>
+            <option value="3">3시</option>
+            <option value="4">4시</option>
+            <option value="5">5시</option>
+            <option value="6">6시</option>
+            <option value="7">7시</option>
+            <option value="8">8시</option>
+            <option value="9">9시</option>
+            <option value="10">10시</option>
+            <option value="11">11시</option>
+            <option value="12">12시</option>
+        </select>
+
+        <input type="number" id="selected-minute" min="0" max="59" value="0" oninput="updateText()" />
+    </div>
+
+
+    </div>
+    <div class="button-container">
+        <button type="submit">확인</button>
+        <button type="button">취소</button>
+    </div>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+<script>
+function updateText() {
+    var ampm = document.getElementById("selected-ampm").value;
+    var hour = document.getElementById("selected-hour").value;
+    var minute = document.getElementById("selected-minute").value;
+    var time = "";
+
+    if (ampm === "PM") {
+        if (hour !== "12") {
+            hour = (parseInt(hour) + 12).toString().padStart(2, "0");
+        }
+    } else {
+        if (hour === "12") {
+            hour = "00";
+        } else {
+            hour = hour.toString().padStart(2, "0");
+        }
+    }
+
+    time = hour + ":" + minute.toString().padStart(2, "0");
+    document.getElementById("selected-time").value = time;
+}
+
+function getSelectedTime() {
+    var selectedTime = $('#selected-time').val();
+    return selectedTime;
+}
+
+$('#calendar').on('click', '.fc-day', function() {
+    var selectedDate = $(this).data('date');
+    $('#selected-date').text(selectedDate);
+    $('#selected-date-display').text('거래 희망 날짜: ' + selectedDate);
+});
+
+function updateTradeSchedule() {
+    var selectedDate = $('#selected-date').text();
+    var selectedTime = getSelectedTime();
+    var tradeId = $('input[name="tradeId"]').val(); // tradeId 값을 가져옴
+
+    var formattedDate = moment(selectedDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+    var formattedTime = moment(selectedTime, 'HH:mm').format('HH:mm');
+
+    console.log('선택된 날짜:', selectedDate);
+    console.log('선택된 시간:', selectedTime);
+
+    // 선택된 날짜와 시간을 폼 데이터로 설정
+    var formData = new FormData();
+    formData.append('tradeId', tradeId); // tradeId 값을 추가
+    formData.append('tradeDate', selectedDate);
+    formData.append('tradeTime', selectedTime);
+
+    // CSRF 토큰과 헤더 설정
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token);
+        }
+    });
+
+    // AJAX를 사용하여 폼 데이터를 서버로 전송
+    $.ajax({
+        url: $('#tradeForm').attr('action'),
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log('데이터 전송 성공');
+            console.log(response);
+          window.location.href = response;
+        },
+        error: function(xhr, status, error) {
+            console.log(error);
+        }
+    });
+}
+
+$('#tradeForm').submit(function(e) {
+    e.preventDefault();
+
+    updateTradeSchedule();
+});
+</script>
+
+<script type="text/javascript" th:src="@{/js/weather.js}"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="footer">
+  <head>
+    <style>
+    :root { scroll-behavior : auto }
+
+  footer {
+    background-color: #f2f2f2;
+    padding: 3px;
+    color: #808080;
+    font-size: 12px;
+    text-align: center;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .footer-links {
+    margin-bottom: 10px;
+  }
+
+  .footer-links a {
+    display: inline-block;
+    margin-right: 10px;
+    color: #808080;
+    text-decoration: none;
+  }
+
+  .footer-info p {
+    margin: 0;
+  }
+
+.ad {
+      background: white;
+    position: fixed;
+    top: 12.3vh;
+    left: 1.2vw;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 200px;
+    height: 675px;
+
+}
+
+.ad img {
+  align-self: flex-end;
+}
+
+.remote {
+  background: rgba(0, 0, 0, 0);
+  position: fixed;
+  bottom: 160px;
+  right: 50px;
+  transition: all 0.5s ease-in-out;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.remote > div {
+  display: flex;
+  align-items: center;
+}
+
+.button {
+  flex: 1;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
+  background-color: rgba(91, 194, 126, 0.5);
+  color: black;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.5s;
+  margin-right: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 120px;
+}
+
+.button:last-child {
+  margin-right: 0;
+}
+
+.button:hover {
+  color: white;
+  transform-origin: center;
+  background-color: rgba(91, 194, 126, 1);
+}
+
+.updown {
+  background: rgba(0,0,0,0) !important;
+  cursor: pointer;
+  margin-right:2vw;
+}
+
+.close-btn{
+  cursor:pointer;
+  font-weight:bolder;
+  width:1.3vw;
+  height:2.5vh;
+  text-align:center;
+  border-radius:50px;
+  background: #646d7696;
+  color:white;
+}
+  </style>
+  </head>
+  <!--광고배너-->
+
+  <div class="ad" th:if="${advertise != null}">
+    <span class="close-btn" onclick="closeAd()">×</span>
+    <img th:src="@{|/adimage/${advertise.image}|}" alt="Ad Image">
+  </div>
+
+
+  <!--리모컨(위아래 가기 글쓰기 등등)-->
+  <th:block th:if="${advertise != null || advertise == null}">
+
+    <div class="remote">
+      <div>
+        <a class="updown up"><img src="/image/up.png" alt="맨위로" /></a>
+        <a class="button" th:href="@{support/supportBoard}">고객센터</a>
+      </div>
+      <div>
+        <a class="updown down"><img src="/image/down.png" alt="맨아래로" /></a>
+        <a class="button" th:href="@{writeForm}">글쓰기</a>
+      </div>
+      <div>
+        <a class="button"th:href="@{tradeList}">거래목록</a>
+      </div>
+      <div>
+        <a class="button"th:href="@{review}">리뷰작성</a>
+      </div>
+      <div>
+        <a class="button"th:href="@{reviews}">리뷰조회</a>
+      </div>
+      <div>
+        <a class="button"th:href="@{/scheduleList}">일정목록</a>
+      </div>
+    </div>
+  </th:block>
+
+  <footer class="footer" th:fragment="footer" th:if="${advertise != null || advertise == null}">
+    Team Reboot <br />
+    주소 서울시 금천구 가산디지털2로 101 (가산동) 한라원앤원타워 B동 3층 (KOSMO)
+    <br />
+    전화 1234-1234 문의 Reboot@naver.com <br />
+    <div class="footer-links">
+      <br />
+      <a th:href="@{support/supportBoard}">
+        <img src="/image/Customer.PNG" alt="로고 이미지" width="30px" height="30px" />
+        <br>
+        고객센터
+      </a>
+      <a th:href="@{adWrite}">
+        <img src="/image/ad.PNG" alt="로고 이미지" width="30px" height="30px" />
+        <br>
+        광고문의
+      </a>
+
+    </div>
+    <div class="footer-info">
+      <p>© 2023 Your Company. All rights reserved.</p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+  $(document).ready(function() {
+    $(".up").click(function() {
+      $("html, body").animate({ scrollTop: 0 }, 800);
+    });
+
+    $(".down").click(function() {
+      $("html, body").animate({ scrollTop: $(document).height() }, 800);
+    });
+  });
+
+    function closeAd() {
+      var adBanner = document.getElementsByClassName('ad')[0];
+      if (adBanner) {
+        adBanner.style.display = 'none';
+      }
+    }
+
+
+</script>
+  </footer>
+  </div>
+</th:block>
+</html>

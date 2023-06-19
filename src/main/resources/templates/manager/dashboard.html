@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+    <style>
+    /* 전체 영역 스타일 */
+    .container {
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+    }
+
+    /* Sidebar 스타일 */
+    .sidebar {
+      border: 2px solid #000;
+      overflow: auto;
+      margin-left: auto;
+      margin-bottom: 20px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      padding: 8px 12px;
+      margin: 10px;
+    }
+    .sidebar ul li:hover {
+      background-color: #eaeaea;
+    }
+
+    .sidebar ul li a {
+      display: block;
+      text-decoration: none;
+      color: #000;
+    }
+
+    .board-area {
+      padding: 10px;
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      background-color: #f1f1f1;
+      height: auto;
+      margin: 10px;
+    }
+
+    .board-visitor {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .board-transaction {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .board-Inquiry {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .board-item {
+      flex: 1;
+      height: 180px;
+      background-color: #f9f9f9;
+      margin: 10px;
+      position: inherit;
+      border : 1px solid grey;
+      overflow : auto;
+    }
+
+    .board-item-visitor {
+      flex: 2;
+      height: 500px;
+      background-color: #f9f9f9;
+      margin: 10px;
+      display: flex;
+    }
+
+    .thin-light-hr {
+        border: none;
+        border-top: 0.5px solid black;
+        margin: 5px 0;
+    }
+
+    .ad-item {
+        display: flex;
+    }
+
+    .ad-item:hover {
+    cursor: pointer;
+          background-color: #eaeaea;
+    }
+
+    .show{
+        display: flex;
+    }
+
+    .chart-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 20%;
+  }
+
+  .chart {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index:0;
+  }
+
+    li:hover{
+    cursor:pointer;
+    }
+
+    /* 일자별 요약 테이블과 통계 테이블의 th 부분 색상 변경 */
+  table{
+    background-color: white;
+  }
+
+   table.table th {
+    background-color: #FAD8D5;
+  }
+
+   table.table th, table.table td {
+    text-align: center;
+  }
+
+        .m-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .m-th, .m-td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid black;
+        }
+
+        .m-th {
+            background-color: lightgray;
+        }
+
+       .m-pagination {
+            display: flex;
+            justify-content: center;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .m-pagination li {
+            display: inline;
+            margin-right: 5px;
+        }
+
+        .m-pagination li a {
+            display: inline-block;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .m-pagination li.active a {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li class="dash">
+                    <img src="/image/manager/dashboard.PNG" alt="dash">
+                    대시보드
+                </li>
+                <li class="user-c">
+                    <img src="/image/manager/user.PNG" alt="user-c">
+                    사용자 관리
+                </li>
+                <li class="content-c">
+                    <img src="/image/manager/content.PNG" alt="content-c">
+                    컨텐츠 관리
+                </li>
+                <li class="marketing-c">
+                    <img src="/image/manager/marketing.PNG" alt="marketing-c">
+                    마케팅 관리
+                </li>
+                <li class="revenue">
+                    <img src="/image/manager/sales.PNG" alt="revenue">
+                    수입관리
+                </li>
+                <li class="stast">
+                    <img src="/image/manager/statics.PNG" alt="stast">
+                    통계
+                </li>
+                <li class="fix">
+                    <img src="/image/manager/support.PNG" alt="fix">
+                    메인페이지관리
+                </li>
+                <li class="sup">
+                    <img src="/image/manager/support.PNG" alt="sup">
+                    고객지원
+                </li>
+            </ul>
+        </div>
+
+        <!-- 컨텐츠 영역에 공간을 추가하려면 빈 div 추가 -->
+        <!--대시보드-->
+        <div class="board-area dash-1 show">
+
+            <div class="board-visitor">
+                <div class="board-item-visitor">
+                    <div class="chart-container">
+                        <canvas id="visitorChart" class="chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="board-transaction">
+                <div class="board-item">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>일자</th>
+                            <th>거래량</th>
+                            <th>매출액</th>
+                            <th>방문자</th>
+                            <th>가입</th>
+                            <th>문의</th>
+                            <th>후기</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="statistic : ${statisticsList}">
+                            <td th:text="${statistic.visitDate}"></td>
+                            <td th:text="${statistic.transaction}"></td>
+                            <td th:text="${statistic.sales}"></td>
+                            <td th:text="${statistic.visitor}"></td>
+                            <td th:text="${statistic.register}"></td>
+                            <td th:text="${statistic.inquiry}"></td>
+                            <td th:text="${statistic.review}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="board-Inquiry">
+                <div class="board-item">고객문의</div>
+
+                <div class="board-item">
+                    <div th:each="ad, status : ${ads}">
+                        <a style="text-decoration: none;" th:onclick="adwindow([[${ad.id}]])">
+                            <div style="cursor: pointer; margin-top: 15px;" class="ad-item">
+                                <div class="image-preview">
+                                    <img th:src="@{../image/aaaa.png}" alt="이미지" width="40" height="40" style="border-radius: 50%; margin-left: 10px;">
+                                </div>
+                                <div class="content" style="margin-left: 10px;">
+                                    <p>
+                                        <span>
+                                             <span th:text="${'[' + ad.status + ']' + ' '}" style="font-weight: bold;"></span>
+                                             <span th:text="${ad.title}"></span>
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <span th:text="${ad.advertiserName}" style="color: #999;"></span>
+                                        <span th:text="${ad.startDate + ' - ' + ad.endDate}" style="color: #999;"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--사용자관리-->
+        <div class="board-area user-c-1">
+            <h4>유저관리</h4>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>이름</th>
+                    <th>닉네임</th>
+                    <th>연령</th>
+                    <th>연락처</th>
+                    <th>성별</th>
+                    <th>이메일</th>
+                    <th>권한변경</th>
+                    <th>개인상점</th>
+                    <th>수정</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${userList}">
+                    <form th:action="@{/change/{id}(id=${user.id})}" method="post" class="d-flex">
+                        <td th:text="${user.getId()}">ID</td>
+                        <td th:text="${user.getName()}">이름</td>
+                        <td th:text="${user.getNickName()}">닉네임</td>
+                        <td th:text="${user.getAgeRange()}">연령대</td>
+                        <td th:text="${user.getMobile()}">연락처</td>
+                        <td th:text="${user.getGender()}">성별</td>
+                        <td th:text="${user.getEmail()}">이메일</td>
+                        <td>
+                            <select name="role">
+                                <option value="USER" th:selected="${user.getRole() == T(com.Reboot.Minty.member.constant.Role).USER}">USER</option>
+                                <option value="BAN" th:selected="${user.getRole() == T(com.Reboot.Minty.member.constant.Role).BAN}">BAN</option>
+                                <option value="GUEST" th:selected="${user.getRole() == T(com.Reboot.Minty.member.constant.Role).GUEST}">GUEST</option>
+                                <option value="REGISTER_USER" th:selected="${user.getRole() == T(com.Reboot.Minty.member.constant.Role).REGISTER_USER}">REGISTER_USER</option>
+                                <option value="ADMIN" th:selected="${user.getRole() == T(com.Reboot.Minty.member.constant.Role).ADMIN}">ADMIN</option>
+                            </select>
+                        </td>
+                        <td><a th:href="@{/usershop/{userId}(userId=${user.id})}">개인상점</a></td>
+                        <td>
+                            <button class="btn btn-outline-dark flex-shrink-0" type="submit">수정</button>
+                        </td>
+                    </form>
+                </tr>
+                </tbody>
+            </table>
+<!--            <nav id="pag" style="text-align: center;">-->
+<!--                <ul class="pagination justify-content-center"-->
+<!--                    th:with="start=${(pageable.getPageNumber() / 10 * 10) + 1},-->
+<!--                  last=${(start + 9 < postList.getTotalPages()) ? (start + 9) : postList.getTotalPages()}">-->
+<!--                    <li class="page-item">-->
+<!--                        <a class="page-link" th:href="${postList.first} ? '#' : @{/manager(page=0)}" aria-label="First">-->
+<!--                            <span aria-hidden="true">&laquo;</span>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="page-item" th:class="${postList.first} ? 'disabled'">-->
+<!--                        <a class="page-link" th:href="${postList.first} ? '#' : @{/manager(page=${postList.number - 1})}" aria-label="Previous">-->
+<!--                            <span aria-hidden="true">&lt;</span>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li th:each="page : ${#numbers.sequence(start, last)}"-->
+<!--                        th:class="${postList.number == page - 1} ? 'page-item active' : 'page-item'">-->
+<!--                        <a class="page-link" th:href="@{/manager(page=${page - 1})}">-->
+<!--                            <span th:text="${page}"></span>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="page-item" th:class="${postList.last} ? 'disabled'">-->
+<!--                        <a class="page-link" th:href="${postList.last} ? '#' : @{/manager(page=${postList.number + 1})}" aria-label="Next">-->
+<!--                            <span aria-hidden="true">&gt;</span>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="page-item">-->
+<!--                        <a class="page-link" th:href="${postList.last} ? '#' : @{/manager(page=${postList.getTotalPages() - 1})}" aria-label="Last">-->
+<!--                            <span aria-hidden="true">&raquo;</span>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </nav>-->
+        </div>
+        <!--컨텐츠 관리-->
+        <div class="board-area content-c-1">
+            컨텐츠관리
+        </div>
+        <!--마케팅관리-->
+        <div class="board-area marketing-c-1">
+            마케팅관리
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th>상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                <div th:each="ad, adIndex : ${ads}">
+                    <tr>
+                        <td><p th:text="${ad.id}"></p></td>
+                        <td><p th:text="${ad.title}" th:onclick="'adwindow(' + ${ad.id} + ')'"></p></td>
+                        <td><p th:text="${ad.advertiserName}"></p></td>
+                        <td><p th:text="${ad.requestDate}"></p></td>
+                        <td><p th:text="${ad.status}"></p></td>
+                    </tr>
+                </div>
+                </tbody>
+            </table>
+        </div>
+        <!--수입관리-->
+        <div class="board-area revenue-1">
+            수입관리
+        </div>
+        <!--통계-->
+        <div class="board-area stast-1">
+            <h4>통계</h4>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>일자</th>
+                    <th>거래량</th>
+                    <th>매출액</th>
+                    <th>방문자</th>
+                    <th>가입</th>
+                    <th>문의</th>
+                    <th>후기</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="statistic : ${statisticsList}">
+                    <td th:text="${statistic.visitDate}"></td>
+                    <td th:text="${statistic.transaction}"></td>
+                    <td th:text="${statistic.sales}"></td>
+                    <td th:text="${statistic.visitor}"></td>
+                    <td th:text="${statistic.register}"></td>
+                    <td th:text="${statistic.inquiry}"></td>
+                    <td th:text="${statistic.review}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--메인페이지관리-->
+        <div class="board-area fix-1">
+            메인페이지관리
+        </div>
+        <!--고객지원-->
+        <div class="board-area sup-1">
+            고객지원
+        </div>
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+            integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" th:src="@{/js/dashboard.js}"></script>
+
+    <script>
+
+function adwindow(adId) {
+  var popupWidth = 740;
+  var popupHeight =690;
+
+  var leftPosition = (window.screen.width - popupWidth) / 2;
+  var topPosition = (window.screen.height - popupHeight) / 2;
+
+  var url = '/adAdmin/' + adId;
+
+  window.open(url, '_blank', 'width=' + popupWidth + ', height=' + popupHeight + ', left=' + leftPosition + ', top=' + topPosition);
+}
+
+
+
+  // AJAX 요청을 통해 서버에서 방문자 수 데이터 가져오기
+  $.ajax({
+    url: '/getManagerStatistics', // 실제로 요청을 보낼 URL
+    type: 'GET',
+    success: function(response) {
+      const managerStats = response.managerStatistics;
+
+      const labels = managerStats.map(item => item.visitDate);
+      const counts = managerStats.map(item => [item.inquiry, item.register, item.review, item.sales, item.transaction, item.visitor]);
+
+      const ctx = document.getElementById('visitorChart').getContext('2d');
+
+      const datasets = [{
+        label: '거래량',
+        data: counts.map(item => item[4]),
+        backgroundColor: 'rgba(0, 255, 255, 0.5)',
+        borderColor: 'rgba(0, 255, 255, 1)',
+        borderWidth: 1,
+        tension: 0.3,
+        fill: false
+      }, {
+        label: '매출액',
+        data: counts.map(item => item[3]),
+        backgroundColor: 'rgba(255, 255, 0, 0.5)',
+        borderColor: 'rgba(255, 255, 0, 1)',
+        borderWidth: 1,
+        tension: 0.3,
+        fill: false
+      }, {
+        label: '방문자',
+        data: counts.map(item => item[5]),
+        backgroundColor: 'rgba(0, 123, 255, 0.5)',
+        borderColor: 'rgba(0, 123, 255, 1)',
+        borderWidth: 1,
+        tension: 0.3,
+        fill: false
+      }, {
+        label: '가입',
+        data: counts.map(item => item[1]),
+        backgroundColor: 'rgba(0, 255, 0, 0.5)',
+        borderColor: 'rgba(0, 255, 0, 1)',
+        borderWidth: 1,
+        tension: 0.3,
+        fill: false
+      }, {
+        label: '문의',
+        data: counts.map(item => item[0]),
+        backgroundColor: 'rgba(255, 0, 0, 0.5)',
+        borderColor: 'rgba(255, 0, 0, 1)',
+        borderWidth: 1,
+        tension: 0.3,
+        fill: false
+      }, {
+        label: '후기',
+        data: counts.map(item => item[2]),
+        backgroundColor: 'rgba(0, 0, 255, 0.5)',
+        borderColor: 'rgba(0, 0, 255, 1)',
+        borderWidth: 1,
+        tension: 0.3,
+        fill: false
+      }];
+
+      const config = {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: true,
+              text: '일자별 통계'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      };
+
+      var lineVisibility = {
+        transaction: true,
+        sales: true,
+        visitor: true,
+        register: true,
+        inquiry: true,
+        review: true
+      };
+
+      function toggleLineVisibility(line) {
+        var datasets = chart.config.data.datasets;
+        var lineIndex = datasets.findIndex(dataset => dataset.label === line);
+
+        if (lineVisibility[line]) {
+          datasets[lineIndex].hidden = true;
+          lineVisibility[line] = false;
+        } else {
+          datasets[lineIndex].hidden = false;
+          lineVisibility[line] = true;
+        }
+
+        chart.update();
+      }
+
+      var chart = null;
+
+      function initChart() {
+        var ctx = document.getElementById('visitorChart').getContext('2d');
+        chart = new Chart(ctx, config);
+      }
+
+      initChart();
+
+      var lineItems = document.querySelectorAll('.line-toggle');
+
+      lineItems.forEach(function(item) {
+        item.addEventListener('click', function() {
+          var line = this.dataset.line;
+          toggleLineVisibility(line);
+        });
+      });
+    },
+    error: function(error) {
+      console.log(error);
+    }
+  });
+</script>
+</div>
+</body>
+</html>

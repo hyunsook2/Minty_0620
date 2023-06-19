@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 800px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .ad-details {
+            display: flex;
+            flex: 1;
+        }
+
+        .ad-content {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: lightgray;
+        }
+
+        .image-preview {
+            flex: 1;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            margin-top: 10px;
+        }
+        .button-container form {
+            display: inline;
+        }
+        .close {
+          text-align: center;
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="container">
+  <div class="ad-details">
+    <div class="ad-content">
+      <h2>Title: <span th:text="${ad.title}"></span></h2>
+      <p><strong>Advertiser Name:</strong> <span th:text="${ad.advertiserName}"></span></p>
+      <p><strong>Content:</strong> <span th:text="${ad.content}"></span></p>
+      <p><strong>Status:</strong> <span th:text="${ad.status}"></span></p>
+      <p><strong>Start Date:</strong> <span th:text="${ad.startDate}"></span></p>
+      <p><strong>End Date:</strong> <span th:text="${ad.endDate}"></span></p>
+      <p><strong>Amount:</strong> <span th:text="${ad.amount}"></span></p><br><br>
+      <div class="button-container">
+        <form id="approveForm" method="post" th:action="@{/admin/ads/{id}/approve(id=${ad.id})}">
+          <input type="submit" value="승인" onclick="submitFormAndClosePopup(event, 'approveForm')"/>
+        </form>
+
+        <form id="rejectForm" method="post" th:action="@{/admin/ads/{id}/reject(id=${ad.id})}">
+          <input type="submit" value="거부" onclick="submitFormAndClosePopup(event, 'rejectForm')"/>
+        </form>
+      </div>
+      </div>
+      <br><br>
+    </div>
+    <div class="image-preview">
+      <img th:if="${ad.image}" th:src="@{'/adimage/' + ${ad.image}}" alt="Ad Image" />
+    </div>
+  </div>
+</div>
+<div class="close">
+  <button id="closeButton">닫기</button>
+</div>
+<script>
+  var closeButton = document.getElementById('closeButton');
+
+  function refreshDashboard() {
+    if (window.opener) {
+      window.opener.location.reload(); // 부모 창을 새로 고칩니다.
+    }
+  }
+
+  function submitFormAndClosePopup(event, formId) {
+    event.preventDefault(); // 기본 제출 동작을 막습니다.
+
+    var form = document.getElementById(formId);
+    var formData = new FormData(form);
+
+    // AJAX 요청
+    var xhr = new XMLHttpRequest();
+    xhr.open(form.method, form.action, true);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        if (formId == 'approveForm') {
+          alert("광고 승인 처리 되었습니다.");
+        } else {
+          alert("광고 거절 처리 되었습니다.");
+        }
+        refreshDashboard(); // 대시보드를 새로고침합니다.
+        window.close(); // 팝업 창을 닫습니다.
+      } else {
+        console.error('폼 제출 중 오류가 발생했습니다.');
+      }
+    };
+    xhr.onerror = function() {
+      console.error('폼 제출 중 네트워크 오류가 발생했습니다.');
+    };
+    xhr.send(formData);
+  }
+
+  closeButton.addEventListener('click', function() {
+    window.close();
+  });
+</script>
+</body>
+</html>

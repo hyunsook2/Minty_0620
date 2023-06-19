@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Minty</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            width: 500px;
+            padding: 60px;
+            padding-left: 7%;
+            padding-right: 13%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-content {
+            display: flex;
+        }
+
+        .left-section {
+            flex: 1;
+            padding-right: 10px;
+        }
+
+        .right-section {
+            flex: 1;
+            padding-left: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 15px;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+        }
+
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #amount, #endDate {
+            background-color: #f2f2f2;
+            color: #999;
+        }
+
+        #preview {
+            max-width: 180px;
+            display: none;
+            margin-top: -25%;
+            margin-left: 100%;
+        }
+    </style>
+    <script>
+        function calculateAmount() {
+            var duration = document.querySelector('input[name="duration"]:checked').value;
+            var amount = document.getElementById("amount");
+
+            if (duration === "7") {
+                amount.value = "500000";
+            } else if (duration === "30") {
+                amount.value = "2000000";
+            } else if (duration === "90") {
+                amount.value = "5000000";
+            } else if (duration === "180") {
+                amount.value = "8000000";
+            } else if (duration === "365") {
+                amount.value = "15000000";
+            }
+
+            calculateEndDate(); // 기간이 변경될 때마다 종료일을 다시 계산
+        }
+
+        function calculateEndDate() {
+            var startDate = new Date(document.getElementById("startDate").value);
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (startDate < today) {
+                alert("현재 날짜 이후의 날짜를 선택해주세요.");
+                document.getElementById("startDate").value = "";
+                document.getElementById("endDate").value = "";
+                return;
+            }
+
+            var duration = document.querySelector('input[name="duration"]:checked').value;
+            var endDate = new Date(startDate.getTime() + (duration * 24 * 60 * 60 * 1000));
+            var endDateInput = document.getElementById("endDate");
+            endDateInput.value = endDate.toISOString().split('T')[0];
+            endDateInput.setAttribute("min", endDate.toISOString().split('T')[0]);
+        }
+
+        // 페이지 로드 시에도 종료일을 계산
+        window.addEventListener('load', calculateEndDate);
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var preview = document.getElementById("preview");
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="form-container">
+    <h1>광고 요청글 작성</h1>
+    <div class="form-content">
+        <div class="left-section">
+            <form method="post" th:action="@{/adWrite}" th:object="${ad}" enctype="multipart/form-data">
+                <!-- CSRF 토큰 추가 -->
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+                <label>광고주명:</label>
+                <input type="text" th:field="*{advertiserName}" required/><br/><br>
+
+                <label>제목:</label>
+                <input type="text" th:field="*{title}" required/><br/>
+
+                <label>내용:</label>
+                <textarea th:field="*{content}" required></textarea><br/><br>
+
+                <label>이미지:</label>
+                <input type="file" name="imageFile" onchange="readURL(this)" accept="image/*" required/><br/><br>
+
+                <label>Email:</label>
+                <input type="email" th:field="*{email}" required/><br/><br>
+
+                <label>기간:</label><br/>
+                <input type="radio" id="7days" name="duration" value="7" onclick="calculateAmount()" required/>
+                <label for="7days">7일 (500,000원)</label><br/>
+                <input type="radio" id="30days" name="duration" value="30" onclick="calculateAmount()" required/>
+                <label for="30days">한달 (2,000,000원)</label><br/>
+                <input type="radio" id="90days" name="duration" value="90" onclick="calculateAmount()" required/>
+                <label for="90days">3달 (5,000,000원)</label><br/>
+                <input type="radio" id="180days" name="duration" value="180" onclick="calculateAmount()" required/>
+                <label for="180days">6달 (8,000,000원)</label><br/>
+                <input type="radio" id="365days" name="duration" value="365" onclick="calculateAmount()" required/>
+                <label for="365days">1년 (15,000,000원)</label><br/><br>
+
+                <label>시작일:</label>
+                <input type="date" id="startDate" th:field="*{startDate}" onchange="calculateEndDate()" required/><br/>
+
+                <label>종료일:</label>
+                <input type="date" id="endDate" th:field="*{endDate}" readonly/><br/><br>
+
+                <label>금액:</label>
+                <input type="text" id="amount" th:value="${ad.amount}" readonly required/><br/><br>
+                <input type="submit" value="Save"/>
+            </form>
+        </div>
+        <div class="right-section">
+            <img id="preview" src="#" alt="Preview" style="max-width: 180px; display: none; margin-top: -25%; margin-left: 100%;"/><br/>
+        </div>
+    </div>
+</div>
+</body>
+</html>

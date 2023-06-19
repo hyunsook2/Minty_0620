@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <style>
+         body {
+        margin: 0;
+        padding: 20px;
+    }
+
+    .review-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .review-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .review {
+        width: 500px;
+        min-height: 220px;
+        background-color: #F0FFF0;
+        border: 1px solid;
+        border-radius: 10px;
+        margin: auto;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: min-height 0.3s ease-in-out;
+    }
+
+    .review_imageUrl {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .review_content {
+        position: absolute;
+        top: 5px;
+        left: 100px;
+        width: 200px;
+        height: auto;
+        margin: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+        transition: -webkit-line-clamp 0.3s ease-in-out; /* Added transition for smooth animation */
+    }
+
+    .review_content_container {
+        position: relative;
+    }
+
+    .more-button {
+        display: none; /* Hide the "더 보기" button by default */
+        color: black;
+        border: none;
+        padding: 5px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-top: 5px;
+        position: absolute;
+        left: 285px;
+        top: 85px;
+        background-color: transparent; /* Make background transparent */
+    }
+
+    .review_bottom {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+        margin-top: 10px;
+    }
+
+    .review_score {
+        position: absolute;
+        bottom: 100px;
+        left: 40px;
+    }
+
+    .review_nickname {
+    width:auto;
+    position: absolute;
+    bottom: 60px;
+    left: 20px;
+    padding-right: 2px;
+    margin-right: 10px;
+}
+
+    .review_createdAt {
+        width:auto;
+        position: absolute;
+        bottom: 60px;
+        left: 90px;
+        margin-left: 10px;
+    }
+
+    .product-view-container {
+        width: 485px;
+        height: 40px;
+        border: 1px solid black;
+        padding: 2px;
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        border-radius: 10px;
+    }
+
+    .expanded {
+        min-height: 350px;
+    }
+    .expand-width {
+    width: 350px;
+}
+    </style>
+</head>
+
+<body>
+<div class="review-container">
+    <div th:each="review : ${reviews}" class="review-item">
+        <div class="review">
+            <img class="review_rating" th:if="${review.rating != null}">
+            <th:block th:switch="${review.rating}">
+                <img th:case="1" th:src="@{/image/review/reviewPage/star1.png}"
+                     style="width: 70px; height: 70px; position: absolute; top: 10px; left: 10px;"/>
+                <img th:case="2" th:src="@{/image/review/reviewPage/star2.png}"
+                     style="width: 70px; height: 70px; position: absolute; top: 10px; left: 10px;"/>
+                <img th:case="3" th:src="@{/image/review/reviewPage/star3.png}"
+                     style="width: 70px; height: 70px; position: absolute; top: 10px; left: 10px;"/>
+                <img th:case="4" th:src="@{/image/review/reviewPage/star4.png}"
+                     style="width: 70px; height: 70px; position: absolute; top: 10px; left: 10px;"/>
+                <img th:case="*" th:src="@{/image/review/reviewPage/star5.png}"
+                     style="width: 70px; height: 70px; position: absolute; top: 10px; left: 10px;"/>
+            </th:block>
+            </img>
+            <div class="review_content_container">
+                <span class="review_content" th:text="${review.contents}" th:classappend="${review.imageUrl} ? '' : 'expand-width'"></span>
+                <button class="more-button">더 보기</button>
+            </div>
+            <span class="review_createdAt" th:text="${T(com.Reboot.Minty.review.time.DateUtils).formatReviewDate(review.createdAt)}"></span>
+            <div class="review_bottom">
+                <span class="review_score" th:text="${review.rating}"></span>
+                <span class="review_nickname" th:text="${review.nickname}"></span>
+                <div class="product-view-container">
+                    <form action="/product" method="post" enctype="multipart/form-data">
+                        <p>대충 여기 어디 누르면 상품 뷰 페이지로 감 아직 연동안함</p>
+                    </form>
+                </div>
+            </div>
+            <img class="review_imageUrl" th:if="${review.imageUrl != null}" th:src="@{${review.imageUrl}}"
+                 width="150" height="150" alt="Review Image"/>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add "더보기" functionality
+    const reviewContainers = document.getElementsByClassName('review');
+    for (let i = 0; i < reviewContainers.length; i++) {
+        const reviewContainer = reviewContainers[i];
+        const reviewContentContainer = reviewContainer.querySelector('.review_content_container');
+        const reviewContent = reviewContainer.querySelector('.review_content');
+        const moreButton = reviewContainer.querySelector('.more-button');
+
+        // Calculate the height of the content based on the line height and line clamp
+        const lineHeight = parseInt(window.getComputedStyle(reviewContent).lineHeight);
+        const lineClamp = parseInt(window.getComputedStyle(reviewContent).webkitLineClamp);
+        const contentHeight = lineHeight * lineClamp;
+
+        // Hide the "더 보기" button if the content height is less than the calculated height or if content has ellipsis
+        if (reviewContent.offsetHeight <= contentHeight || reviewContent.scrollHeight <= reviewContent.offsetHeight) {
+            moreButton.style.display = 'none';
+        } else {
+            moreButton.style.display = 'flex'; // Show the "더 보기" button if the content overflows
+        }
+
+        moreButton.addEventListener('click', () => {
+            reviewContent.style.webkitLineClamp = 'initial';
+            reviewContentContainer.style.height = 'auto';
+            moreButton.style.display = 'none';
+            reviewContainer.classList.add('expanded');
+        });
+    }
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<head>
+    <style>
+        .notification {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .button-row {
+            justify-content: flex-end;
+        }
+
+        button[type="button"] {
+            padding: 10px 20px;
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .wrapper{
+        width:80vw;
+        margin-left:15vw;
+        }
+        .space{
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="wrapper">
+        <th:block th:each="trade, status : ${trades}">
+            <!-- 각 거래에 대한 정보 표시 -->
+            <div class="tname">
+                <div class="notification">
+                    <span th:text="'[' + (${trade.buyerId.id == userId} ? ${trade.sellerId.nickName} : ${trade.buyerId.nickName}) + ']'"></span>
+                    <span th:if="${trade.status == '대화요청'}" th:text="'님과 [' + ${trade.boardId.title} + '] 대화요청.'"></span>
+                    <span th:if="${trade.status == '거래시작'}" th:text="'님과 [' + ${trade.boardId.title} + '] 거래시작'"></span>
+                    <span th:if="${trade.status == '거래중'}" th:text="'님과 [' + ${trade.boardId.title} + '] 거래중'"></span>
+                    <span th:if="${trade.status == '거래완료'}" th:text="'님과 [' + ${trade.boardId.title} + '] 거래완료'"></span>
+                </div>
+            </div>
+
+
+            <div class="space" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중' || trade.status == '거래완료'}">
+                <div class="info">
+                    <div class="product-image">
+                        <img th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${trade.boardId.thumbnail}}" alt="Board Image" class="board-img" th:trade_id="${trade.boardId.id}" />
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name" th:text="${trade.boardId.title}"></h3>
+                        <p class="product-price" th:text="'￦' + ${trade.boardId.price}"></p>
+                    </div>
+                    <div class="buyer-seller-info">
+                        <span th:text="${trade.buyerId.id == userId ? '판매자' : '구매자'}"></span>
+                        <span th:text="${trade.buyerId.id == userId ? trade.sellerId.nickName : trade.buyerId.nickName}"></span>
+                    </div>
+                </div>
+            </div>
+            <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+            <script>
+     $(".space").on("click", function() {
+        var tradeId = $(this).find(".product-image img").attr("trade_id");
+        window.location.href = "/trade/" + tradeId;
+    });
+
+</script>
+        </th:block>
+    </div>
+</div>
+</body>
+</html>

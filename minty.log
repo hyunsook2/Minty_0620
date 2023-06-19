@@ -1,0 +1,32 @@
+2023-05-29 03:11:43.335 [main] INFO  [] [] - Starting MintyApplication using Java 17.0.6 with PID 18528 (D:\Reboot\Minty\build\classes\java\main started by Administrator in D:\Reboot\Minty)
+2023-05-29 03:11:43.345 [main] INFO  [] [] - The following 1 profile is active: "oauth"
+2023-05-29 03:11:44.297 [main] INFO  [] [] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-05-29 03:11:44.385 [main] INFO  [] [] - Finished Spring Data repository scanning in 75 ms. Found 5 JPA repository interfaces.
+2023-05-29 03:11:45.220 [main] INFO  [] [] - Tomcat initialized with port(s): 8087 (http)
+2023-05-29 03:11:45.235 [main] INFO  [] [] - Starting service [Tomcat]
+2023-05-29 03:11:45.236 [main] INFO  [] [] - Starting Servlet engine: [Apache Tomcat/10.1.8]
+2023-05-29 03:11:45.584 [main] INFO  [] [] - At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2023-05-29 03:11:45.593 [main] INFO  [] [] - Initializing Spring embedded WebApplicationContext
+2023-05-29 03:11:45.594 [main] INFO  [] [] - Root WebApplicationContext: initialization completed in 2187 ms
+2023-05-29 03:11:45.775 [main] INFO  [] [] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-05-29 03:11:45.860 [main] INFO  [] [] - HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-05-29 03:11:46.252 [main] INFO  [] [] - HikariPool-1 - Starting...
+2023-05-29 03:11:46.771 [main] INFO  [] [] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1cc9bd9b
+2023-05-29 03:11:46.773 [main] INFO  [] [] - HikariPool-1 - Start completed.
+2023-05-29 03:11:46.801 [main] INFO  [] [] - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2023-05-29 03:11:46.803 [main] WARN  [] [] - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2023-05-29 03:11:47.736 [main] INFO  [] [] - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-05-29 03:11:47.745 [main] INFO  [] [] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-05-29 03:11:48.338 [main] WARN  [] [] - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-05-29 03:11:48.436 [main] INFO  [] [] - Adding welcome page: class path resource [static/index.html]
+2023-05-29 03:11:48.847 [main] INFO  [] [] - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3c2e73ce, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3891db3a, org.springframework.security.web.context.SecurityContextHolderFilter@45430a27, org.springframework.security.web.header.HeaderWriterFilter@3abb6aa, org.springframework.security.web.csrf.CsrfFilter@46067a74, org.springframework.security.web.authentication.logout.LogoutFilter@1ef7e4c7, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@58a0f75b, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@41d8ac75, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@67b2c8bb, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1500edf3, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@759c53e5, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4a778943, org.springframework.security.web.access.ExceptionTranslationFilter@e30a8ef, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@60e5db1d]
+2023-05-29 03:11:49.132 [main] INFO  [] [] - Tomcat started on port(s): 8087 (http) with context path ''
+2023-05-29 03:11:49.139 [main] INFO  [] [] - Started MintyApplication in 6.3 seconds (process running for 7.555)
+2023-05-29 03:20:54.317 [http-nio-8087-exec-1] INFO  [] [] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-05-29 03:20:54.317 [http-nio-8087-exec-1] INFO  [] [] - Initializing Servlet 'dispatcherServlet'
+2023-05-29 03:20:54.318 [http-nio-8087-exec-1] INFO  [] [] - Completed initialization in 1 ms
+2023-05-29 03:21:02.205 [http-nio-8087-exec-4] WARN  [] [] - Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'int'; For input string: "undefined"]
+2023-05-29 03:24:04.548 [http-nio-8087-exec-10] WARN  [] [] - Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'int'; For input string: "undefined"]
+2023-05-29 03:25:09.247 [http-nio-8087-exec-5] WARN  [] [] - Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'int'; For input string: "undefined"]
+2023-05-29 03:25:11.025 [http-nio-8087-exec-3] WARN  [] [] - Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'int'; For input string: "undefined"]
+2023-05-29 03:25:11.606 [http-nio-8087-exec-10] WARN  [] [] - Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'int'; For input string: "undefined"]

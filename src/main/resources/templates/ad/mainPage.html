@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Main 페이지</title>
+    <style>
+    .ad-card {
+        position: relative;
+    }
+
+    .ad-card img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .ad-card .close-btn {
+        position: absolute;
+        top: 10px;
+        font-size: 20px;
+        color: #999;
+        cursor: pointer;
+    }
+</style>
+
+</head>
+<body>
+<h1>Main 페이지</h1>
+<div class="ad-card">
+    <span class="close-btn" onclick="closeAd()">×</span>
+    <img th:src="@{${imagePath} + ${ad.image}}" alt="Ad Image">
+</div>
+
+<script>
+
+</script>
+</body>
+</html>

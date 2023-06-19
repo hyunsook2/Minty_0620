@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Weather Information</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css">
+    <style>
+      .container {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px;
+      }
+
+      .section {
+        flex-basis: 30%;
+        text-align: center;
+      }
+
+      #calendar {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      #weather-info {
+        position: absolute;
+        top: 65%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+      }
+
+      .container .section {
+        margin-right: 20px;
+      }
+
+      .fc-past {
+        pointer-events: none;
+        background-color: hsl(0, 0%, 90%);
+      }
+
+      .fc-today {
+        background-color: #a3c3ff;
+      }
+
+      .fc-selected {
+        background-color: hsl(120, 70%, 90%);
+      }
+
+      .weather-icon {
+        font-size: 48px;
+        margin: 10px auto;
+        display: block;
+      }
+
+      .weather-info-text {
+        margin-bottom: 10px;
+      }
+
+      .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      /* 알림 메시지 스타일 */
+      .notification {
+        background-color: #f8f8f8;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 18px;
+      }
+
+      /* 섹션 스타일 */
+      .section {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      /* 버튼 컨테이너 스타일 */
+      .button-container {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .button-container button {
+        margin-right: 10px;
+      }
+    </style>
+</head>
+<body>
+<!-- 알림 메시지 -->
+<div class="notification">
+    <span th:text="'[' + ${user.nickName} + '] 님의 거래 일정 입니다.'"></span>
+</div>
+
+<!-- 거래 가능 시간 섹션 -->
+<div class="container">
+    <div class="section">
+        <span th:text="'[' + ${user.nickName} + '] 님의 거래 희망 시간'"></span>
+        <!-- 여기에 거래 가능 시간 내용 추가 -->
+
+        <div class="userSchedule">
+            <div style="cursor: pointer; margin-top: 15px;">
+                <div class="image-preview">
+                    <img th:src="@{../image/aaaa.png}" alt="이미지" width="40" height="40" style="border-radius: 50%; margin-left: 10px;">
+                    <span th:text="${user.nickName}" style="color: #999;"></span>
+                </div>
+            </div>
+
+            <!-- 거래 희망 요일 -->
+            <div>
+                <div th:if="${!checkDay}">
+                    <p>등록된 거래희망 요일정보가 없습니다.</p>
+                </div>
+
+                <div th:if="${checkDay}">
+                    <div th:text="${schedule.getHopeDay()}"></div>
+                </div>
+            </div>
+
+            <!-- 거래 희망 시간 -->
+            <div>
+                <div th:if="${!checkDuration}">
+                    <p>등록된 거래희망 시간정보가 없습니다.</p>
+                </div>
+
+                <div th:if="${checkDuration}">
+                    <div th:text="${schedule.getHopeDuration()}"></div>
+                </div>
+            </div>
+
+            <!-- 거래 희망 위치 -->
+            <div>
+                <div th:if="${!checkArea}">
+                    <p>등록된 거래희망 위치정보가 없습니다.</p>
+                </div>
+
+                <div th:if="${checkArea}">
+                    <div th:text="${schedule.getHopeArea()}"></div>
+                </div>
+            </div>
+
+            <!-- 거래 희망 소개 -->
+            <div>
+                <div th:if="${!checkIntroduction}">
+                    <p>등록된 거래희망 소개가 없습니다.</p>
+                </div>
+
+                <div th:if="${checkIntroduction}">
+                    <div th:text="${schedule.getIntroduction()}"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 일정 목록 섹션 -->
+    <div class="section">
+        <h2>일정 목록 섹션</h2>
+
+
+    </div>
+
+
+    <!-- 거래 가능 시간 수정 및 입력 섹션 -->
+    <div class="section" id="time-selection-section" style="display: none;">
+        <h2>수정</h2>
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+
+</body>
+</html>

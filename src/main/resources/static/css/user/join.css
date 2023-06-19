@@ -1,0 +1,219 @@
+select[readonly] {
+      background-color: #ddd;
+      pointer-events: none;
+    }
+
+    input[readonly] {
+      background-color: #ddd;
+    }
+
+    @font-face {
+      font-family: "font";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMJUA.woff") format("woff");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    label {
+      font-family: "font";
+      text-align: center;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-size: 14px;
+      background-size: 200% 100% !important;
+      -webkit-animation: move 3s ease infinite;
+      animation: move 3s ease infinite;
+      transform: translate3d(0, 0, 0);
+      background: linear-gradient(45deg, #03ec8f 10%, #93b5d1 90%);
+      height: 100vh;
+    }
+
+    .user {
+      width: 90%;
+      max-width: 340px;
+      margin: 2vh auto;
+    }
+
+    .user__header {
+      text-align: center;
+      opacity: 0;
+      transform: translate3d(0, 500px, 0);
+      -webkit-animation: arrive 500ms ease-in-out 0.7s forwards;
+      animation: arrive 500ms ease-in-out 0.7s forwards;
+    }
+
+    .user__title {
+      font-size: 20px;
+      margin-top: 20px;
+      font-weight: 500;
+      color: white;
+      font-family: "font", sans-serif;
+    }
+
+    .form {
+      margin-top: 40px;
+      border-radius: 6px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translate3d(0, 500px, 0);
+      -webkit-animation: arrive 500ms ease-in-out 0.9s forwards;
+      animation: arrive 500ms ease-in-out 0.9s forwards;
+    }
+
+    .form--no {
+      -webkit-animation: NO 1s ease-in-out;
+      animation: NO 1s ease-in-out;
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    .form__input {
+      display: block;
+      width: 100%;
+      padding: 20px;
+      font-family: "Roboto";
+      -webkit-appearance: none;
+      border: 0;
+      outline: 0;
+      transition: 0.3s;
+    }
+
+    .form__input:focus {
+      background: #f7f7f7;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 20px;
+      font-family: "Roboto";
+      -webkit-appearance: none;
+      outline: 0;
+      border: 0;
+      color: white;
+      background: #aba194;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #a09486;
+    }
+
+    @-webkit-keyframes NO {
+
+      from,
+      to {
+        transform: translate3d(0, 0, 0);
+      }
+
+      10%,
+      30%,
+      50%,
+      70%,
+      90% {
+        transform: translate3d(-10px, 0, 0);
+      }
+
+      20%,
+      40%,
+      60%,
+      80% {
+        transform: translate3d(10px, 0, 0);
+      }
+    }
+
+    @keyframes NO {
+
+      from,
+      to {
+        transform: translate3d(0, 0, 0);
+      }
+
+      10%,
+      30%,
+      50%,
+      70%,
+      90% {
+        transform: translate3d(-10px, 0, 0);
+      }
+
+      20%,
+      40%,
+      60%,
+      80% {
+        transform: translate3d(10px, 0, 0);
+      }
+    }
+
+    @-webkit-keyframes arrive {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 50px, 0);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    @keyframes arrive {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 50px, 0);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    @-webkit-keyframes move {
+      0% {
+        background-position: 0 0;
+      }
+
+      50% {
+        background-position: 100% 0;
+      }
+
+      100% {
+        background-position: 0 0;
+      }
+    }
+
+    @keyframes move {
+      0% {
+        background-position: 0 0;
+      }
+
+      50% {
+        background-position: 100% 0;
+      }
+
+      100% {
+        background-position: 0 0;
+      }
+    }
+
+    .form-group {
+      padding: 3px;
+    }
+
+    .chk-code {
+      display: none !important;
+    }
+
+    #verificationExpirationTime {
+      margin-top: 5px;
+      font-size: 14px;
+      color: red;
+    }

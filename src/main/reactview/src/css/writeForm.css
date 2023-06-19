@@ -1,0 +1,55 @@
+.target-container {
+border-bottom: 2px solid grey;
+}
+
+
+
+.trade-category-container {
+margin-top : 6px;
+border-bottom: 2px solid grey;
+}
+
+.hidden{
+border:none;
+}
+
+
+.target-cate {
+text-align: center;
+}
+
+
+.scrollable-list {
+height: 200px;
+overflow-y: scroll;
+border: 1px solid grey;
+margin-bottom: 10px;
+list-style: none;
+
+}
+.scrollable-list::-webkit-scrollbar
+{
+width: 12px;
+background-color: #F5F5F5;
+}
+
+.scrollable-list::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+.scrollable-list::-webkit-scrollbar-thumb{
+border-radius: 10px;
+-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+background-color: #555;
+}
+
+.scrollable-list li.active {
+font-weight: bold;
+}
+
+.active {
+font-weight: bold;
+}
