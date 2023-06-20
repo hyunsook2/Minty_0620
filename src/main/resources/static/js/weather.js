@@ -1,25 +1,33 @@
 $(document).ready(function() {
         var selectedDate = null; // 선택된 날짜 변수 초기화
 
-        $('#calendar').fullCalendar({
-            dayClick: function(date, jsEvent, view) {
-                if (moment(date).isBefore(moment(), 'day')) {
-                    return false; // 선택할 수 없는 지난 날짜인 경우
-                }
+       $('#calendar').fullCalendar({
+         dayClick: function(date, jsEvent, view) {
+           if (moment(date).isBefore(moment(), 'day')) {
+             return false; // 선택할 수 없는 지난 날짜인 경우
+           }
 
-                $('#calendar .fc-selected').removeClass('fc-selected'); // 기존 선택 해제
-                $(this).addClass('fc-selected'); // 선택한 날짜에 표시 추가
+           $('#calendar .fc-selected').removeClass('fc-selected'); // 기존 선택 해제
+           $(this).addClass('fc-selected'); // 선택한 날짜에 표시 추가
 
-                selectedDate = moment(date).format('YYYY-MM-DD'); // 선택된 날짜 저장
+           selectedDate = moment(date).format('YYYY-MM-DD'); // 선택된 날짜 저장
 
-                updateWeatherInfo();
-            },
-            dayRender: function(date, cell) {
-                if (moment(date).isBefore(moment(), 'day')) {
-                    cell.addClass('fc-past'); // 지난 날짜는 스타일 적용
-                }
-            }
-        });
+           updateWeatherInfo();
+         },
+         dayRender: function(date, cell) {
+           if (moment(date).isBefore(moment(), 'day')) {
+             cell.addClass('fc-past'); // 지난 날짜는 스타일 적용
+           }
+         },
+         header: {
+           left: 'prev,next today',
+           center: 'title',
+           right: 'month,agendaWeek,agendaDay'
+         },
+         titleFormat: 'YYYY년 M월', // 날짜 형식 변경
+         dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+         monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
+       });
 
         function updateWeatherInfo() {
             if (selectedDate) {

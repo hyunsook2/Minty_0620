@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css">
     <style>
+
       .container {
         display: flex;
         justify-content: space-between;
@@ -64,7 +65,7 @@
       }
 
       .weather-info-text {
-        margin-bottom: 10px;
+        margin-bottom: -5px;
       }
 
       .button-container {
@@ -103,7 +104,35 @@
        #tradeForm{
        display:flex;
        float:left;
+       width:100vw;
        }
+
+    input {
+      --color: #945;
+      --size: 2rem;
+      --border: calc(var(--size) * 0.125);
+      --borderRadius: calc(var(--size) * 0.5);
+      --labelSize: calc(var(--size) * 0.75);
+      --margin: calc(var(--size) * 0.25);
+      --marginLeft: calc(var(--size) + calc(var(--size) * 0.5));
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><circle cx='20' cy='20' r='18.5' fill='none' stroke='%23222' stroke-width='3' /><path d='M20,4 20,8 M4,20 8,20 M36,20 32,20 M20,36 20,32' stroke='%23bbb' stroke-width='1' /><circle cx='20' cy='20' r='2' fill='%23222' stroke='%23222' stroke-width='2' /></svg>"),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><path d='M18.5,24.5 19.5,4 20.5,4 21.5,24.5 Z' fill='%23222' style='transform:rotate(120deg); transform-origin: 50% 50%;' /></svg>"),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><path d='M18.5,24.5 19.5,8.5 20.5,8.5 21.5,24.5 Z' style='transform:rotate(20deg); transform-origin: 50% 50%;' /></svg>");
+      background-position: var(--margin) 50%;
+      background-repeat: no-repeat;
+      background-size: var(--size) var(--size);
+      border: var(--border) solid var(--color);
+      border-radius: var(--borderRadius);
+      color: #222;
+      font-size: var(--size);
+      padding: var(--margin) var(--margin) var(--margin) var(--marginLeft);
+      transition: backgroundImage 0.25s;
+    }
+
+    input:focus {
+      outline: 2px dashed white;
+      outline-offset: 3px;
+    }
     </style>
 </head>
 <body>
@@ -223,8 +252,8 @@
         <h2>캘린더</h2>
         <div id="calendar"></div>
         <div class="weather-info">
-            <h3><i class="far fa-calendar-alt"></i> 선택된 날짜의 날씨 정보</h3>
-            <p class="weather-info-text" id="selected-date"></p>
+
+            <p class="weather-info-text far fa-calendar-alt" id="selected-date"></p>
             <p class="weather-info-text" id="weather-description"></p>
             <p class="weather-info-text" id="temperature"></p>
             <p class="weather-info-text" id="humidity"></p>
@@ -236,38 +265,16 @@
     <input type="hidden" id="selected-time" name="tradeTime" value="">
 
     <!-- 시간 선택 섹션 -->
-    <div class="section">
-        <h2>시간 선택</h2>
-        <div id="selected-date-display"></div>
+        <div class="section">
+            <h2>시간 선택</h2>
+            <div id="selected-date-display"></div>
+            <input type="time" name="time" id="time" oninput="updateText()"/>
+        <div class="button-container">
+            <button type="submit">확인</button>
+            <button type="button">취소</button>
+        </div>
+        </div>
 
-        <select id="selected-ampm" name="tradeAMPM" onchange="updateText()">
-            <option value="AM">오전</option>
-            <option value="PM">오후</option>
-        </select>
-
-        <select id="selected-hour" name="tradeHour" onchange="updateText()">
-            <option value="1">1시</option>
-            <option value="2">2시</option>
-            <option value="3">3시</option>
-            <option value="4">4시</option>
-            <option value="5">5시</option>
-            <option value="6">6시</option>
-            <option value="7">7시</option>
-            <option value="8">8시</option>
-            <option value="9">9시</option>
-            <option value="10">10시</option>
-            <option value="11">11시</option>
-            <option value="12">12시</option>
-        </select>
-
-        <input type="number" id="selected-minute" min="0" max="59" value="0" oninput="updateText()" />
-    </div>
-
-
-    </div>
-    <div class="button-container">
-        <button type="submit">확인</button>
-        <button type="button">취소</button>
     </div>
 </form>
 
@@ -275,25 +282,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 <script>
+
+
+
 function updateText() {
-    var ampm = document.getElementById("selected-ampm").value;
-    var hour = document.getElementById("selected-hour").value;
-    var minute = document.getElementById("selected-minute").value;
-    var time = "";
-
-    if (ampm === "PM") {
-        if (hour !== "12") {
-            hour = (parseInt(hour) + 12).toString().padStart(2, "0");
-        }
-    } else {
-        if (hour === "12") {
-            hour = "00";
-        } else {
-            hour = hour.toString().padStart(2, "0");
-        }
-    }
-
-    time = hour + ":" + minute.toString().padStart(2, "0");
+    var time = document.getElementById("time").value;
     document.getElementById("selected-time").value = time;
 }
 
@@ -357,6 +350,8 @@ $('#tradeForm').submit(function(e) {
 
     updateTradeSchedule();
 });
+
+
 </script>
 
 <script type="text/javascript" th:src="@{/js/weather.js}"></script>
