@@ -2,11 +2,11 @@ package com.Reboot.Minty.trade.controller;
 
 import com.Reboot.Minty.member.entity.User;
 import com.Reboot.Minty.member.service.UserService;
-import com.Reboot.Minty.review.dto.ReviewDto;
 import com.Reboot.Minty.review.entity.Review;
-import com.Reboot.Minty.review.repository.ReviewRepository;
 import com.Reboot.Minty.review.service.ReviewService;
+import com.Reboot.Minty.trade.entity.Schedule;
 import com.Reboot.Minty.trade.entity.Trade;
+import com.Reboot.Minty.trade.repository.ScheduleRepository;
 import com.Reboot.Minty.trade.service.TradeService;
 import com.Reboot.Minty.tradeBoard.entity.TradeBoard;
 import com.Reboot.Minty.tradeBoard.service.TradeBoardService;
@@ -31,12 +31,15 @@ public class TradeController {
 
     private final ReviewService reviewService;
 
+    private final ScheduleRepository scheduleRepository;
+
     @Autowired
-    public TradeController(TradeService tradeService, TradeBoardService tradeBoardService, UserService userService, ReviewService reviewService) {
+    public TradeController(TradeService tradeService, TradeBoardService tradeBoardService, UserService userService, ReviewService reviewService, ScheduleRepository scheduleRepository) {
         this.tradeService = tradeService;
         this.tradeBoardService = tradeBoardService;
         this.userService = userService;
         this.reviewService = reviewService;
+        this.scheduleRepository = scheduleRepository;
     }
 
     @GetMapping("/tradeList")
@@ -62,6 +65,8 @@ public class TradeController {
         User seller= userService.getUserInfoById(trade.getSellerId().getId());
         Review review = reviewService.getReviewByTradeIdAndWriterId(trade,writerId);
         boolean isExistReview = reviewService.existsByIdAndWriterId(trade,writerId);
+
+        model.addAttribute("userId", userId);
         model.addAttribute("trade", trade);
         model.addAttribute("role",role);
         model.addAttribute("buyer",buyer);
@@ -122,5 +127,15 @@ public class TradeController {
         }
     }
 
+    @PostMapping("/completionTrade")
+    @Transactional
+    public String completionTrade(HttpSession session ,@RequestParam("tradeId") Long tradeId){
+        Long userId = (Long) session.getAttribute("userId");
+        String role = tradeService.getRoleForTrade(tradeId, userId);
+        System.out.println(role);
+        tradeService.completionTrade(tradeId ,role);
+
+        return "redirect:/trade/" + tradeId;
+    }
 
 }

@@ -3,6 +3,10 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+
     <style>
     /* 전체 영역 스타일 */
     .container {
@@ -381,9 +385,16 @@
         <div class="board-area content-c-1">
             컨텐츠관리
         </div>
+
         <!--마케팅관리-->
-        <div class="board-area marketing-c-1">
+        <div class="board-area marketing-c-1" id="search-results">
             마케팅관리
+            <form id="search-form" class="search-form">
+                <div style="display: flex; justify-content: flex-end;">
+                    <input type="text" id="keyword" class="form-control" style="width: 15%;" placeholder="작성자명 입력">
+                    <button type="button" id="search-btn" class="btn btn-primary">검색</button>
+                </div>
+            </form>
             <table class="table table-hover">
                 <thead>
                 <tr>
@@ -394,7 +405,7 @@
                     <th>상태</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="ads-list">
                 <div th:each="ad, adIndex : ${ads}">
                     <tr>
                         <td><p th:text="${ad.id}"></p></td>
@@ -407,6 +418,8 @@
                 </tbody>
             </table>
         </div>
+
+
         <!--수입관리-->
         <div class="board-area revenue-1">
             수입관리
@@ -457,6 +470,52 @@
     <script type="text/javascript" th:src="@{/js/dashboard.js}"></script>
 
     <script>
+
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+
+$(document).ready(function() {
+    $("#search-btn").click(function() {
+        var keyword = $("#keyword").val();
+        console.log(keyword);
+
+        // JSON 형식으로 데이터 생성
+        var requestData = JSON.stringify({ keyword: keyword });
+
+        $.ajax({
+            type: "POST",
+            url: "/manager",
+            data: requestData,
+            contentType: "application/json",
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+            },
+            success: function(response) {
+                // 검색 결과를 업데이트
+                var ads = response; // 서버에서 반환된 광고 목록
+                var adsList = $("#ads-list"); // 테이블의 tbody 요소
+
+                // 기존의 테이블 내용 삭제
+                adsList.empty();
+
+                // 광고 목록을 테이블에 추가
+                ads.forEach(function(ad) {
+                    var row = $("<tr>");
+                    row.append($("<td>").text(ad.id));
+                    row.append($("<td>").html('<p onclick="adwindow(' + ad.id + ')">' + ad.title + '</p>'));
+                    row.append($("<td>").text(ad.advertiserName));
+                    row.append($("<td>").text(ad.requestDate));
+                    row.append($("<td>").text(ad.status));
+                    adsList.append(row);
+                });
+            },
+            error: function(xhr, status, error) {
+                // 에러 처리
+            }
+        });
+    });
+});
+
 
 function adwindow(adId) {
   var popupWidth = 740;

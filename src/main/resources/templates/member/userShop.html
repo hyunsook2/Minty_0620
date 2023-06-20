@@ -1483,7 +1483,7 @@ background-image: linear-gradient(315deg, #4dccc6 0%, #96e4df 74%);
         <div class="info">
           <div class="ratings">
             <img src="/image/myPage/score.PNG" alt="평점 이미지">
-            <div class="score">3.7</div>
+            <div class="score" th:text="${averageRating}"></div>
           </div>
           <div class="information">
             <div class="nickname">Lv. <span th:text="${user.level}"></span> <span th:text="${user.nickName}"></span></div>

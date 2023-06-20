@@ -55,7 +55,7 @@ public class ReviewService {
 
     // 개인상점 후기 (남꺼)
     public List<Review> getReviewsByReceiverId(Long receiverId) {
-      return reviewRepository.findByReceiverId(receiverId);
+        return reviewRepository.findByReceiverId(receiverId);
     }
     public List<ReviewDto> getAllReviews() {
         List<Review> reviews = reviewRepository.findAllByOrderByWriteTimeDesc();
@@ -213,4 +213,17 @@ public class ReviewService {
         return optionalReview.orElse(null);
     }
 
+    //평점
+    public double calculateAverageRating(List<Review> reviews) {
+        if (reviews.isEmpty()) {
+            return 0.0;
+        }
+
+        int totalRating = 0;
+        for (Review review : reviews) {
+            totalRating += review.getRating();
+        }
+
+        return (double) totalRating / reviews.size();
+    }
 }

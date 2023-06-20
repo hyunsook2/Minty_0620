@@ -12,7 +12,6 @@ import java.util.Optional;
 @Service
 public class AdService {
     private final AdRepository adRepository;
-
     @Autowired
     public AdService(AdRepository adRepository) {
         this.adRepository = adRepository;
@@ -47,5 +46,8 @@ public class AdService {
         }
     }
 
+    public List<Ad> searchAdsByAdvertiserName(String advertiserName) {
+        return adRepository.findByAdvertiserName(advertiserName);
+    }
 
 }

@@ -258,4 +258,19 @@ public class ManagerController {
         return "ad/mainPage";
     }
 
+    @PostMapping(value = "/manager", produces = "application/json")
+    @ResponseBody
+    public List<Ad> searchAds(@RequestBody Map<String, String> requestBody) {
+        String keyword = requestBody.get("keyword");
+        System.out.println(keyword);
+
+        List<Ad> ads;
+        if (keyword != null && !keyword.isEmpty()) {
+            ads = adService.searchAdsByAdvertiserName(keyword);
+        } else {
+            ads = adService.getAllAds();
+        }
+        return ads;
+    }
+
 }

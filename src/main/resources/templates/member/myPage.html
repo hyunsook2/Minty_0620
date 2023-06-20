@@ -355,7 +355,7 @@
                 <div class="info">
                     <div class="ratings">
                         <img src="/image/myPage/score.PNG" alt="평점 이미지">
-                        <div class="score">평점칸</div>
+                        <div class="score" th:text="${averageRating}"></div>
                     </div>
                     <div class="information">
                         <div class="nickname">Lv. <span th:text="${user.level}"></span> <span th:text="${user.nickName}"></span></div>
@@ -418,6 +418,8 @@
                 <li class="tab-button p select">판매내역</li>
                 <li class="tab-button i">급해요</li>
                 <li class="tab-button g">후기</li>
+                <li class="tab-button t">거래목록</li>
+                <li class="tab-button s">일정목록</li>
             </ul>
         </div>
 
@@ -431,6 +433,14 @@
 
             <div class="tab-content i">
                 <p>급해요 보드</p>
+            </div>
+
+            <div class="tab-content t">
+                <p>거래목록 보드</p>
+            </div>
+
+            <div class="tab-content s">
+                <p>일정목록 보드</p>
             </div>
 
             <div class="tab-content g">

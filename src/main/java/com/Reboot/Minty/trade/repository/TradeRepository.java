@@ -39,5 +39,14 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     @Query("UPDATE Trade t SET t.tradeDate = :tradeDate, t.tradeTime = :tradeTime WHERE t.id = :tradeId")
     void updateScheduleInfo(@Param("tradeId") Long tradeId, @Param("tradeDate") LocalDate tradeDate, @Param("tradeTime") LocalTime tradeTime);
 
+    @Modifying
+    @Query("UPDATE Trade t SET t.sellerSchedule = :schedule WHERE t.id = :tradeId")
+    void updateSellerSchedule(@Param("tradeId") Long tradeId, @Param("schedule") String schedule);
+
+    @Modifying
+    @Query("UPDATE Trade t SET t.buyerSchedule = :schedule WHERE t.id = :tradeId")
+    void updateBuyerSchedule(@Param("tradeId") Long tradeId, @Param("schedule") String schedule);
+
+
 
 }

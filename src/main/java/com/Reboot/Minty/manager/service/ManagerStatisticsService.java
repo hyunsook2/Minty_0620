@@ -72,4 +72,5 @@ public class ManagerStatisticsService {
     public void saveStatistics(ManagerStatistics statistics) {
         managerStatisticsRepository.save(statistics);
     }
+
 }

@@ -38,6 +38,7 @@ public class JoinDto {
     private String ageRange;
 
     @NotEmpty(message = "필수")
+    @Pattern(regexp = "\\d+", message = "핸드폰은 숫자로만 입력해주세요.")
     private String mobile;
 
     @NotEmpty(message = "필수")

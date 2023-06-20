@@ -41,13 +41,21 @@ public class MyPageController {
         Long userId = (Long) session.getAttribute("userId");
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
         System.out.println(user.getNickName());
+
         if (user != null) {
             model.addAttribute("user", user);
         } else {
             model.addAttribute("errorMessage", "회원 정보를 찾을 수 없습니다.");
         }
+
         List<Review> myReviews = reviewService.getReviewsByWriterIdOrderByWriteTimeDesc(user);
         model.addAttribute("myReviews", myReviews);
+
+        List<Review> receivedReviews = reviewService.getReceivedReviewsByReceiverIdOrderByWriteTimeDesc(user);
+        model.addAttribute("receivedReviews", receivedReviews);
+
+        double averageRating = reviewService.calculateAverageRating(receivedReviews);
+        model.addAttribute("averageRating", averageRating);
 
         return "member/myPage";
     }

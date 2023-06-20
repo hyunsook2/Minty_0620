@@ -57,11 +57,10 @@ public class Trade {
     @Column(name = "buyer_check", columnDefinition = "VARCHAR(1) DEFAULT 'N'", nullable = false)
     private String buyerCheck;
 
-//    @PrePersist
-//    public void prePersist(){
-//        this.status = this.status == null? "대화요청" : this.status;
-//        this.sellerCheck = this.status == null? "N" : this.sellerCheck;
-//        this.buyerCheck = this.buyerCheck == null? "N" : this.buyerCheck;
-//        this.startDate = this.startDate == null ? LocalDateTime.now() : this.startDate;
-//    }
+    @Column(name = "seller_schedule", columnDefinition = "VARCHAR(1) DEFAULT 'N'", nullable = false)
+    private String sellerSchedule;
+
+    @Column(name = "buyer_schedule", columnDefinition = "VARCHAR(1) DEFAULT 'N'", nullable = false)
+    private String buyerSchedule;
+
 }

@@ -3,7 +3,6 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
-
 <head>
     <style>
     .wrapper {
@@ -212,7 +211,6 @@
 </head>
 <body>
 <div layout:fragment="content">
-
     <div class="wrapper">
         <div class="space" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중'|| trade.status == '거래완료' || trade.status == '거래취소'}">
             <div class="notification">
@@ -305,7 +303,7 @@
                                 <span class="review_nickname" th:text="${review.nickname}"></span>
                                 <div class="product-view-container">
                                     <form action="/product" method="post" enctype="multipart/form-data">
-                                        <a class="button" th:href="@{/boardDetail/{boardId}(boardId=${trade.boardId.id})}"><p class="product-name" th:text="${trade.boardId.title}"></p></a>
+                                        <p>대충 여기 어디 누르면 상품 뷰 페이지로 감 아직 연동안함</p>
                                     </form>
                                 </div>
                             </div>
@@ -332,7 +330,9 @@
                     <label>
                         <input type="radio" name="modeIndex" value="1" th:checked="${trade.mode == '안전거래' ? 'checked' : null}" /> 안전거래
                     </label>
-                    <button type="submit">변경</button>
+                    <div class="space" th:if="${trade.status == '거래시작'}">
+                        <button type="submit">변경</button>
+                    </div>
                 </form>
                 거래 일 :
                 <span class="trade_date" th:text="${trade.tradeDate}"></span>
@@ -343,14 +343,63 @@
                 거래 장소:
                 갓 민형이 해줄거임
                 <br>
-                <div class="form-row button-row">
+            </div>
+        </div>
+
+        <div class="space" th:if="${trade.status == '거래시작'}">
+            <!-- 상태 정보 표시 -->
+            <div class="confirmation">
+                <span th:text="'[' + (${role} == 'buyer' ? ${seller.nickName} : ${buyer.nickName}) + ']'"></span>
+                <span th:text="${role == 'buyer' ? trade.sellerSchedule : trade.buyerSchedule}"></span>
+                <span>나</span>
+                <span th:text="${role == 'buyer' ? trade.buyerSchedule : trade.sellerSchedule}"></span>
+
+                <th:block th:if="${trade.buyerSchedule =='N' && trade.sellerSchedule == 'N'}">
                     <a class="button" th:href="@{/schedule/{tradeId}(tradeId=${trade.id})}">일정 잡기</a>
-                    <form th:action="@{'/updateStatus'}" method="post">
-                        <input type="hidden" name="tradeId" th:value="${trade.id}" />
-                        <input type="hidden" name="statusIndex" th:value="4" />
-                        <button type="submit">거래취소</button>
-                    </form>
-                </div>
+                </th:block>
+
+                <th:block th:if="${trade.buyerSchedule =='Y' && trade.sellerSchedule == 'Y'}">
+                    <a class="button" th:href="@{/changeSchedule/{tradeId}(tradeId=${trade.id})}">일정 변경</a>
+                </th:block>
+
+                <form th:action="@{'/confirmationSchedule'}" method="post">
+                    <input type="hidden" name="tradeId" th:value="${trade.id}" />
+                    <input type="hidden" name="userId" th:value="${userId}" />
+
+                    <th:block th:if="${role == 'buyer' and trade.buyerSchedule == 'N' and trade.sellerSchedule == 'Y' and trade.status == '거래시작'}">
+                        <button type="submit">일정확정하기</button>
+                    </th:block>
+
+                    <th:block th:if="${role == 'seller' and trade.sellerSchedule == 'N' and trade.buyerSchedule == 'Y' and trade.status == '거래시작'}">
+                        <button type="submit">일정확정하기</button>
+                    </th:block>
+                </form>
+            </div>
+        </div>
+
+        <div class="space" th:if="${trade.status == '거래중'}">
+            <!-- 거래확정 정보 표시 -->
+            <div class="completion">
+                <span th:text="'[' + (${role} == 'buyer' ? ${seller.nickName} : ${buyer.nickName}) + ']'">님의 거래 확정 여부</span>
+                <span th:text="${role == 'buyer' ? trade.sellerCheck : trade.buyerCheck}"></span>
+                <span>[나의 거래 확정 여부]</span>
+                <span th:text="${role == 'buyer' ? trade.buyerCheck : trade.sellerCheck}"></span>
+
+                <form th:action="@{'/completionTrade'}" method="post">
+                    <input type="hidden" name="tradeId" th:value="${trade.id}" />
+
+                    <th:block th:if="${role == 'buyer' and trade.buyerCheck == 'N' and trade.status == '거래중'}">
+                        <span th:text="'[' + (${role} == 'buyer' ? ${seller.nickName} : ${buyer.nickName}) + ']님 과의 거래가 완료 되었다면 거래 확정을 눌러주세요.'"></span>
+                        <span>3일 뒤 자동 확정 됩니다.</span>
+                        <button type="submit">거래확정</button>
+                    </th:block>
+
+                    <th:block th:if="${role == 'seller' and trade.sellerCheck == 'N' and trade.status == '거래중'}">
+                        <span th:text="'[' + (${role} == 'seller' ? ${buyer.nickName} : ${seller.nickName}) + ']님 과의 거래가 완료 되었다면 거래 확정을 눌러주세요.'"></span>
+                        <span>3일 뒤 자동 확정 됩니다.</span>
+                        <button type="submit">거래확정</button>
+                    </th:block>
+                </form>
             </div>
         </div>
 
@@ -392,14 +441,10 @@
                 <button type="submit">거래초기화(임시)</button>
             </form>
         </div>
-
-
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
-            integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-    <script>
-        // URL 매개변수에서 reload 값 확인
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<script>
+    // URL 매개변수에서 reload 값 확인
     const urlParams = new URLSearchParams(window.location.search);
     const shouldReload = urlParams.get('reload');
 
@@ -407,7 +452,6 @@
     if (shouldReload === 'true') {
         location.reload();
     }
-
 </script>
 </div>
 </body>

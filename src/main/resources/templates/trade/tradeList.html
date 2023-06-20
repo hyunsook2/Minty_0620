@@ -44,6 +44,7 @@
     <div class="wrapper">
         <th:block th:each="trade, status : ${trades}">
             <!-- 각 거래에 대한 정보 표시 -->
+
             <div class="tname">
                 <div class="notification">
                     <span th:text="'[' + (${trade.buyerId.id == userId} ? ${trade.sellerId.nickName} : ${trade.buyerId.nickName}) + ']'"></span>
@@ -54,7 +55,7 @@
                 </div>
             </div>
 
-
+            <a style="text-decoration:none;" th:href="@{|/trade/${trade.id}|}">
             <div class="space" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중' || trade.status == '거래완료'}">
                 <div class="info">
                     <div class="product-image">
@@ -70,12 +71,13 @@
                     </div>
                 </div>
             </div>
+            </a>
             <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
             <script>
-     $(".space").on("click", function() {
-        var tradeId = $(this).find(".product-image img").attr("trade_id");
-        window.location.href = "/trade/" + tradeId;
-    });
+<!--     $(".space").on("click", function() {-->
+<!--        var tradeId = $(this).find(".product-image img").attr("trade_id");-->
+<!--        window.location.href = "/trade/" + tradeId;-->
+<!--    });-->
 
 </script>
         </th:block>
