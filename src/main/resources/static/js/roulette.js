@@ -53,7 +53,7 @@
         saveRouletteResult("당첨, 1000포인트", 1000);
         break;
       default:
-         swal('당첨!!','다음기회에..','error');
+         swal('꽝~','다음기회에..','error');
         saveRouletteResult("꽝", 0);
         break;
     }

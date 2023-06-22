@@ -20,6 +20,9 @@ import java.util.List;
 public interface TradeRepository extends JpaRepository<Trade, Long> {
     Trade findByBoardId(Long boardId);
 
+    List<Trade> findByBuyerId_Id(Long userId);
+    List<Trade> findBySellerId_Id(Long userId);
+
     Page<Trade> findAllByBuyerIdOrSellerId(User buyer, User seller, Pageable pageable);
 
     Trade findByBoardIdAndBuyerIdAndSellerId(TradeBoard tradeBoard, User buyer,  User seller);

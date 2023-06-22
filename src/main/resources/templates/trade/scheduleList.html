@@ -1,41 +1,30 @@
 <!DOCTYPE html>
-<html
-        lang="kr"
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
->
+<html lang="kr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <title>Weather Information</title>
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"
-    />
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css"
-    />
+    <title>Minty 일정 잡기</title>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css"/>
     <style>
       .container {
         display: flex;
         justify-content: space-between;
         margin: 20px;
       }
-
       .section {
         flex-basis: 30%;
         text-align: center;
       }
-
       #calendar {
         max-width: 600px;
         margin: 0 auto;
       }
-
       #weather-info {
         position: absolute;
         top: 65%;
@@ -43,45 +32,36 @@
         transform: translate(-50%, -50%);
         text-align: center;
       }
-
       .container {
         display: flex;
         justify-content: center;
       }
-
       .container .section {
         margin-right: 20px;
       }
-
       .fc-past {
         pointer-events: none;
         background-color: hsl(0, 0%, 90%);
       }
-
       .fc-today {
         background-color: #a3c3ff;
       }
-
       .fc-selected {
         background-color: hsl(120, 70%, 90%);
       }
-
       .weather-icon {
         font-size: 48px;
         margin: 10px auto;
         display: block;
       }
-
       .weather-info-text {
         margin-bottom: 10px;
       }
-
       .button-container {
         display: flex;
         justify-content: center;
         margin-top: 20px;
       }
-
       /* 알림 메시지 스타일 */
       .notification {
         background-color: #f8f8f8;
@@ -91,7 +71,6 @@
         text-align: center;
         font-size: 18px;
       }
-
       /* 섹션 스타일 */
       .section {
         background-color: #fff;
@@ -99,19 +78,18 @@
         padding: 20px;
         margin-bottom: 20px;
       }
-
       /* 버튼 컨테이너 스타일 */
       .button-container {
         margin-top: 20px;
         text-align: center;
       }
-
       .button-container button {
         margin-right: 10px;
       }
-body{
-    background: #e0e5ec;
-}
+
+      body{
+        background: #e0e5ec;
+      }
       /*  월화수목금토일  */
       button {
         border: 0;
@@ -199,9 +177,7 @@ body{
       p {
         margin-top: 30px;
       }
-      .hd {
-        display: none;
-      }
+
 
       .timer {
         --color: rgba(128, 128, 128, 0.471);
@@ -250,119 +226,135 @@ body{
         color: white;
         box-shadow: 3px 3px 15px #5bc27e;
       }
+    .schedule-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .trade-container {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      width: 400px;
+      height: 150px;
+      background-color: white;
+      border: 1px solid;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .title {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 10pt;
+    }
+
+    .product-image {
+      width: 150px;
+      height: 150px;
+      margin-top: 10px;
+    }
+    .board-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .trade-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      font-size: 13px;
+      line-height: 0.5;
+      margin-top: 10px;
+      margin-left: 10px;
+    }
     </style>
 </head>
 <body>
-<!-- 알림 메시지 -->
 <div class="notification">
-      <span
-              th:text="'[' + ${user.nickName} + '] 님의 거래 일정 입니다.'"
-      ></span>
+      <span th:text="'[' + ${user.nickName} + '] 님의 거래 일정 입니다.'"></span>
 </div>
 
 <!-- 거래 가능 시간 섹션 -->
 <div class="container">
     <div class="section">
         <span th:text="'[' + ${user.nickName} + '] 님의 거래 희망 시간'"></span>
-        <!-- 여기에 거래 가능 시간 내용 추가 -->
 
         <div class="userSchedule">
             <div style="cursor: pointer; margin-top: 15px">
                 <div class="image-preview">
-                    <img
-                            th:src="@{../image/aaaa.png}"
-                            alt="이미지"
-                            width="40"
-                            height="40"
-                            style="border-radius: 50%; margin-left: 10px"
-                    />
+                    <img th:src="@{../image/aaaa.png}" alt="이미지" width="40" height="40" style="border-radius: 50%; margin-left: 10px"/>
                     <span th:text="${user.nickName}" style="color: #999"></span>
                 </div>
             </div>
 
             <!-- 거래 희망 요일 -->
             <div>
-                <div th:if="${!checkDay}">
-                    <p>등록된 거래희망 요일정보가 없습니다.</p>
+                <div th:if="${scheduleDay == null}">
+                    <p>등록된 거래 희망 요일 정보가 없습니다.</p>
+                    <button class="spin circle hd">일</button>
+                    <button class="spin circle hd">월</button>
+                    <button class="spin circle hd">화</button>
+                    <button class="spin circle hd">수</button>
+                    <button class="spin circle hd">목</button>
+                    <button class="spin circle hd">금</button>
+                    <button class="spin circle hd">토</button>
                 </div>
 
-                <div th:if="${checkDay}">
-                    <div th:text="${schedule.getHopeDay()}"></div>
+                <div th:if="${scheduleDay != null}">
+                    <button th:class="${scheduleDay.sunday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">일</button>
+                    <button th:class="${scheduleDay.monday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">월</button>
+                    <button th:class="${scheduleDay.tuesday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">화</button>
+                    <button th:class="${scheduleDay.wednesday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">수</button>
+                    <button th:class="${scheduleDay.thursday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">목</button>
+                    <button th:class="${scheduleDay.friday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">금</button>
+                    <button th:class="${scheduleDay.saturday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">토</button>
                 </div>
-
-                <button class="spin circle hd">일</button>
-                <button class="spin circle hd">월</button>
-                <button class="spin circle hd">화</button>
-                <button class="spin circle hd">수</button>
-                <button class="spin circle hd">목</button>
-                <button class="spin circle hd">금</button>
-                <button class="spin circle hd">토</button>
             </div>
 
             <!-- 거래 희망 시간 -->
             <div>
-                <div th:if="${!checkDuration}" id="input-container">
-                    <p>등록된 거래희망 시간정보가 없습니다.</p>
-                    <img
-                            id="add-input-button"
-                            src="image/plus.png"
-                            style="
-                  margin-left: 22vw;
-                  width: 20px;
-                  border: rgba(108, 96, 96, 0.585) dashed 1px;
-                  z-index: 50;
-                  cursor: pointer;
-                "
-                            onclick="addTimers()"
-                    />
-                    <input
-                            class="timer"
-                            type="time"
-                            name="time"
-                            id="time"
-                            oninput="updateText()"
-                    />
-                    ~
-                    <input
-                            class="timer"
-                            type="time"
-                            name="time"
-                            id="time"
-                            oninput="updateText()"
-                    />
-
+                <div th:if="${scheduleDuration.isEmpty()}">
+                    <p>등록된 거래 희망 시간 정보가 없습니다.</p>
+                    <img id="add-input-button" src="image/plus.png" style="margin-left: 22vw;width: 20px;border: rgba(108, 96, 96, 0.585) dashed 1px;z-index: 50;cursor: pointer;" onclick="addTimers()"/>
                     <br />
                 </div>
 
-                <div th:if="${checkDuration}">
-                    <div th:text="${schedule.getHopeDuration()}"></div>
+                <div th:if="${!scheduleDuration.isEmpty()}">
+                    <th:block th:each="duration : ${scheduleDuration}">
+                        <input class="timer" type="time" name="time" oninput="updateText()" th:value="${duration.startTime}"/>
+                        ~
+                        <input class="timer" type="time" name="time" oninput="updateText()" th:value="${duration.endTime}"/>
+                    </th:block>
                 </div>
             </div>
 
             <!-- 거래 희망 위치 -->
             <div>
-                <div th:if="${!checkArea}">
+                <div th:if="${schedule == null || !checkArea}">
                     <p>등록된 거래희망 위치정보가 없습니다.</p>
                 </div>
 
-                <div th:if="${checkArea}">
-                    <div th:text="${schedule.getHopeArea()}"></div>
+                <div th:if="${schedule != null && checkArea}">
+                    <input type="text" th:value="${schedule.getHopeArea()}" id="hopeArea" readonly>
                 </div>
             </div>
 
             <!-- 거래 희망 소개 -->
             <div>
-                <div th:if="${!checkIntroduction}">
+                <div th:if="${schedule == null || !checkIntroduction}">
                     <p>등록된 거래희망 소개가 없습니다.</p>
-                    <input
-                            class="memo hd"
-                            placeholder="거래희망 소개를 등록해주세요"
-                            style="width: 50%; text-align: center"
-                    />
+                    <input class="memo hd" placeholder="거래희망 소개를 등록해주세요" style="width: 50%; text-align: center"/>
                 </div>
 
-                <div th:if="${checkIntroduction}">
-                    <div th:text="${schedule.getIntroduction()}"></div>
+                <div th:if="${schedule != null && checkIntroduction}">
+                    <input type="text" th:value="${schedule.getIntroduction()}" id="introduction" readonly>
                 </div>
             </div>
 
@@ -372,15 +364,29 @@ body{
     </div>
 
     <!-- 일정 목록 섹션 -->
-    <div class="section">
-        <h2>일정 목록 섹션</h2>
-    </div>
+    <div class="schedule-section">
+        <th:block th:each="trade : ${userTrades}">
+            <div class="trade-container">
+                <div class="title">
+                    <span th:text="'[' + (${user.id == 'trade.buyerId.nickName' ? trade.sellerId.nickName : trade.buyerId.nickName}) + ']'"></span>
+                    <span th:text="'님과 [' + ${trade.boardId.title} + '] 에 대한 거래중입니다.'"></span>
+                </div>
+                <div class="product-image">
+                    <img th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${trade.boardId.thumbnail}}" alt="Board Image" class="board-img" th:trade_id="${trade.boardId.id}" />
+                </div>
 
-    <!-- 거래 가능 시간 수정 및 입력 섹션 -->
-    <div class="section" id="time-selection-section" style="display: none">
-        <h2>수정</h2>
+                <div class="trade-details">
+                    <p>상품명:<span class="product-name" th:text="${trade.boardId.title}"></span></p>
+                    <p>가격:<span class="product-price" th:text="'￦' + ${trade.boardId.price}"></span></p>
+                    <p>거래방식: <span th:text="${trade.mode}"></span></p>
+                    <p>거래일: <span th:text="${trade.tradeDate}"></span></p>
+                    <p>거래시간: <span th:text="${trade.tradeTime}"></span></p>
+                </div>
+            </div>
+        </th:block>
     </div>
 </div>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
@@ -410,7 +416,7 @@ body{
         });
 
         $(".spin").click(function () {
-          $(this).toggleClass("selected");
+            $(this).toggleClass("selected");
         });
 
         $(".edit").click(function () {

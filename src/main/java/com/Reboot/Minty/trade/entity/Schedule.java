@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name="Schedule")
+@Table(name="schedule")
 @ToString
 public class Schedule {
     @Id
@@ -20,16 +20,11 @@ public class Schedule {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User userId;
+    @JoinColumn
+    private User user;
 
     private String hopeArea;
 
-    private DayOfWeek hopeDay;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "schedule_duration_id")
-    private ScheduleDuration scheduleDuration;
-
     private String introduction;
+
 }

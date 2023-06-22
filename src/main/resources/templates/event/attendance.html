@@ -48,6 +48,7 @@
   <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css' rel='stylesheet'/>
   <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.css' rel='stylesheet' media='print'/>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js'></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   <script>
     var $j = jQuery.noConflict();
     $j(document).ready(function() {
@@ -82,7 +83,7 @@
                   data: JSON.stringify({ date: clickedDate }),
                   success: function(response) {
                     $image.attr('src', '../image/check2.png');
-                    alert("출석 체크가 완료되었습니다.");
+                     swal('출석체크 완료!','내일도 출석하실거죠??','success');
                   },
                   beforeSend: function(xhr) {
                     xhr.setRequestHeader(header, token);

@@ -2,45 +2,61 @@ package com.Reboot.Minty.trade.service;
 
 import com.Reboot.Minty.member.entity.User;
 import com.Reboot.Minty.trade.entity.Schedule;
+import com.Reboot.Minty.trade.entity.ScheduleDay;
 import com.Reboot.Minty.trade.entity.ScheduleDuration;
-import com.Reboot.Minty.trade.entity.Trade;
+import com.Reboot.Minty.trade.repository.ScheduleDayRepository;
+import com.Reboot.Minty.trade.repository.ScheduleDurationRepository;
 import com.Reboot.Minty.trade.repository.ScheduleRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.util.Set;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ScheduleService {
-
     private final ScheduleRepository scheduleRepository;
 
-    public ScheduleService(ScheduleRepository scheduleRepository) {
+    private final ScheduleDayRepository scheduleDayRepository;
+
+    private final ScheduleDurationRepository scheduleDurationRepository;
+
+    public ScheduleService(ScheduleRepository scheduleRepository, ScheduleDayRepository scheduleDayRepository, ScheduleDurationRepository scheduleDurationRepository) {
         this.scheduleRepository = scheduleRepository;
+        this.scheduleDayRepository = scheduleDayRepository;
+        this.scheduleDurationRepository = scheduleDurationRepository;
     }
 
     //id값에 맞는 Schedule 정보 가져오기
-    public Schedule getSchedule(User userId) {
-        Schedule schedule = scheduleRepository.findByUserId(userId);
+    public Schedule getSchedule(User user) {
+        Schedule schedule = scheduleRepository.findByUser(user);
         return schedule;
     }
 
-    //해당 유저의 Schedule 정보가 있는지 확인
+    // 해당 유저의 Schedule 정보가 있는지 확인
+    // 해당 유저의 Schedule 정보가 있는지 확인
     public boolean checkArea(Schedule schedule, String hopeArea) {
-        return scheduleRepository.existsByUserIdAndHopeArea(schedule.getUserId(), hopeArea);
+        return schedule != null && schedule.getHopeArea() != null && schedule.getHopeArea().equals(hopeArea);
     }
 
-    public boolean checkDay(Schedule schedule, DayOfWeek hopeDay) {
-        return scheduleRepository.existsByUserIdAndHopeDay(schedule.getUserId(), hopeDay);
+    public boolean checkDay(User user) {
+        Optional<ScheduleDay> scheduleDay = Optional.ofNullable(scheduleDayRepository.findByUserId(user));
+        return scheduleDay.isPresent();
     }
 
-    public boolean checkDuration(Schedule schedule, ScheduleDuration scheduleDuration) {
-        return scheduleRepository.existsByUserIdAndScheduleDuration(schedule.getUserId(), scheduleDuration);
+    public boolean checkDuration(User user) {
+        List<ScheduleDuration> foundScheduleDuration = scheduleDurationRepository.findByUserId(user);
+        if(foundScheduleDuration.isEmpty()){
+            return false;
+        }else return true;
     }
 
-    public boolean checkIntroduction(Schedule schedule, String introduction) {
-        return scheduleRepository.existsByUserIdAndIntroduction(schedule.getUserId(), introduction);
+    public boolean checkIntroduction(Schedule schedule) {
+            boolean flag = true;
+            if(schedule.getIntroduction()==null){
+                flag = false;
+            }
+            return flag;
     }
 
 

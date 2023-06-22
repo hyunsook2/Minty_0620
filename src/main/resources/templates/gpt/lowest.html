@@ -29,12 +29,15 @@
             overflow-y: auto;
         }
     </style>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
     function deleteMessage() {
-        alert("삭제에 성공했습니다!");
+
+        swal('삭제에 성공했습니다.','','success');
     }
     function successMessage() {
-        alert("버튼이 파란색이면 아직 검색중입니다. 새로고침하지 마시고 기다려주시면 화면이 넘어갑니다.");
+
+        swal('버튼이 파란색이면 아직 검색중입니다.','새로고침 하지 마시고 기다려주시면 화면이 넘어갑니다.','warning');
     }
 </script>
 </head>
