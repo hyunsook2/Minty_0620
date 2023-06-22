@@ -2,6 +2,8 @@ package com.Reboot.Minty.member.repository;
 
 import com.Reboot.Minty.member.constant.Role;
 import com.Reboot.Minty.member.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
     boolean existsByNickName(String nickName);
-
+    Page<User> findByNameContainingIgnoreCaseOrNickNameContainingIgnoreCase(String name, String nickName, Pageable pageable);
     boolean existsByMobile(String mobile);
     List<User> findByRole(Role role);
     @Modifying

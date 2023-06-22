@@ -82,6 +82,7 @@
                   data: JSON.stringify({ date: clickedDate }),
                   success: function(response) {
                     $image.attr('src', '../image/check2.png');
+                    alert("출석 체크가 완료되었습니다.");
                   },
                   beforeSend: function(xhr) {
                     xhr.setRequestHeader(header, token);

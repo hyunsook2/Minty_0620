@@ -3,107 +3,190 @@
 <head>
   <meta charset="UTF-8">
   <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f1f1f1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f1f1f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
 
-        .container {
-            width: 800px;
-            margin: 20px;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-        }
+    .container {
+      width: 800px;
+      margin: 20px;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
 
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
 
-        .ad-details {
-            display: flex;
-            flex: 1;
-        }
+    .ad-details {
+      display: flex;
+      flex: 1;
+    }
 
-        .ad-content {
-            flex: 1;
-            margin-right: 20px;
-        }
+    .ad-content {
+      flex: 1;
+      margin-right: 20px;
+    }
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
 
-        th, td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid black;
-        }
+    th,
+    td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid black;
+    }
 
-        th {
-            background-color: lightgray;
-        }
+    th {
+      background-color: lightgray;
+    }
 
-        .image-preview {
-            flex: 1;
-            text-align: center;
-        }
+    .image-preview {
+      flex: 1;
+      text-align: center;
+    }
 
-        .image-preview img {
-            max-width: 100%;
-            margin-top: 10px;
-        }
-        .button-container form {
-            display: inline;
-        }
-        .close {
-          text-align: center;
-          position: fixed;
-          bottom: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-        }
+    .image-preview img {
 
+    margin-top: -60%;
+    margin-left: 60%;
+    float: left;
+    }
 
-    </style>
+    .button-container {
+      margin-top: 20px;
+      display: flex;
+    }
+
+    .button-container form {
+      margin: 0 10px;
+    }
+
+    .button-container input[type="submit"] {
+      padding: 10px 20px;
+
+      border: none;
+      cursor: pointer;
+
+    }
+
+    .button-container input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+
+    .close {
+      text-align: center;
+      position: fixed;
+      bottom: 10vh;
+      left: 88%;
+      transform: translateX(-50%);
+    }
+
+    .close button {
+      padding: 10px 20px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .close button:hover {
+      background-color: #d32f2f;
+    }
+
+    :root {
+  --primary-light: #8abdff;
+  --primary: #6d5dfc;
+  --primary-dark: #5b0eeb;
+  --white: #FFFFFF;
+  --greyLight-1: #E4EBF5;
+  --greyLight-2: #c8d0e7;
+  --greyLight-3: #bec8e4;
+  --greyDark: #9baacf;
+}
+.btn {
+  width: 15rem;
+  height: 4rem;
+  border-radius: 1rem;
+  box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 1.6rem;
+}
+.btn__primary {
+  grid-column: 1/2;
+  grid-row: 4/5;
+  background: var(--primary);
+  box-shadow: inset 0.2rem 0.2rem 1rem var(--primary-light), inset -0.2rem -0.2rem 1rem var(--primary-dark), 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+  color: var(--greyLight-1);
+}
+.btn__primary:hover {
+  color: var(--white);
+}
+.btn__primary:active {
+  box-shadow: inset 0.2rem 0.2rem 1rem var(--primary-dark), inset -0.2rem -0.2rem 1rem var(--primary-light);
+}
+.btn__secondary {
+  grid-column: 1/2;
+  grid-row: 5/6;
+  color: var(--greyDark);
+}
+.btn__secondary:hover {
+  color: var(--primary);
+}
+.btn__secondary:active {
+  box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+}
+
+  </style>
 </head>
 <body>
 <div class="container">
   <div class="ad-details">
     <div class="ad-content">
-      <h2>Title: <span th:text="${ad.title}"></span></h2>
-      <p><strong>Advertiser Name:</strong> <span th:text="${ad.advertiserName}"></span></p>
-      <p><strong>Content:</strong> <span th:text="${ad.content}"></span></p>
-      <p><strong>Status:</strong> <span th:text="${ad.status}"></span></p>
-      <p><strong>Start Date:</strong> <span th:text="${ad.startDate}"></span></p>
-      <p><strong>End Date:</strong> <span th:text="${ad.endDate}"></span></p>
-      <p><strong>Amount:</strong> <span th:text="${ad.amount}"></span></p><br><br>
+      <h2>제목: <span th:text="${ad.title}"></span></h2>
+      <p><strong>작성자:</strong> <span th:text="${ad.advertiserName}"></span></p>
+      <p><strong>작성 내용:</strong> <span th:text="${ad.content}"></span></p>
+      <p><strong>상태:</strong> <span th:text="${ad.status}"></span></p>
+      <p><strong>광고 시작일:</strong> <span th:text="${ad.startDate}"></span></p>
+      <p><strong>광고 종료일:</strong> <span th:text="${ad.endDate}"></span></p>
+      <p><strong>결제 금액:</strong> <span th:text="${ad.amount}"></span></p><br><br>
       <div class="button-container">
         <form id="approveForm" method="post" th:action="@{/admin/ads/{id}/approve(id=${ad.id})}">
-          <input type="submit" value="승인" onclick="submitFormAndClosePopup(event, 'approveForm')"/>
+          <input class="btn btn__primary" type="submit" value="승인" onclick="submitFormAndClosePopup(event, 'approveForm')"/>
         </form>
 
         <form id="rejectForm" method="post" th:action="@{/admin/ads/{id}/reject(id=${ad.id})}">
-          <input type="submit" value="거부" onclick="submitFormAndClosePopup(event, 'rejectForm')"/>
+          <input class="btn btn__secondary" type="submit" value="거부" onclick="submitFormAndClosePopup(event, 'rejectForm')"/>
         </form>
       </div>
-      </div>
-      <br><br>
     </div>
-    <div class="image-preview">
-      <img th:if="${ad.image}" th:src="@{'/adimage/' + ${ad.image}}" alt="Ad Image" />
-    </div>
+    <br><br>
   </div>
+  <div class="image-preview">
+    <img th:if="${ad.image}" th:src="@{'/adimage/' + ${ad.image}}" alt="Ad Image" />
+  </div>
+</div>
 </div>
 <div class="close">
   <button id="closeButton">닫기</button>
@@ -126,7 +209,7 @@
     // AJAX 요청
     var xhr = new XMLHttpRequest();
     xhr.open(form.method, form.action, true);
-    xhr.onload = function() {
+    xhr.onload = function () {
       if (xhr.status === 200) {
         if (formId == 'approveForm') {
           alert("광고 승인 처리 되었습니다.");
@@ -139,13 +222,13 @@
         console.error('폼 제출 중 오류가 발생했습니다.');
       }
     };
-    xhr.onerror = function() {
+    xhr.onerror = function () {
       console.error('폼 제출 중 네트워크 오류가 발생했습니다.');
     };
     xhr.send(formData);
   }
 
-  closeButton.addEventListener('click', function() {
+  closeButton.addEventListener('click', function () {
     window.close();
   });
 </script>

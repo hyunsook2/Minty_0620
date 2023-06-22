@@ -203,4 +203,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(userId).orElse(null);
     }
 
+    public Page<User> searchUsersByQuery(String query, Pageable pageable) {
+        return userRepository.findByNameContainingIgnoreCaseOrNickNameContainingIgnoreCase(query, query, pageable);
+    }
 }

@@ -73,8 +73,8 @@ public class User {
         user.setMobile(joinDto.getMobile());
         user.setGender(joinDto.getGender());
         user.setNickName(joinDto.getNickName());
-        user.setRole(Role.USER);
-        user.setLevel(1);
+        user.setRole(Role.ADMIN);
+        user.setLevel(5);
         user.setExp(0);
         user.setBalance(0);
         user.setPoint(0);

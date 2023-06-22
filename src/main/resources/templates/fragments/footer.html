@@ -133,16 +133,21 @@
     <div class="remote">
       <div>
         <a class="updown up"><img src="/image/up.png" alt="맨위로" /></a>
-        <a class="button" th:href="@{/support/supportBoard}">고객센터</a>
+        <a class="button" th:href="@{/supportHome}">고객센터</a>
       </div>
       <div>
         <a class="updown down"><img src="/image/down.png" alt="맨아래로" /></a>
-        <a class="button" th:href="@{/writeForm}">글쓰기</a>
+        <a class="button" th:href="@{writeForm}">글쓰기</a>
       </div>
       <div>
-        <a class="button"th:href="@{/tradeList}">거래목록</a>
+        <a class="button"th:href="@{tradeList}">거래목록</a>
       </div>
-
+      <div>
+        <a class="button"th:href="@{review}">리뷰작성</a>
+      </div>
+      <div>
+        <a class="button"th:href="@{reviews}">리뷰조회</a>
+      </div>
       <div>
         <a class="button"th:href="@{/scheduleList}">일정목록</a>
       </div>
@@ -156,8 +161,8 @@
     전화 1234-1234 문의 Reboot@naver.com <br />
     <div class="footer-links">
       <br />
-      <a th:href="@{support/supportBoard}">
-        <img src="/image/Customer.PNG" alt="로고 이미지" width="30px" height="30px" />
+      <a style="cursor:pointer;" onclick="popup()">
+        <img src="/image/Customer.PNG" alt="Logo image" width="30px" height="30px" />
         <br>
         고객센터
       </a>
@@ -191,7 +196,15 @@
       }
     }
 
+  function popup(){
+    let options = "resizable=no,status=no,width=1000, height=800, top=0,left=0";
 
+    let supportWindow = window.open("http://localhost:8087/supportHome","_blank", options);
+
+    supportWindow.addEventListener('resize', function() {
+      supportWindow.resizeTo(1000, 800); // Adjust the window size back to the desired dimensions
+    });
+  }
 </script>
   </footer>
   </div>

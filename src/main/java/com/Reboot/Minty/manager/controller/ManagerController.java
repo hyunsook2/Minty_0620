@@ -5,6 +5,7 @@ import com.Reboot.Minty.manager.entity.Admin;
 import com.Reboot.Minty.manager.entity.ManagerStatistics;
 import com.Reboot.Minty.manager.repository.AdminRepository;
 import com.Reboot.Minty.manager.service.ManagerStatisticsService;
+import com.Reboot.Minty.member.constant.Role;
 import com.Reboot.Minty.member.entity.User;
 import com.Reboot.Minty.member.repository.UserRepository;
 import com.Reboot.Minty.member.service.UserService;
@@ -17,6 +18,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -272,5 +275,36 @@ public class ManagerController {
         }
         return ads;
     }
+    //권한 수정
+    @PostMapping("/change/{id}")
+    public String updateUserRole(@PathVariable("id") Long id, @RequestParam("role") String role) {
+        userService.updateUserRole(id, Role.valueOf(role));
+        return "redirect:/userManagement";
+    }
 
+    @GetMapping(value = "/userManagement")
+    public String userManagement(
+            @RequestParam(required = false) String query,
+            Model model,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 인증 객체에서 로그인된 사용자의 정보를 가져옴
+        User loggedInUser = userRepository.findByEmail(authentication.getName());
+
+        Page<User> userList;
+
+        if (query != null && !query.isEmpty()) {
+            userList = userService.searchUsersByQuery(query, pageable);
+        } else {
+            userList = userService.getPostList(pageable);
+        }
+
+        model.addAttribute("userList", userList.getContent());
+        model.addAttribute("user", loggedInUser);
+        model.addAttribute("postList", userList);
+        model.addAttribute("pageable", pageable);
+        return "manager/userManagement";
+    }
 }

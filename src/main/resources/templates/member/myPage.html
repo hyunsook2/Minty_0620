@@ -10,7 +10,7 @@
         justify-content: space-between;
         align-items: flex-start;
         padding: 10px;
-        border-bottom: 2px solid #000;
+        border-bottom: 2px solid #ccc;
         bottom:0;
     }
 
@@ -75,11 +75,13 @@
       border: 2px solid #000;
       margin-bottom: 10px;
       height: 300px;
+      border-radius:16px;
     }
 
     .deco {
       flex-grow: 1;
-      border: 2px solid #000;
+      border: 3px double #b8a8a8c2;
+      border-radius: 16px;
       height: 300px;
     }
 .tab-button {
@@ -129,7 +131,7 @@
     /* 보드 영역 스타일 */
     .board-area {
         padding: 10px;
-        border: 2px solid #000;
+        border: 2px solid #ccc;
         height: 3000px;
     }
     .pay{
@@ -171,14 +173,13 @@
     }
 
     .charge {
-        width: 180px;
-        height:66px;
+          width: 172px;
+        height: 63px;
         display: flex;
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        background-color: white;
-        border:2px solid black;
+        margin-left: 4px;
     }
     .charge img {
         vertical-align: middle;
@@ -311,13 +312,16 @@
         z-index : 1;
         backface-visibility: hidden;
         text-align:center;
+        box-shadow: 0px 0px 10px gray;
     }
 
       .back {
-        width: 90%;
+        width: 100%;
         position: absolute;
         transform: rotateY(180deg);
-        height: 300px;
+        height: 299px;
+        box-shadow: 0px 0px 10px gray;
+        text-align: center;
       }
 
     </style>
@@ -430,7 +434,7 @@
                             <img src="/image/myPage/charge_in.png" width="30px;" height="30px;" alt="충전아이콘">
                             <span>충전하기</span>
                         </div>
-                        <div class="charge" onclick="openNewWindow2()">
+                        <div class="charge" style="border-top:1px solid #ccc; border-bottom:1px solid #ccc;" onclick="openNewWindow2()">
                             <img src="/image/myPage/charge_out.png" width="30px;" height="30px;" alt="출금아이콘">
                             <span>출금하기</span>
                         </div>
