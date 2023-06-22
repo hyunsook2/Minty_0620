@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/supportLayout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript">
+        function doDisplay(element) {
+            var con = element.nextElementSibling;
+            if (con.style.display === 'none') {
+                con.style.display = 'block';
+            } else {
+                con.style.display = 'none';
+            }
+        }
+    </script>
+
+</head>
+<body>
+<div layout:fragment="content">
+    <div>
+        <div class="navbar-nav me-md-auto d-flex flex-row gap-2">
+            <a class="nav-link menu-a" th:href="@{/home/new}" style="text-decoration: none; color: black;">작성</a>
+        </div>
+
+        <h2>자주찾는 도움말</h2>
+        <hr>
+        <div th:each="homeDto : ${homeDtos}">
+            <a href="javascript:void(0);" onclick="doDisplay(this)" th:text="${homeDto.title}" style="text-decoration: none; color: black;"></a>
+            <div style="display: none;">
+                <span th:text="${homeDto.content}"></span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

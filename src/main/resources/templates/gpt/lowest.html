@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>GPT Form</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .btn-group {
+            display: flex;
+            flex-direction: row;
+        }
+
+         .list-group-item {
+            border: 1px solid #66CDAA !important;
+            margin-bottom: 5px !important;
+        }
+
+        .list-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border: 2px solid #90EE90;
+            border-radius: 5px;
+            padding: 10px;
+            height: 500px;
+            overflow-y: auto;
+        }
+    </style>
+    <script>
+    function deleteMessage() {
+        alert("삭제에 성공했습니다!");
+    }
+    function successMessage() {
+        alert("버튼이 파란색이면 아직 검색중입니다. 새로고침하지 마시고 기다려주시면 화면이 넘어갑니다.");
+    }
+</script>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+
+    <div class="btn-group" th:if="${level >= 5}">
+        <form th:action="@{/pytest}" method="get" onsubmit="successMessage()" sec:authorize="hasAnyRole('Role.ADMIN') or hasAnyAuthority('ADMIN')">
+            <button type="submit" class="btn btn-primary">가격비교 검색</button>
+        </form>
+
+        <form th:action="@{/delete/lowest}" method="get" onsubmit="deleteMessage()" sec:authorize="hasAnyRole('Role.ADMIN') or hasAnyAuthority('ADMIN')">
+            <button type="submit" class="btn btn-primary">가격비교 삭제</button>
+        </form>
+
+        <form th:action="@{/saveName}" method="get">
+            <button type="submit" class="btn btn-primary">물품 등록</button>
+        </form>
+    </div>
+
+    <div class="mt-4">
+        <form th:action="@{/lowest}" method="get">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="제품이름을 명확히 입력해주세요.">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">검색</button>
+                </div>
+            </div>
+        </form>
+
+        <h2 class="mt-4">가격정보</h2>
+        <div class="list-group mt-4">
+            <li th:each="result : ${results}" class="list-group-item">
+                <span th:text="${result.name}"></span> - <span th:text="${result.price}"></span>
+            </li>
+        </div>
+    </div>
+</div>
+</body>
+</html>

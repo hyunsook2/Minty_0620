@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/supportLayout}">
+<head>
+</head>
+<body>
+<div layout:fragment="content">
+  <form th:action="@{'/edit/admin/' + ${id}}" method="post" enctype="multipart/form-data" th:object="${replyDto}">
+    <div>
+      <label for="replyTitle">제목</label>
+      <input type="text" id="replyTitle" name="replyTitle" th:value="${replyDto.replyTitle}">
+    </div>
+    <div>
+      <label for="nickname">닉네임</label>
+      <input type="text" id="nickname" name="nickname" th:value="${replyDto.nickname}" disabled>
+    </div>
+    <div>
+      <label for="replyContent">내용</label>
+      <textarea id="replyContent" name="replyContent" th:text="${replyDto.replyContent}"></textarea>
+    </div>
+
+    <button type="submit">수정하기</button>
+  </form>
+</div>
+</body>
+</html>

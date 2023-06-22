@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/supportLayout}">
+<head>
+    <script>
+        function readURL(input, previewContainer) {
+            if (input.files && input.files.length > 0) {
+                previewContainer.innerHTML = ''; // Clear previous file preview.
+
+                for (let i = 0; i < input.files.length; i++) {
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        let preview = document.createElement('div');
+                        preview.className = 'preview-div';
+
+                        let img = document.createElement('img');
+                        img.className = 'preview-img';
+                        img.src = e.target.result;
+
+                        preview.appendChild(img);
+                        previewContainer.appendChild(preview);
+                    };
+
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+        }
+
+    function popupImgFileRm1() {
+        $('#file1').val('');
+        $('#fileList1').empty();
+    }
+
+    function popupImgFileRm2() {
+        $('#file2').val('');
+        $('#fileList2').empty();
+    }
+
+    function popupImgFileRm3() {
+        $('#file3').val('');
+        $('#fileList3').empty();
+    }
+
+        $('.custom-file-input').on('change', function () {
+            let fileName = "";
+            let previewContainer = $(this).siblings('.file-preview');
+            previewContainer.empty();
+
+            for (let i = 0; i < this.files.length; i++) {
+                fileName += this.files[i].name;
+                if (i !== this.files.length - 1) {
+                    fileName += ", ";
+                }
+            }
+
+            $(this).siblings('.custom-file-label').addClass('selected').html(fileName);
+            readURL(this, previewContainer[0]);
+        });
+    </script>
+    <style>
+        .preview-div {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .preview-img {
+            max-width: 200px;
+            max-height: 200px;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <form th:action="@{'/edit/' + ${id}}" method="post" enctype="multipart/form-data" th:object="${postDto}">
+        <div>
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" th:value="${postDto.title}">
+        </div>
+        <div>
+            <label for="nickname">닉네임</label>
+            <input type="text" id="nickname" name="nickname" th:value="${postDto.nickname}" disabled>
+        </div>
+        <div>
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" th:value="${postDto.name}" disabled>
+        </div>
+        <div>
+            <label for="content">내용</label>
+            <textarea id="content" name="content" th:text="${postDto.content}"></textarea>
+        </div>
+        <div class="form-group">
+            <div class="custom-file">
+                <input name="files" type="file" id ="file1" class="custom-file-input" multiple onchange="readURL(this, document.getElementById('fileList1'));">
+                <label class="custom-file-label" th:for="customFile"></label>
+                <button type="button" onclick="popupImgFileRm1()">삭제</button>
+            </div>
+            <div class="file-preview" id="fileList1"></div>
+        </div>
+        <div class="form-group">
+            <div class="custom-file">
+                <input name="files" type="file" id ="file2" class="custom-file-input" multiple onchange="readURL(this, document.getElementById('fileList2'));">
+                <label class="custom-file-label" th:for="customFile"></label>
+                <button type="button" onclick="popupImgFileRm2()">삭제</button>
+            </div>
+            <div class="file-preview" id="fileList2"></div>
+        </div>
+        <div class="form-group">
+            <div class="custom-file">
+                <input name="files" type="file" id ="file3" class="custom-file-input" multiple onchange="readURL(this, document.getElementById('fileList3'));">
+                <label class="custom-file-label" th:for="customFile"></label>
+                <button type="button" onclick="popupImgFileRm3()">삭제</button>
+            </div>
+            <div class="file-preview" id="fileList3"></div>
+        </div>
+
+        <button type="submit">수정하기</button>
+    </form>
+</div>
+</body>
+</html>

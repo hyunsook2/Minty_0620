@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+    <style>
+    /* 전체 영역 스타일 */
+    .container {
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+    }
+
+    /* Sidebar 스타일 */
+    .sidebar {
+      border: 2px solid #000;
+      overflow: auto;
+      margin-left: auto;
+      margin-bottom: 20px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      padding: 8px 12px;
+      margin: 10px;
+    }
+    .sidebar ul li:hover {
+      background-color: #eaeaea;
+    }
+
+    .sidebar ul li a {
+      display: block;
+      text-decoration: none;
+      color: #000;
+    }
+
+    .board-area {
+      padding: 10px;
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      background-color: #f1f1f1;
+      height: auto;
+      margin: 10px;
+    }
+
+    .board-visitor {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .board-transaction {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .board-Inquiry {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .board-item {
+      flex: 1;
+      height: 180px;
+      background-color: #f9f9f9;
+      margin: 10px;
+      position: inherit;
+      border : 1px solid grey;
+      overflow : auto;
+    }
+
+    .board-item-visitor {
+      flex: 2;
+      height: 500px;
+      background-color: #f9f9f9;
+      margin: 10px;
+      display: flex;
+    }
+
+    .thin-light-hr {
+        border: none;
+        border-top: 0.5px solid black;
+        margin: 5px 0;
+    }
+
+    .ad-item {
+        display: flex;
+    }
+
+    .ad-item:hover {
+    cursor: pointer;
+          background-color: #eaeaea;
+    }
+
+    .show{
+        display: flex;
+    }
+
+    .chart-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 20%;
+  }
+
+  .chart {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index:0;
+  }
+
+    li:hover{
+    cursor:pointer;
+    }
+
+    /* 일자별 요약 테이블과 통계 테이블의 th 부분 색상 변경 */
+  table{
+    background-color: white;
+  }
+
+   table.table th {
+    background-color: #FAD8D5;
+  }
+
+   table.table th, table.table td {
+    text-align: center;
+  }
+
+        .m-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .m-th, .m-td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid black;
+        }
+
+        .m-th {
+            background-color: lightgray;
+        }
+
+       .m-pagination {
+            display: flex;
+            justify-content: center;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .m-pagination li {
+            display: inline;
+            margin-right: 5px;
+        }
+
+        .m-pagination li a {
+            display: inline-block;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .m-pagination li.active a {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li class="dash">
+                    <img src="/image/manager/dashboard.PNG" alt="dash">
+                    대시보드
+                </li>
+                <li class="user-c">
+                    <img src="/image/manager/user.PNG" alt="user-c">
+                    사용자 관리
+                </li>
+                <li class="content-c">
+                    <img src="/image/manager/content.PNG" alt="content-c">
+                    컨텐츠 관리
+                </li>
+                <li class="marketing-c">
+                    <img src="/image/manager/marketing.PNG" alt="marketing-c">
+                    마케팅 관리
+                </li>
+                <li class="revenue">
+                    <img src="/image/manager/sales.PNG" alt="revenue">
+                    수입관리
+                </li>
+                <li class="stast">
+                    <img src="/image/manager/statics.PNG" alt="stast">
+                    통계
+                </li>
+                <li class="fix">
+                    <img src="/image/manager/support.PNG" alt="fix">
+                    메인페이지관리
+                </li>
+                <li class="sup">
+                    <img src="/image/manager/support.PNG" alt="sup">
+                    고객지원
+                </li>
+            </ul>
+        </div>
+
+        <div class="board-area dash-1 show">
+            <h4>유저관리</h4>
+            <form th:action="@{/userManagement}" method="get">
+                <input type="text" name="query" placeholder="이름 또는 닉네임 검색">
+                <button type="submit">검색</button>
+            </form>
+            <table id="userTable" class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>이름</th>
+                    <th>닉네임</th>
+                    <th>연령</th>
+                    <th>연락처</th>
+                    <th>성별</th>
+                    <th>이메일</th>
+                    <th>권한변경</th>
+                    <th>개인상점</th>
+                    <th>수정</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${userList}">
+                    <form th:action="@{/change/{id}(id=${user.id})}" method="post" class="d-flex">
+                        <td th:text="${user.getId()}">ID</td>
+                        <td th:text="${user.getName()}">이름</td>
+                        <td th:text="${user.getNickName()}">닉네임</td>
+                        <td th:text="${user.getAgeRange()}">연령대</td>
+                        <td th:text="${user.getMobile()}">연락처</td>
+                        <td th:text="${user.getGender()}">성별</td>
+                        <td th:text="${user.getEmail()}">이메일</td>
+                        <td>
+                            <select name="role">
+                                <option value="USER" th:selected="${user.getRole() == T(com.Reboot.Minty.member.constant.Role).USER}">USER</option>
+                                <option value="BAN" th:selected="${user.getRole() == T(com.Reboot.Minty.member.constant.Role).BAN}">BAN</option>
+                                <option value="GUEST" th:selected="${user.getRole() == T(com.Reboot.Minty.member.constant.Role).GUEST}">GUEST</option>
+                                <option value="REGISTER_USER" th:selected="${user.getRole() == T(com.Reboot.Minty.member.constant.Role).REGISTER_USER}">REGISTER_USER</option>
+                                <option value="ADMIN" th:selected="${user.getRole() == T(com.Reboot.Minty.member.constant.Role).ADMIN}">ADMIN</option>
+                            </select>
+                        </td>
+                        <td><a th:href="@{/usershop/{userId}(userId=${user.id})}">
+                            <img th:src="@{../image/shop.png}" alt="개인상점" width="40" height="40" style="border-radius: 50%; margin-left: 10px;"></a>
+                        <td>
+                            <button class="btn btn-outline-dark flex-shrink-0" type="submit">수정</button>
+                        </td>
+                    </form>
+                </tr>
+                </tbody>
+            </table>
+            <nav id="pag" style="text-align: center;">
+                <ul class="pagination justify-content-center"
+                    th:with="start=${(pageable.getPageNumber() / 10 * 10) + 1},
+                        last=${(start + 9 < postList.getTotalPages()) ? (start + 9) : postList.getTotalPages()}">
+                    <li class="page-item">
+                        <a class="page-link" th:href="${postList.first} ? '#' : @{/userManagement(page=0)}" aria-label="First">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:class="${postList.first} ? 'disabled'">
+                        <a class="page-link" th:href="${postList.first} ? '#' : @{/userManagement(page=${postList.number - 1})}" aria-label="Previous">
+                            <span aria-hidden="true">&lt;</span>
+                        </a>
+                    </li>
+                    <li th:each="page : ${#numbers.sequence(start, last)}"
+                        th:class="${postList.number == page - 1} ? 'page-item active' : 'page-item'">
+                        <a class="page-link" th:href="@{/userManagement(page=${page - 1})}">
+                            <span th:text="${page}"></span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:class="${postList.last} ? 'disabled'">
+                        <a class="page-link" th:href="${postList.last} ? '#' : @{/userManagement(page=${postList.number + 1})}" aria-label="Next">
+                            <span aria-hidden="true">&gt;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" th:href="${postList.last} ? '#' : @{/userManagement(page=${postList.getTotalPages() - 1})}" aria-label="Last">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+            integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" th:src="@{/js/dashboard.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+
+</div>
+
+</body>
+</html>
