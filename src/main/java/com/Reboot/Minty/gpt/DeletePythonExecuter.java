@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 public class DeletePythonExecuter {
 
     public static void executePythonScript() throws IOException {
-        String pythonScriptPath = "D:/Minty-master/Minty-master/src/main/python/deletePrice.py";
+        String pythonScriptPath = "D:/IntelliJPrac/Minty/src/main/python/deletePrice.py";
 
         ProcessBuilder processBuilder = new ProcessBuilder("python", pythonScriptPath);
         Process process = processBuilder.start();

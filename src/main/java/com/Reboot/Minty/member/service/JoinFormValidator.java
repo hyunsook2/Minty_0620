@@ -32,9 +32,9 @@ public class JoinFormValidator implements Validator {
                     new Object[]{joinDto.getNickName()}, "이미 사용중인 닉네임 입니다.");
         }
 
-//        if (!joinDto.getVerified()) {
-//            errors.rejectValue("verified", "invalid.verified", "핸드폰 인증이 필요합니다.");
-//        }
+        if (!joinDto.getVerified()) {
+            errors.rejectValue("verified", "invalid.verified", "핸드폰 인증이 필요합니다.");
+        }
         if(userRepository.existsByMobile(joinDto.getMobile())){
             errors.rejectValue("mobile", "invalid.mobile",
                     new Object[]{joinDto.getMobile()}, "이미 사용중인 핸드폰 번호입니다.");

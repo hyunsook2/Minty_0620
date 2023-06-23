@@ -16,16 +16,16 @@ function TradeForm({ selectedTopCateId, selectedSubCateId, boardType, csrfToken,
         console.log(tradeBoard);
     }, [tradeBoard]);
 
-  useEffect(() => {
+    useEffect(() => {
         if (imageList && imageList.length > 0) {
-          console.log(imageList);
-          const newImages = imageList.map((image) => ({
-            preview: `https://storage.cloud.google.com/reboot-minty-storage/${image.imgUrl}`,
-            file: null
-          }));
-          setPreviewImages((prevImages) => [...prevImages, ...newImages]);
+            console.log(imageList);
+            const newImages = imageList.map((image) => ({
+                preview: `https://storage.cloud.google.com/reboot-minty-storage/${image.imgUrl}`,
+                file: null
+            }));
+            setPreviewImages((prevImages) => [...prevImages, ...newImages]);
         }
-      }, [imageList]);
+    }, [imageList]);
 
 
     const sensors = useSensors(
@@ -104,17 +104,17 @@ function TradeForm({ selectedTopCateId, selectedSubCateId, boardType, csrfToken,
             formData.append("fileUpload", image.file);
         });
         const imageUrls = previewImages
-          .filter((image) => image.file === null)
-          .map((image) => {
-            const urlParts = image.preview.split('/');
-            const uuid = urlParts[urlParts.length - 1];
-            return uuid;
-          });
+            .filter((image) => image.file === null)
+            .map((image) => {
+                const urlParts = image.preview.split('/');
+                const uuid = urlParts[urlParts.length - 1];
+                return uuid;
+            });
         formData.append('imageUrls', JSON.stringify(imageUrls));
 
-          const url = tradeBoard ? "/tradeUpdate/"+tradeBoard.id : "/tradeWrite";
+        const url = tradeBoard ? "/tradeUpdate/" + tradeBoard.id : "/tradeWrite";
 
-         axios.post(url, formData, {
+        axios.post(url, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 "X-CSRF-TOKEN": csrfToken
@@ -138,11 +138,11 @@ function TradeForm({ selectedTopCateId, selectedSubCateId, boardType, csrfToken,
             <div className="text-center">
                 {error && error.subCategory && <p className="text-danger">{error.subCategory}</p>}
             </div>
-            <Col md={1}>
-                <span>상품 이미지</span>
+            <Col md={12}>
+                <span style={{ paddingLeft: '10px', paddingBottom: '10px' }}>상품 이미지</span>
                 {error && error.fileUpload && <p className="text-danger">{error.fileUpload}</p>}
             </Col>
-            <Col md={10}>
+            <Col md={12}>
                 <br />
                 <Form onSubmit={handleSubmit} encType="multipart/form-data">
                     <Form.Control type="hidden" name="topCategory" value={selectedTopCateId} />
@@ -181,45 +181,70 @@ function TradeForm({ selectedTopCateId, selectedSubCateId, boardType, csrfToken,
                         <br />
                     </div>
                     <br /><br />
-                   <Form.Group className="mb-3 d-flex" controlId="exampleForm.ControlInput1">
-                     <Form.Label md={2} className="me-2">
-                       제목
-                     </Form.Label>
-                     <Form.Control
-                       type="text"
-                       name="title"
-                       defaultValue={tradeBoard ? tradeBoard.title : ""}
-                       isInvalid={error && error.title}
-                     />
-                   </Form.Group>
-                   {error && error.title && <p className="text-danger">{error.title}</p>}
+                    <Form.Group className="mb-3 d-flex" controlId="exampleForm.ControlInput1">
+                        <Col md={2}>
+                            <Form.Label className="me-2">
+                                제목
+                            </Form.Label>
+                        </Col>
+                        <Col md={10}>
+                            <Form.Control
+                                type="text"
+                                name="title"
+                                defaultValue={tradeBoard ? tradeBoard.title : ""}
+                                isInvalid={error && error.title}
+                            />
+                        </Col>
+                    </Form.Group>
+                    {error && error.title && <p className="text-danger">{error.title}</p>}
 
-                   <Form.Group className="mb-3 d-flex" controlId="exampleForm.ControlInput1">
-                     <Form.Label className="me-2">가격</Form.Label>
-                     <Form.Control
-                       name="price"
-                       type="number"
-                       defaultValue={tradeBoard ? tradeBoard.price : ""}
-                       isInvalid={error && error.price}
-                     />
-                   </Form.Group>
-                   {error && error.price && <p className="text-danger">{error.price}</p>}
+                    <Form.Group className="mb-3 d-flex" controlId="exampleForm.ControlInput1">
+                        <Col md={2}>
+                            <Form.Label className="me-2">가격</Form.Label>
+                        </Col>
+                        <Col md={10}>
+                          <Form.Control
+                            name="price"
+                            type="text"
+                            defaultValue={tradeBoard ? parseInt(tradeBoard.price) : ""}
+                            isInvalid={error && error.price}
+                            onKeyPress={(e) => {
+                              const inputValue = e.target.value;
+                              if (e.key === "." || (e.key === "e" && inputValue.includes("e"))) {
+                                e.preventDefault();
+                              }
+                            }}
+                            onChange={(e) => {
+                              const inputValue = e.target.value;
+                              if (!/^\d*$/.test(inputValue)) {
+                                alert("숫자만 입력할 수 있습니다");
+                                e.target.value = inputValue.replace(/\D/g, "");
+                              }
+                            }}
+                          />
+                        </Col>
+                    </Form.Group>
+                    {error && error.price && <p className="text-danger">{error.price}</p>}
 
-                   <Form.Group className="mb-3 d-flex" controlId="exampleForm.ControlTextarea1">
-                     <Form.Label className="me-2">내용</Form.Label>
-                     <Form.Control
-                       name="content"
-                       as="textarea"
-                       rows={3}
-                       defaultValue={tradeBoard ? tradeBoard.content : ""}
-                       isInvalid={error && error.content}
-                     />
-                   </Form.Group>
-                   {error && error.content && <p className="text-danger">{error.content}</p>}
-                    <Button as="input" type="submit" value="내셈" />
-                </Form>
-            </Col>
-        </Row>
+                    <Form.Group className="mb-3 d-flex" controlId="exampleForm.ControlTextarea1">
+                        <Col md={2}>
+                            <Form.Label className="me-2">내용</Form.Label>
+                        </Col>
+                        <Col md={10}>
+                            <Form.Control
+                                name="content"
+                                as="textarea"
+                                rows={3}
+                                defaultValue={tradeBoard ? tradeBoard.content : ""}
+                                isInvalid={error && error.content}
+                            />
+                        </Col>
+                    </Form.Group>
+                    {error && error.content && <p className="text-danger">{error.content}</p>}
+                    <Button as="input" type="submit" value="등록" />
+                </Form >
+            </Col >
+        </Row >
     );
 }
 

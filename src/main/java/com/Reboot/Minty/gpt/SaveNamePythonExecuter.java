@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 @Configuration
 public class SaveNamePythonExecuter {
     public static void executePythonScript() throws IOException {
-        String pythonScriptPath = "D:/Minty-master/Minty-master/src/main/python/saveName.py";
+        String pythonScriptPath = "D:/IntelliJPrac/Minty/src/main/python/saveName.py";
 
         ProcessBuilder processBuilder = new ProcessBuilder("python", pythonScriptPath);
         Process process = processBuilder.start();

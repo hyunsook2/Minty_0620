@@ -7,6 +7,7 @@ import com.Reboot.Minty.member.service.JoinFormValidator;
 import com.Reboot.Minty.member.service.SmsService;
 import com.Reboot.Minty.member.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -139,6 +140,7 @@ public class UserController {
         return "map/map";
     }
 
+
     @PostMapping("/saveLocation")
     public String saveLocation(@ModelAttribute JoinLocationDto joinLocationDto, HttpSession session, CsrfToken csrfToken) {
         System.out.println("saveLocation method()");
@@ -153,10 +155,8 @@ public class UserController {
         String latitude = joinLocationDto.getLatitude();
         String longitude = joinLocationDto.getLongitude();
         String address = joinLocationDto.getAddress();
-        User user = (User)session.getAttribute("user");
-        // Delegate the saving logic to the UserService
+        User user = userRepository.findById((Long)session.getAttribute("userId")).orElseThrow(EntityNotFoundException::new);
         userService.saveUserLocation(user, latitude, longitude, address);
-        session.invalidate();
         return "redirect:/";
     }
 

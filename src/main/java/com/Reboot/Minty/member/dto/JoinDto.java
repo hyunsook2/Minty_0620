@@ -47,10 +47,10 @@ public class JoinDto {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
-//   @AssertTrue(message = "핸드폰 인증이 필요합니다.")
-//    public Boolean getVerified() {
-//        return isVerified;
-//    }
-//    @NotNull(message = "핸드폰 인증이 필요합니다.")
-//    private Boolean isVerified;
+   @AssertTrue(message = "핸드폰 인증이 필요합니다.")
+    public Boolean getVerified() {
+        return isVerified;
+    }
+    @NotNull(message = "핸드폰 인증이 필요합니다.")
+    private Boolean isVerified;
 }

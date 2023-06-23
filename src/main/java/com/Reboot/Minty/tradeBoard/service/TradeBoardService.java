@@ -1,6 +1,7 @@
 package com.Reboot.Minty.tradeBoard.service;
 
 import com.Reboot.Minty.categories.entity.SubCategory;
+import com.Reboot.Minty.config.ResizeFile;
 import com.Reboot.Minty.member.entity.User;
 import com.Reboot.Minty.member.entity.UserLocation;
 import com.Reboot.Minty.member.repository.UserLocationRepository;
@@ -112,7 +113,7 @@ public class TradeBoardService {
         TradeBoard savedTradeBoard = tradeBoardRepository.save(tradeBoard);
         Long targetBoardId = savedTradeBoard.getId();
         try {
-            MultipartFile resizedFirstFile = resizeImage(firstFile, 360, 360);
+            MultipartFile resizedFirstFile = ResizeFile.resizeImage(firstFile, 360, 360);
 
             BlobInfo blobInfo = storage.create(
                     BlobInfo.newBuilder(bucketName, uuid)
@@ -129,7 +130,7 @@ public class TradeBoardService {
                 uuid = UUID.randomUUID().toString();
                 MultipartFile files = mf.get(i);
                 String fileName = uuid;
-                MultipartFile resizedFile = resizeImage(files, 800, 600);
+                MultipartFile resizedFile = ResizeFile.resizeImage(files, 800, 600);
                 BlobInfo blobInfo = storage.create(
                         BlobInfo.newBuilder(bucketName, uuid)
                                 .setContentType("image/jpg")
@@ -168,7 +169,7 @@ public class TradeBoardService {
                 try {
                     //기존 파일 삭제하고 저장
                     deleteFile(bucketName, tradeBoard.getThumbnail());
-                    MultipartFile resizedFirstFile = resizeImage(firstFile, 360, 360);
+                    MultipartFile resizedFirstFile = ResizeFile.resizeImage(firstFile, 360, 360);
                     BlobInfo blobInfo = storage.create(
                             BlobInfo.newBuilder(bucketName, uuid)
                                     .setContentType("image/jpg")
@@ -201,7 +202,7 @@ public class TradeBoardService {
                     uuid = UUID.randomUUID().toString();
                     MultipartFile files = mf.get(i);
                     String fileName = uuid;
-                    MultipartFile resizedFile = resizeImage(files, 800, 600);
+                    MultipartFile resizedFile = ResizeFile.resizeImage(files, 800, 600);
                     BlobInfo blobInfo = storage.create(
                             BlobInfo.newBuilder(bucketName, uuid)
                                     .setContentType("image/jpg")
@@ -256,63 +257,5 @@ public class TradeBoardService {
     }
 
 
-    private MultipartFile resizeImage(MultipartFile file, int width, int height) throws IOException {
-        BufferedImage image = ImageIO.read(file.getInputStream());
-        int originalWidth = image.getWidth();
-        int originalHeight = image.getHeight();
-        if (originalWidth <= width && originalHeight <= height) {
-            return file;
-        }
-        Thumbnails.Builder<? extends InputStream> thumbnailBuilder = Thumbnails.of(file.getInputStream())
-                .size(width, height);
 
-        if (file.getContentType().equals("image/jpeg") || file.getContentType().equals("image/jpg") || file.getContentType().equals("image/png") || file.getContentType().equals("image/bmp")) {
-            thumbnailBuilder.outputFormat("jpg");
-        }
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        thumbnailBuilder.toOutputStream(outputStream);
-
-        return new MultipartFile() {
-            @Override
-            public String getName() {
-                return file.getName();
-            }
-
-            @Override
-            public String getOriginalFilename() {
-                return file.getOriginalFilename();
-            }
-
-            @Override
-            public String getContentType() {
-                return file.getContentType();
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return file.isEmpty();
-            }
-
-            @Override
-            public long getSize() {
-                return outputStream.size();
-            }
-
-            @Override
-            public byte[] getBytes() throws IOException {
-                return outputStream.toByteArray();
-            }
-
-            @Override
-            public InputStream getInputStream() throws IOException {
-                return new ByteArrayInputStream(outputStream.toByteArray());
-            }
-
-            @Override
-            public void transferTo(File dest) throws IOException, IllegalStateException {
-                file.transferTo(dest);
-            }
-        };
-    }
 }

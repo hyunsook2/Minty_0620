@@ -55,7 +55,7 @@ public class TradeBoardController {
     public String boardList(Model model) {
         return "../static/index";
     }
-    //커밋용
+
 
     @GetMapping(value = {"/api/boardList/{boardType}/category/{category}/{page}", "/api/boardList/{boardType}/{page}", "/api/boardList/{boardType}"})
     @ResponseBody
@@ -153,7 +153,6 @@ public class TradeBoardController {
             errors.put("subCategory", "서브 카테고리를 선택해주세요.");
         }
 
-        List<String> filenames = new ArrayList<>();
         HttpSession session = request.getSession();
         boolean isEmpty = true;
         if (mf.size() > 0) {

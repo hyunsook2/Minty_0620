@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 public class PythonExecutor {
 
     public static void executePythonScript() throws IOException {
-        String pythonScriptPath = "D:/Minty-master/Minty-master/src/main/python/lowestPrice.py";
+        String pythonScriptPath = "D:/IntelliJPrac/Minty/src/main/python/lowestPrice.py";
 
         ProcessBuilder processBuilder = new ProcessBuilder("python", pythonScriptPath);
         Process process = processBuilder.start();

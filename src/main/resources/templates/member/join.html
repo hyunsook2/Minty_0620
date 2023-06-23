@@ -71,14 +71,14 @@
                     인증번호발송
                 </button>
                 <p th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}" class="fieldError" th:style="'color:red'"></p>
-                <!--<p th:if="${#fields.hasErrors('isVerified')}" th:errors="*{isVerified}" class="fieldError" style="color: red"></p>-->
+                <p th:if="${#fields.hasErrors('isVerified')}" th:errors="*{isVerified}" class="fieldError" style="color: red"></p>
             </div>
             <div class="form-group chk-code">
                 <label>인증번호</label>
                 <input type="text" id="verificationCode" class="form-control" placeholder="발송된 인증번호를 입력해주세요"/>
                 <span id="verificationTime"></span>
                 <span id="verificationExpirationTime"></span> <!-- 추가: 만료 시간 표시 -->
-                <!--               <input type="hidden" id="verification" value="false" th:field="*{isVerified}" />-->
+                <input type="hidden" id="verification" value="false" th:field="*{isVerified}" />
                 <button type="button" class="chk-button2" style="float: right" onclick="verifyCode()">
                     인증번호확인
                 </button>

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Nav } from 'react-bootstrap';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../css/boardList.css';
 import Pagination from './pagination';
+import { Container, Row, Col, Nav } from 'react-bootstrap';
+import '../css/boardList.css';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-import 'react-lazy-load-image-component/src/effects/blur.css';
 
 function BoardList() {
   const [topCategories, setTopCategories] = useState([]);
