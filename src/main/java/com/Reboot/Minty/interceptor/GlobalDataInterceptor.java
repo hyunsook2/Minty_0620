@@ -13,6 +13,8 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -33,25 +35,31 @@ public class GlobalDataInterceptor implements HandlerInterceptor {
             int size = approvedAds.size();
             Random random = new Random();
             List<Ad> approvedImages = new ArrayList<>();
+            LocalDateTime currentDateTime = LocalDateTime.now();
+
             for (Ad ad : approvedAds) {
                 String imagePath = "adimage/" + ad.getImage();
                 Resource resource = new ClassPathResource("static/" + imagePath);
                 try {
-                    if (resource.exists()) {
+                    if (resource.exists() && currentDateTime.isAfter(ad.getStartDate().atStartOfDay()) && currentDateTime.isBefore(ad.getEndDate().atTime(23, 59, 59))) {
                         approvedImages.add(ad);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if (!approvedAds.isEmpty() && !approvedImages.isEmpty()) {
+
+            if (!approvedImages.isEmpty()) {
                 int randomIndex = random.nextInt(approvedImages.size());
                 Ad ad = approvedImages.get(randomIndex);
                 modelAndView.addObject("advertise", ad);
+            } else {
+                modelAndView.addObject("advertise", null);
             }
         } else {
-            modelAndView = new ModelAndView(); // modelAndView가 null인 경우 새로운 객체 생성
-            modelAndView.addObject("advertise", null);        }
+            modelAndView = new ModelAndView();
+            modelAndView.addObject("advertise", null);
+        }
     }
 
 }

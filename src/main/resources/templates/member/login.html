@@ -363,17 +363,15 @@
         <br />
     </div>
 
+
     <div class="errorDiv">
-        <p
-                th:if="${loginErrorMsg}"
-                class="error"
-                th:text="${loginErrorMsg}"
-                style="color: red"
-        ></p>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script th:if="${loginErrorMsg}">
+            swal('로그인실패', '아이디와 비밀번호를 확인해주세요.', 'error');
+        </script>
     </div>
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 </form>
 
-<script type="text/javascript" th:src="@{/js/login.js}"></script>
 </body>
 </html>

@@ -51,11 +51,11 @@ function Header({ csrfToken }) {
                             삽니다
                         </a>
                         <p></p>
-                        <a href="/" className="nav-link menu-a">
+                        <a href="/jobList" className="nav-link menu-a">
                             급해요
                         </a>
                         <p></p>
-                        <a href="event" className="nav-link menu-a">
+                        <a href="/event" className="nav-link menu-a">
                             이벤트
                         </a>
                         <p></p>
@@ -63,7 +63,7 @@ function Header({ csrfToken }) {
                             커뮤니티
                         </a>
                         <p></p>
-                        <a href="#quote" className="nav-link menu-a">
+                        <a href="/lowest" className="nav-link menu-a">
                             시세조회
                         </a>
                         <p></p>

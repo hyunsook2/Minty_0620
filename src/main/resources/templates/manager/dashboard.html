@@ -475,45 +475,56 @@ var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
 
 $(document).ready(function() {
-    $("#search-btn").click(function() {
-        var keyword = $("#keyword").val();
-        console.log(keyword);
+  $('#keyword').keydown(function(event) {
+    if (event.keyCode === 13) { // Check if the Enter key is pressed (keyCode 13)
+      event.preventDefault(); // Prevent the default form submission
+      performSearch(); // 검색 로직 실행
+    }
+  });
 
-        // JSON 형식으로 데이터 생성
-        var requestData = JSON.stringify({ keyword: keyword });
+  $("#search-btn").click(function() {
+    performSearch(); // 검색 로직 실행
+  });
 
-        $.ajax({
-            type: "POST",
-            url: "/manager",
-            data: requestData,
-            contentType: "application/json",
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
-            },
-            success: function(response) {
-                // 검색 결과를 업데이트
-                var ads = response; // 서버에서 반환된 광고 목록
-                var adsList = $("#ads-list"); // 테이블의 tbody 요소
+  function performSearch() {
+    var keyword = $("#keyword").val();
+    console.log(keyword);
 
-                // 기존의 테이블 내용 삭제
-                adsList.empty();
+    // JSON 형식으로 데이터 생성
+    var requestData = JSON.stringify({ keyword: keyword });
 
-                // 광고 목록을 테이블에 추가
-                ads.forEach(function(ad) {
-                    var row = $("<tr>");
-                    row.append($("<td>").text(ad.id));
-                    row.append($("<td>").html('<p onclick="adwindow(' + ad.id + ')">' + ad.title + '</p>'));
-                    row.append($("<td>").text(ad.advertiserName));
-                    row.append($("<td>").text(ad.requestDate));
-                    row.append($("<td>").text(ad.status));
-                    adsList.append(row);
-                });
-            },
-            error: function(xhr, status, error) {
-                // 에러 처리
-            }
+    $.ajax({
+      type: "POST",
+      url: "/manager",
+      data: requestData,
+      contentType: "application/json",
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+      },
+      success: function(response) {
+        // 검색 결과를 업데이트
+        var ads = response; // 서버에서 반환된 광고 목록
+        var adsList = $("#ads-list"); // 테이블의 tbody 요소
+
+        // 기존의 테이블 내용 삭제
+        adsList.empty();
+
+        // 광고 목록을 테이블에 추가
+        ads.forEach(function(ad) {
+          var row = $("<tr>");
+          row.append($("<td>").text(ad.id));
+          row.append($("<td>").html('<p onclick="adwindow(' + ad.id + ')">' + ad.title + '</p>'));
+          row.append($("<td>").text(ad.advertiserName));
+          row.append($("<td>").text(ad.requestDate));
+          row.append($("<td>").text(ad.status));
+          adsList.append(row);
         });
+      },
+      error: function(xhr, status, error) {
+        // 에러 처리
+      }
     });
+  }
 });
 
 

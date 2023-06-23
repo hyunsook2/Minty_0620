@@ -274,6 +274,9 @@
       margin-top: 10px;
       margin-left: 10px;
     }
+    .hd{
+    display:none;
+    }
     </style>
 </head>
 <body>
@@ -322,12 +325,15 @@
             <div>
                 <div th:if="${scheduleDuration.isEmpty()}">
                     <p>등록된 거래 희망 시간 정보가 없습니다.</p>
-                    <img id="add-input-button" src="image/plus.png" style="margin-left: 22vw;width: 20px;border: rgba(108, 96, 96, 0.585) dashed 1px;z-index: 50;cursor: pointer;" onclick="addTimers()"/>
+                        <img id="add-input-button" src="image/plus.png" style="margin-left: 22vw;width: 20px;border: rgba(108, 96, 96, 0.585) dashed 1px;z-index: 50;cursor: pointer;" onclick="addTimers()"/>
                     <br />
+                    <input class="timer" type="time" name="time" oninput="updateText()" />
+                    ~
+                    <input class="timer" type="time" name="time" oninput="updateText()" />
                 </div>
 
                 <div th:if="${!scheduleDuration.isEmpty()}">
-                    <th:block th:each="duration : ${scheduleDuration}">
+                    <th:block id="input-container" th:each="duration : ${scheduleDuration}">
                         <input class="timer" type="time" name="time" oninput="updateText()" th:value="${duration.startTime}"/>
                         ~
                         <input class="timer" type="time" name="time" oninput="updateText()" th:value="${duration.endTime}"/>
@@ -396,18 +402,12 @@
         integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
         crossorigin="anonymous"
 ></script>
-
 <script>
       $(document).ready(function () {
         $("#add-input-button").click(function () {
-          var inputElement1 = $(
-            '<input class="timer" type="time" name="time" id="time" oninput="updateText()">'
-          ); // 첫 번째 input 요소 생성
+          var inputElement1 = $('<input class="timer" type="time" name="time" oninput="updateText()" />'); // 첫 번째 input 요소 생성
           var textElement = $("<span> ~ </span>"); // "~" 글자 요소 생성
-          var inputElement2 = $(
-            '<input class="timer" type="time" name="time" id="time" oninput="updateText()">'
-          ); // 두 번째 input 요소 생성
-
+          var inputElement2 = $('<input class="timer" type="time" name="time" oninput="updateText()" />'); // 두 번째 input 요소 생성
           var container = $("#input-container");
           container.append(inputElement1); // 첫 번째 input 요소 추가
           container.append(textElement); // "~" 글자 추가

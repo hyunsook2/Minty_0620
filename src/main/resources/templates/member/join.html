@@ -31,9 +31,17 @@
             </div>
             <div class="form-group">
                 <label th:for="password">비밀번호</label>
-                <input type="password" th:field="*{password}" class="form-control" placeholder="비밀번호 입력" />
-                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError" th:style="'color:red'">
-                </p>
+                <input type="password" id="pw" name="user_pw" class="form-control"  placeholder="8~16자리 영문,숫자,특수문자를 조합해주세요" />
+
+                <span id="pwStatus" style="font-size: 12px;"> </span>
+
+            </div>
+            <div class="form-group">
+                <label>비밀번호 확인</label>
+                <input type="password" id="pwDoubleCheck" name="pwDoubleCheck"  class="form-control" placeholder="위 패스워드와 동일하게 입력해주세요." />
+
+                <span id="pwDoubleCheckStatus" style="font-size: 12px;"> </span>
+
             </div>
             <div class="form-group">
                 <label th:for="name">이름</label>
@@ -89,11 +97,16 @@
             </div>
             <div class="form-group">
                 <label for="gender">성별</label>
-                <select id="gender" th:readonly="${readOnly}" th:field="*{gender}" class="form-control" required>
-                    <option value="">성별을 선택해주세요</option>
-                    <option value="male">남성</option>
-                    <option value="female">여성</option>
-                </select>
+                <div>
+                    <label>
+                        <input type="radio" id="male" th:readonly="${readOnly}" th:field="*{gender}" value="male" required/>
+                        남성
+                    </label>
+                    <label>
+                        <input type="radio" id="female" th:readonly="${readOnly}" th:field="*{gender}" value="female" required/>
+                        여성
+                    </label>
+                </div>
                 <p th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="fieldError" style="color: red">
                     올바르지 않은 데이터입니다.
                 </p>
@@ -116,7 +129,21 @@
         if (errorMessage !== null){
             alert(errorMessage);
         }
-    });
+
+        $('#pwDoubleCheck').on('focusout',function(){
+          let user_pw = $('#pw').val();
+          let double_pw = $('#pwDoubleCheck').val();
+          if(user_pw.trim()!="" && double_pw.trim()!=""){
+             if(user_pw == double_pw){
+                $('#pwDoubleCheckStatus').text("패스워드가 일치합니다.").css('color', 'green');
+             }else{
+                $('#pwDoubleCheckStatus').text("패스워드가 일치하지 않습니다.").css('color', 'red');
+             }
+          }else{
+             $('#pwDoubleCheckStatus').text("필수 입력 정보입니다.").css('color', 'red');
+          }
+       })
+   });
 </script>
 
 </body>
