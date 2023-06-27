@@ -1,3 +1,33 @@
+.category-link,
+.sub-category-link {
+  padding: 5px 0;
+  background-color: transparent;
+  border: none;
+  color: gray;
+  white-space: nowrap; /* 줄 바꿈 방지 */
+  overflow: hidden; /* 넘침 처리 */
+  text-overflow: ellipsis; /* 넘친 부분에 대한 생략 (...) 표시 */
+}
+
+.category-link:hover{
+    color:black;
+    font-weight:bold;
+}
+
+.category-link.active{
+    color:black;
+    font-weight:bold;
+}
+.sub-category-link:hover{
+  color:black;
+    font-weight:bold;
+    background : transparent;
+}
+.sub-category-link.active {
+  color: black;
+  font-weight: bold;
+  background-color: transparent;
+}
 
 .sell-boards-container {
   display: flex;
@@ -6,12 +36,11 @@
 }
 
 .sell-board {
-    width: 19%; /* Adjust the width of the sell board */
-    box-sizing: border-box;
-    padding: 5px;
-    border: 1px solid gray;
-    border-radius:3px;
-    border-radius: 2px;
+  width: 19%;
+  box-sizing: border-box;
+  padding: 5px;
+  border: 1px solid gray;
+  border-radius: 3px;
 }
 
 .sell-board-image {
@@ -36,10 +65,6 @@
   flex-grow: 1;
 }
 
-.category-link, .sub-category-link {
-  padding: 5px 0;
-}
-
 .hide-subcategory {
   width: 0;
   overflow: hidden;
@@ -52,24 +77,6 @@
   transition: width 0.3s ease-in-out;
 }
 
-.category-link {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  color: gray;
-}
-
-.sub-category-link {
-white-space: nowrap;
-  color: gray;
-  text-decoration:none;
-}
-
-.sub-category-link.active {
-  color: black;
-  font-weight: bold;
-}
 .pagination-container {
   display: flex;
   justify-content: center;
@@ -77,31 +84,31 @@ white-space: nowrap;
 }
 
 .pageBtn {
-    border: none;
-    background-color: white;
-    color: gray;
-    margin-right: 5px;
+  border: none;
+  background-color: white;
+  color: gray;
+  margin-right: 5px;
 }
 
-.pageBtn:hover{
-    background-color:#3EB489;
+.pageBtn:hover {
+  background-color: #3eb489;
 }
 
 .pageBtn.current {
-    color: black;
-    font-weight: bold;
+  color: black;
+  font-weight: bold;
 }
 
 .pageArrowBtn {
-    background-color: white;
-    color: gray;
-    border: none;
-    margin-right: 5px;
-    border-radius: 15px;
+  background-color: white;
+  color: gray;
+  border: none;
+  margin-right: 5px;
+  border-radius: 15px;
 }
 
 .pageArrowBtn:hover {
-    background-color:#3EB489;
+  background-color: #3eb489;
 }
 
 .pushed-content {
@@ -109,6 +116,37 @@ white-space: nowrap;
   transition: margin-left 0.3s ease-in-out;
 }
 
-.sell-board-p{
-    border-bottom: 1px solid grey;
+.sell-board-p {
+  border-bottom: 1px solid grey;
+}
+
+.sortBy {
+  width: 180px;
+}
+
+.filter {
+  border-radius: 5px;
+  border: 1px solid gray;
+  padding: 5px;
+  display: inline-block;
+  margin-right: 5px;
+
+}
+
+.filter span {
+  margin-right: 5px;
+}
+
+.filter button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  color: gray;
+  cursor: pointer;
+}
+
+.long-text {
+  border: 1px solid black;
 }

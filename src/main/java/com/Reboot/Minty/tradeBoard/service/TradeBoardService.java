@@ -1,41 +1,38 @@
 package com.Reboot.Minty.tradeBoard.service;
 
-import com.Reboot.Minty.categories.entity.SubCategory;
 import com.Reboot.Minty.config.ResizeFile;
 import com.Reboot.Minty.member.entity.User;
 import com.Reboot.Minty.member.entity.UserLocation;
 import com.Reboot.Minty.member.repository.UserLocationRepository;
 import com.Reboot.Minty.member.repository.UserRepository;
-import com.Reboot.Minty.tradeBoard.dto.TradeBoardDto;
+import com.Reboot.Minty.tradeBoard.constant.TradeStatus;
+import com.Reboot.Minty.tradeBoard.dto.*;
 import com.Reboot.Minty.tradeBoard.entity.TradeBoard;
 import com.Reboot.Minty.tradeBoard.entity.TradeBoardImg;
+//import com.Reboot.Minty.tradeBoard.repository.TradeBoardCustomRepository;
+import com.Reboot.Minty.tradeBoard.repository.TradeBoardCustomRepository;
 import com.Reboot.Minty.tradeBoard.repository.TradeBoardImgRepository;
 import com.Reboot.Minty.tradeBoard.repository.TradeBoardRepository;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import jakarta.persistence.EntityNotFoundException;
-import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.util.Streamable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+
 public class TradeBoardService {
     private final TradeBoardRepository tradeBoardRepository;
 
@@ -44,67 +41,61 @@ public class TradeBoardService {
     private final UserRepository userRepository;
 
     private final UserLocationRepository userLocationRepository;
+
+    private final TradeBoardCustomRepository tradeBoardCustomRepository;
     @Autowired
     private Storage storage;
 
 
-    public Page<TradeBoard> getAllByBoardType(int boardType, Pageable pageable) {
-        Page<TradeBoard> tradeBoards = tradeBoardRepository.findAllByBoardType(boardType, pageable);
-
-        // status가 5인 TradeBoard 필터링
-        List<TradeBoard> filteredTradeBoards = tradeBoards.getContent().stream()
-                .filter(tradeBoard -> tradeBoard.getStatus() != 5)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(filteredTradeBoards, pageable, tradeBoards.getTotalElements());
-    }
-
-    public Page<TradeBoard> getBoardsByBoardTypeAndSubCategory(int boardType, Optional<SubCategory> subCategory, Pageable pageable) {
-        Streamable<TradeBoard> tradeBoards = tradeBoardRepository.getBoardsByBoardTypeAndSubCategory(boardType, subCategory, pageable);
-
-        List<TradeBoard> filteredTradeBoards = tradeBoards.stream()
-                .filter(tradeBoard -> tradeBoard.getStatus() != 5)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(filteredTradeBoards, pageable, tradeBoards.get().count());
-    }
 
 
     @Autowired
-    public TradeBoardService(TradeBoardRepository tradeBoardRepository, TradeBoardImgRepository tradeBoardImgRepository, UserRepository userRepository, UserLocationRepository userLocationRepository) {
+    public TradeBoardService(TradeBoardRepository tradeBoardRepository, TradeBoardImgRepository tradeBoardImgRepository, UserRepository userRepository, UserLocationRepository userLocationRepository, TradeBoardCustomRepository tradeBoardCustomRepository) {
         this.tradeBoardRepository = tradeBoardRepository;
         this.tradeBoardImgRepository = tradeBoardImgRepository;
         this.userRepository = userRepository;
         this.userLocationRepository = userLocationRepository;
+        this.tradeBoardCustomRepository = tradeBoardCustomRepository;
     }
+
+    public Page<TradeBoardDto> getTradeBoard(TradeBoardSearchDto tradeBoardSearchDto, Pageable pageable){
+        return tradeBoardCustomRepository.getTradeBoardBy(tradeBoardSearchDto, pageable);
+    }
+
 
     public TradeBoard save(TradeBoard tradeBoard) {
         return tradeBoardRepository.save(tradeBoard);
     }
 
-    public TradeBoard findById(Long boardId) {
+    public TradeBoardDetailDto findById(Long boardId) {
         TradeBoard tradeBoard = tradeBoardRepository.findById(boardId).orElseThrow(EntityNotFoundException::new);
-        if(tradeBoard.getStatus()==5){
+        TradeBoardDetailDto dto = TradeBoardDetailDto.of(tradeBoard);
+        System.out.println("of TradeBoardDetailDto" + dto.getTopCategory());
+        if(dto.getTradeStatus().equals(TradeStatus.BANNED)){
             throw new AccessDeniedException("해당 글의 접근 권한이 없습니다.");
         }else{
-            return tradeBoard;
+            return dto;
         }
     }
 
-    public List<TradeBoardImg> getImgList(Long boardId) {
-        return tradeBoardImgRepository.findByTradeBoardId(boardId);
+    public List<TradeBoardImgDto> getImgList(Long boardId) {
+        List<TradeBoardImg> tradeBoardImg = tradeBoardImgRepository.findByTradeBoardId(boardId);
+        List<TradeBoardImgDto> tradeBoardImgDto = tradeBoardImg.stream()
+                .map(TradeBoardImgDto::of)
+                .collect(Collectors.toList());
+        return tradeBoardImgDto;
     }
 
     @Value("${spring.cloud.gcp.storage.credentials.bucket}")
     private String bucketName;
 
-    public Long saveBoard(Long userId, TradeBoardDto tradeBoardDto, List<MultipartFile> mf) {
+    public Long saveBoard(Long userId, TradeBoardFormDto tradeBoardFormDto, List<MultipartFile> mf) {
         String uuid = UUID.randomUUID().toString();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
         UserLocation userLocation = userLocationRepository.findByUserId(user.getId());
-        TradeBoard tradeBoard = tradeBoardDto.toEntity(tradeBoardDto);
-        tradeBoard.setStatus(0);
+        TradeBoard tradeBoard = tradeBoardFormDto.toEntity(tradeBoardFormDto);
+        tradeBoard.setStatus(TradeStatus.SELL);
         tradeBoard.setUser(user);
         tradeBoard.setUserLocation(userLocation);
         MultipartFile firstFile = mf.get(0);
@@ -149,7 +140,7 @@ public class TradeBoardService {
     }
 
     @Transactional
-    public void updateBoard(Long userId, Long boardId, TradeBoardDto tradeBoardDto, List<MultipartFile> mf, List<String> imageUrls) {
+    public void updateBoard(Long userId, Long boardId, TradeBoardFormDto tradeBoardFormDto, List<MultipartFile> mf, List<String> imageUrls) {
         String uuid = UUID.randomUUID().toString();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
@@ -181,7 +172,7 @@ public class TradeBoardService {
                     e.printStackTrace();
                 }
             }
-            tradeBoardDto.updateEntity(tradeBoard);
+            tradeBoardFormDto.updateEntity(tradeBoard);
             tradeBoard.setThumbnail(uuid);
             tradeBoard.setUser(user);
             tradeBoard.setUserLocation(userLocation);
@@ -220,13 +211,13 @@ public class TradeBoardService {
         }
     }
 
-    public void updateWithoutMultiFile(Long userId, Long boardId, TradeBoardDto tradeBoardDto, List<String> imageUrls) {
+    public void updateWithoutMultiFile(Long userId, Long boardId, TradeBoardFormDto tradeBoardFormDto, List<String> imageUrls) {
         String firstFile = imageUrls.get(0);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
         TradeBoard tradeBoard =  tradeBoardRepository.findById(boardId).orElseThrow(EntityNotFoundException::new);
         UserLocation userLocation = userLocationRepository.findByUserId(userId);
-        tradeBoardDto.updateEntity(tradeBoard);
+        tradeBoardFormDto.updateEntity(tradeBoard);
         // 순서 바뀌었을 때
         if(firstFile!=tradeBoard.getThumbnail()){
             tradeBoard.setThumbnail(firstFile);

@@ -22,16 +22,21 @@ const navigate = useNavigate();
      navigate(`/writeForm/${id}`, { state: { tradeBoard, imageList } });
    };
 
+   const handleDeleteClick = () => {
+
+   }
+
+
 const fetchData = () => {
   axios
     .get(`/api/boardDetail/${id}`)
     .then((response) => {
       if (response.status === 200) {
         setTradeBoard(response.data.tradeBoard);
-        setNickName(response.data.nickName);
         let list = [...response.data.imageList];
+        setNickName(response.data.nickName);
         setImageList(list);
-        setIsAuthor(response.data.isAuthor);
+        setIsAuthor(response.data.author);
       } else {
         alert("알 수 없는 오류");
         window.history.back(); // 이전 페이지로 이동
@@ -41,7 +46,8 @@ const fetchData = () => {
       if (error.response && error.response.data && error.response.data.error) {
         alert(error.response.data.error);
       } else {
-        alert("알 수 없는 오류");
+        console.log(error);
+        alert("error");
       }
       window.history.back(); // 이전 페이지로 이동
     });
@@ -68,7 +74,7 @@ const fetchData = () => {
 
   const purchasingReq = () => {
       axios
-        .post('/api/purchasingReq', tradeBoard, {
+        .post('/api/purchasingReq', tradeBoard.id, {
           headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': csrfToken,
@@ -124,11 +130,11 @@ const fetchData = () => {
             <span>{timeAgo}</span>
           </Col>
           <Col className="button-groups">
-            <Button variant="primary">찜하기</Button>
-            <Button variant="secondary">채팅</Button>
-            <Button variant="success" onClick={purchasingReq}>
+            {!isAuthor && <Button variant="primary">찜하기</Button>}
+            {!isAuthor &&<Button variant="secondary">채팅</Button>}
+            {!isAuthor &&<Button variant="success" onClick={purchasingReq}>
               구매 신청
-            </Button>
+            </Button>}
           </Col>
         </Col>
       </Row>
@@ -142,8 +148,12 @@ const fetchData = () => {
         <Col md={12}></Col>
        <Col md={3}>
        <div>
-       {isAuthor && <Button variant="primary" onClick={handleEditClick} style={{gap:3}}>수정</Button>}
-       {isAuthor && <Button variant="primary">삭제</Button>}
+       <Row className="justify-content-end">
+        <Col>
+            {isAuthor && <Button variant="primary" onClick={handleEditClick} style={{gap:"3"}}>수정</Button>}
+            {isAuthor && <Button variant="primary" onClick={handleDeleteClick}>삭제</Button>}
+        </Col>
+       </Row>
        </div>
        </Col>
       </Row>

@@ -1,17 +1,14 @@
 package com.Reboot.Minty.tradeBoard.controller;
 
 import com.Reboot.Minty.categories.CategoryService;
-import com.Reboot.Minty.categories.entity.SubCategory;
-import com.Reboot.Minty.categories.entity.TopCategory;
-import com.Reboot.Minty.tradeBoard.dto.TradeBoardDto;
-import com.Reboot.Minty.tradeBoard.entity.TradeBoard;
-import com.Reboot.Minty.tradeBoard.entity.TradeBoardImg;
+import com.Reboot.Minty.categories.dto.SubCategoryDto;
+import com.Reboot.Minty.categories.dto.TopCategoryDto;
+import com.Reboot.Minty.tradeBoard.dto.*;
 import com.Reboot.Minty.tradeBoard.repository.TradeBoardRepository;
 import com.Reboot.Minty.tradeBoard.service.TradeBoardService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -20,12 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,32 +51,81 @@ public class TradeBoardController {
     }
 
 
-    @GetMapping(value = {"/api/boardList/{boardType}/category/{category}/{page}", "/api/boardList/{boardType}/{page}", "/api/boardList/{boardType}"})
+    @GetMapping(value = {
+            "/api/boardList/",
+            "/api/boardList/{page}",
+            // 1 필터
+            "/api/boardList/category/{subCategoryId}/{page}",
+            "/api/boardList/sortBy/{sortBy}/{page}",
+            "/api/boardList/minPrice/{minPrice}/{page}",
+            "/api/boardList/maxPrice/{maxPrice}/{page}",
+            "/api/boardList/searchQuery/{searchQuery}/{page}",
+            // 2 필터
+            "/api/boardList/category/{subCategoryId}/sortBy/{sortBy}/{page}",
+            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/{page}",
+            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/{page}",
+            "/api/boardList/minPrice/{minPrice}/sortBy/{sortBy}/{page}",
+            "/api/boardList/minPrice/{minPrice}/searchQuery/{searchQuery}/{page}",
+            "/api/boardList/minPrice/{minPrice}/maxPrice/{maxPrice}/{page}",
+            "/api/boardList/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
+            "/api/boardList/maxPrice/{maxPrice}/searchQuery/{searchQuery}/{page}",
+            "/api/boardList/searchQuery/{searchQuery}/sortBy/{sortBy}/{page}",
+            // 3 필터
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/sortBy/{sortBy}/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/maxPrice/{maxPrice}/{page}",
+            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/maxPrice/{maxPrice}/{page}",
+            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/sortBy/{sortBy}/{page}",
+            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/searchQuery/{searchQuery}/{page}",
+            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/searchQuery/{searchQuery}/{page}",
+            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
+            "/api/boardList/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/{page}",
+            // 4 필터
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/sortBy/{sortBy}/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
+            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
+            "/api/boardList/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
+            "/api/boardList/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
+            // 모든 필터
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}"
+    })
     @ResponseBody
     public Map<String, Object> getBoardList(
-            @PathVariable("boardType") int boardType,
-            @PathVariable(value = "category", required = false) Optional<SubCategory> category,
-            @PathVariable(value = "page", required = false) Optional<Integer> page
+            TradeBoardSearchDto tradeBoardSearchDto,
+            @PathVariable(value = "page", required = false) Optional<Integer> page,
+            @PathVariable(value = "subCategoryId", required = false) Optional<Long> subCategoryId,
+            @PathVariable(value = "searchQuery", required = false) Optional<String> searchQuery,
+            @PathVariable(value = "minPrice", required = false) Optional<Integer> minPrice,
+            @PathVariable(value = "maxPrice", required = false) Optional<Integer> maxPrice,
+            @PathVariable(value = "sortBy", required = false) Optional<String> sortBy
     ) {
-        List<TopCategory> topCategories = categoryService.getTopCategoryList();
-        List<SubCategory> subCategories = categoryService.getSubCategoryList();
-        List<TradeBoard> tradeBoards;
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() - 1 : 0, 10, Sort.by("createdDate").descending());
-        Page<TradeBoard> sellBoardPage;
-
-        if (!category.isPresent()) {
-            sellBoardPage = tradeBoardService.getAllByBoardType(boardType, pageable);
-        } else {
-            sellBoardPage = tradeBoardService.getBoardsByBoardTypeAndSubCategory(boardType, category, pageable);
+        if (subCategoryId.isPresent()) {
+            tradeBoardSearchDto.setSubCategoryId(subCategoryId.get());
         }
-
-        tradeBoards = sellBoardPage.getContent();
+        if (searchQuery.isPresent()) {
+            tradeBoardSearchDto.setSearchQuery(searchQuery.get());
+        }
+        if (minPrice.isPresent()) {
+            tradeBoardSearchDto.setMinPrice(minPrice.get());
+        }
+        if (maxPrice.isPresent()) {
+            tradeBoardSearchDto.setMaxPrice(maxPrice.get());
+        }
+        if (sortBy.isPresent()) {
+            tradeBoardSearchDto.setSortBy(sortBy.get());
+        }
+        List<TopCategoryDto> topCategories = categoryService.getTopCategoryList();
+        List<SubCategoryDto> subCategories = categoryService.getSubCategoryList();
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() - 1 : 0, 10);
+        Page<TradeBoardDto> tradeBoards = tradeBoardService.getTradeBoard(tradeBoardSearchDto, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("sub", subCategories);
         response.put("top", topCategories);
-        response.put("sellBoards", tradeBoards);
-        response.put("totalPages", sellBoardPage.getTotalPages());
-        response.put("page", sellBoardPage.getNumber());
+        response.put("tradeBoards", tradeBoards);
+        response.put("totalPages", tradeBoards.getTotalPages());
+        response.put("page", tradeBoards.getNumber());
 
         return response;
     }
@@ -94,28 +137,31 @@ public class TradeBoardController {
 
     @GetMapping("/api/boardDetail/{boardId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getDetail(@PathVariable("boardId") Long boardId, HttpServletRequest request) {
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<?> getDetail(@PathVariable("boardId") Long boardId, HttpServletRequest request) {
+
         try {
-            TradeBoard tradeBoard = tradeBoardService.findById(boardId);
-            List<TradeBoardImg> imageList = tradeBoardService.getImgList(boardId);
+            TradeBoardDetailDto tradeBoard = tradeBoardService.findById(boardId);
+            List<TradeBoardImgDto> imageList = tradeBoardService.getImgList(boardId);
+
             String nickName = tradeBoard.getUser().getNickName();
             HttpSession session = request.getSession();
             boolean isAuthor = tradeBoard.getUser().getEmail().equals(session.getAttribute("userEmail"));
-            response.put("isAuthor", isAuthor);
-            response.put("tradeBoard", tradeBoard);
-            response.put("nickName", nickName);
-            response.put("imageList", imageList);
-            return ResponseEntity.ok(response); // 200 OK 응답 반환
+            System.out.println("isAuthor>>" + isAuthor);
+            System.out.println(nickName);
+            TradeBoardDetailResponseDto response = new TradeBoardDetailResponseDto();
+            response.setAuthor(isAuthor);
+            response.setTradeBoard(tradeBoard);
+            response.setNickName(nickName);
+            response.setImageList(imageList);
+            return ResponseEntity.ok().body(response);
         } catch (AccessDeniedException e) {
-            response.put("error", "해당 게시글의 읽기 권한이 없습니다.");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response); // 403 Forbidden 오류 반환
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (EntityNotFoundException e) {
-            response.put("error", "TradeBoard not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response); // 404 Not Found 오류 반환
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
 
 
     @GetMapping("/writeForm/**")
@@ -128,8 +174,8 @@ public class TradeBoardController {
     public Map<String, Object> getWriteForm(HttpServletRequest request, Optional<Long> boardId) {
 
         Map<String, Object> response = new HashMap<>();
-        List<TopCategory> topCategories = categoryService.getTopCategoryList();
-        List<SubCategory> subCategories = categoryService.getSubCategoryList();
+        List<TopCategoryDto> topCategories = categoryService.getTopCategoryList();
+        List<SubCategoryDto> subCategories = categoryService.getSubCategoryList();
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         response.put("csrfToken", csrfToken.getToken());
         response.put("sub", subCategories);
@@ -140,7 +186,7 @@ public class TradeBoardController {
 
     @PostMapping("/tradeWrite")
     @ResponseBody
-    public ResponseEntity<?> tradeSave(@Valid TradeBoardDto tradeBoardDto,
+    public ResponseEntity<?> tradeSave(@Valid TradeBoardFormDto tradeBoardFormDto,
                                        BindingResult bindingResult,
                                        @RequestPart("fileUpload") List<MultipartFile> mf,
                                        HttpServletRequest request) {
@@ -149,7 +195,7 @@ public class TradeBoardController {
             errors = bindingResult.getFieldErrors().stream()
                     .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
         }
-        if (tradeBoardDto.getSubCategory() == null) {
+        if (tradeBoardFormDto.getSubCategory() == null) {
             errors.put("subCategory", "서브 카테고리를 선택해주세요.");
         }
 
@@ -172,7 +218,7 @@ public class TradeBoardController {
             Long boardId;
             Long userId = (Long) session.getAttribute("userId");
             try {
-                boardId = tradeBoardService.saveBoard(userId, tradeBoardDto, mf);
+                boardId = tradeBoardService.saveBoard(userId, tradeBoardFormDto, mf);
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
             }
@@ -183,7 +229,7 @@ public class TradeBoardController {
     @PostMapping("/tradeUpdate/{boardId}")
     @ResponseBody
     public ResponseEntity<?> tradeUpdate(@PathVariable("boardId") Long boardId,
-                                         @Valid TradeBoardDto tradeBoardDto, BindingResult bindingResult,
+                                         @Valid TradeBoardFormDto tradeBoardFormDto, BindingResult bindingResult,
                                          @RequestPart(value = "fileUpload", required = false) List<MultipartFile> mf,
                                          @RequestParam("imageUrls") String imageUrlsJson,
                                          HttpSession session) throws JsonProcessingException {
@@ -194,7 +240,7 @@ public class TradeBoardController {
             errors = bindingResult.getFieldErrors().stream()
                     .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
         }
-        if (tradeBoardDto.getSubCategory() == null) {
+        if (tradeBoardFormDto.getSubCategory() == null) {
             errors.put("subCategory", "서브 카테고리를 선택해주세요.");
         }
         List<String> filenames = new ArrayList<>();
@@ -216,9 +262,9 @@ public class TradeBoardController {
             try {
                 Long userId = (Long) session.getAttribute("userId");
                 if (mf != null) {
-                    tradeBoardService.updateBoard(userId, boardId, tradeBoardDto, mf, imageUrls);
+                    tradeBoardService.updateBoard(userId, boardId, tradeBoardFormDto, mf, imageUrls);
                 } else {
-                    tradeBoardService.updateWithoutMultiFile(userId, boardId, tradeBoardDto, imageUrls);
+                    tradeBoardService.updateWithoutMultiFile(userId, boardId, tradeBoardFormDto, imageUrls);
                 }
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

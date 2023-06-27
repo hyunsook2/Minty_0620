@@ -14,7 +14,6 @@ function WriteForm(props) {
     const [tradeSubCate, setTradeSubCate] = useState([]);
     const [selectedTopCateId, setSelectedTopCateId] = useState(null);
     const [selectedSubCateId, setSelectedSubCateId] = useState(null);
-    const [boardType, setBoardType] = useState(0);
     const [csrfToken, setCsrfToken] = useState('');
     const [tradeBoard, setTradeBoard] = useState(null);
     const [imageList, setImageList] = useState([]);
@@ -23,9 +22,10 @@ function WriteForm(props) {
     const state = location.state;
     useEffect(() => {
         if (location.state) {
+            setTargetCategory("tradeBoard");
             setTradeBoard(location.state.tradeBoard);
-            setSelectedTopCateId(location.state.tradeBoard.topCategory.id);
-            setSelectedSubCateId(location.state.tradeBoard.subCategory.id);
+            setSelectedTopCateId(location.state.tradeBoard.topCategory);
+            setSelectedSubCateId(location.state.tradeBoard.subCategory);
             setImageList(location.state.imageList);
 
         }
@@ -49,9 +49,8 @@ function WriteForm(props) {
     function TradeOption() {
         return (
             <>
-                <option value="sell">팝니다</option>
-                <option value="buy">삽니다</option>
-                <option value="emergencyJob">급해요</option>
+                <option value="sell">거래 게시판</option>
+                <option value="emergencyJob">알바 구인</option>
             </>
         );
     }
@@ -67,19 +66,14 @@ function WriteForm(props) {
     }
 
     useEffect(() => {
-        // Update the boardType value whenever subCategory changes
-        if (subCategory === "sell") {
-            setBoardType(0);
-        } else if (subCategory === "buy") {
-            setBoardType(1);
-        }
+
     }, [subCategory]);
 
     useEffect(() => {
         fetchData();
         if (targetCategory === 'tradeBoard') {
             setSubCategory('sell');
-            setSelectedTopCateId(1);
+            setSelectedTopCateId(selectedTopCateId);
         }
         else { setSubCategory('common'); }
     }, [targetCategory], [subCategory]);
@@ -197,7 +191,6 @@ function WriteForm(props) {
                     <TradeForm
                         selectedTopCateId={selectedTopCateId}
                         selectedSubCateId={selectedSubCateId}
-                        boardType={boardType}
                         csrfToken={csrfToken}
                         tradeBoard={tradeBoard}
                         imageList={imageList}

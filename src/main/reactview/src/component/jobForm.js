@@ -51,7 +51,14 @@ function JobForm({csrfToken,job}) {
 
     const handleFileChange = (event) => {
         const files = event.target.files;
-        if (files && files.length > 0) {
+        const selectedImagesCount = files.length;
+        const remainingSlots = 10 - previewImages.length;
+
+        if (selectedImagesCount > remainingSlots) {
+              alert(`파일은 10장 까지만 첨부 가능합니다.`);
+              return;
+            }
+            if (files && files.length > 0) {
             const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
             const readerPromises = imageFiles.map(file => {
                 return new Promise((resolve, reject) => {
