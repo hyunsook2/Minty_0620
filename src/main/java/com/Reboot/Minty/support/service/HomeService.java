@@ -27,6 +27,7 @@ public class HomeService {
 
         for (Home home : homes) {
             HomeDto homeDto = HomeDto.builder()
+                    .id(home.getId())
                     .title(home.getTitle())
                     .content(home.getContent())
                     .build();

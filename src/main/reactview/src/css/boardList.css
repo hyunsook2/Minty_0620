@@ -150,3 +150,36 @@
 .long-text {
   border: 1px solid black;
 }
+.loader-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.search{
+width:20%!important;
+}
+.m-filter{
+margin-top:10px;
+}
+.filtertext{
+text-align: right; margin-right: 50px; font-size: 22px;
+}

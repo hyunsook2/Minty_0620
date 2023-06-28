@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -53,53 +54,53 @@ public class TradeBoardController {
 
     @GetMapping(value = {
             "/api/boardList/",
-            "/api/boardList/{page}",
+            "/api/boardList/page/{page}",
             // 1 필터
-            "/api/boardList/category/{subCategoryId}/{page}",
-            "/api/boardList/sortBy/{sortBy}/{page}",
-            "/api/boardList/minPrice/{minPrice}/{page}",
-            "/api/boardList/maxPrice/{maxPrice}/{page}",
-            "/api/boardList/searchQuery/{searchQuery}/{page}",
+            "/api/boardList/category/{subCategoryId}/page/{page}",
+            "/api/boardList/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/minPrice/{minPrice}/page/{page}",
+            "/api/boardList/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/searchQuery/{searchQuery}/page/{page}",
             // 2 필터
-            "/api/boardList/category/{subCategoryId}/sortBy/{sortBy}/{page}",
-            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/{page}",
-            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/{page}",
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/{page}",
-            "/api/boardList/minPrice/{minPrice}/sortBy/{sortBy}/{page}",
-            "/api/boardList/minPrice/{minPrice}/searchQuery/{searchQuery}/{page}",
-            "/api/boardList/minPrice/{minPrice}/maxPrice/{maxPrice}/{page}",
-            "/api/boardList/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
-            "/api/boardList/maxPrice/{maxPrice}/searchQuery/{searchQuery}/{page}",
-            "/api/boardList/searchQuery/{searchQuery}/sortBy/{sortBy}/{page}",
+            "/api/boardList/category/{subCategoryId}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/minPrice/{minPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/minPrice/{minPrice}/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/maxPrice/{maxPrice}/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/searchQuery/{searchQuery}/sortBy/{sortBy}/page/{page}",
             // 3 필터
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/sortBy/{sortBy}/{page}",
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/{page}",
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/maxPrice/{maxPrice}/{page}",
-            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/maxPrice/{maxPrice}/{page}",
-            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/sortBy/{sortBy}/{page}",
-            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/searchQuery/{searchQuery}/{page}",
-            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/searchQuery/{searchQuery}/{page}",
-            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
-            "/api/boardList/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
             // 4 필터
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/{page}",
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/sortBy/{sortBy}/{page}",
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
-            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
-            "/api/boardList/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
-            "/api/boardList/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
             // 모든 필터
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/{page}"
+            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}"
     })
     @ResponseBody
     public Map<String, Object> getBoardList(
             TradeBoardSearchDto tradeBoardSearchDto,
             @PathVariable(value = "page", required = false) Optional<Integer> page,
-            @PathVariable(value = "subCategoryId", required = false) Optional<Long> subCategoryId,
-            @PathVariable(value = "searchQuery", required = false) Optional<String> searchQuery,
-            @PathVariable(value = "minPrice", required = false) Optional<Integer> minPrice,
-            @PathVariable(value = "maxPrice", required = false) Optional<Integer> maxPrice,
-            @PathVariable(value = "sortBy", required = false) Optional<String> sortBy
+            @RequestParam(value = "subCategoryId", required = false) Optional<Long> subCategoryId,
+            @RequestParam(value = "searchQuery", required = false) Optional<String> searchQuery,
+            @RequestParam(value = "minPrice", required = false) Optional<Integer> minPrice,
+            @RequestParam(value = "maxPrice", required = false) Optional<Integer> maxPrice,
+            @RequestParam(value = "sortBy", required = false) Optional<String> sortBy
     ) {
         if (subCategoryId.isPresent()) {
             tradeBoardSearchDto.setSubCategoryId(subCategoryId.get());
@@ -118,17 +119,23 @@ public class TradeBoardController {
         }
         List<TopCategoryDto> topCategories = categoryService.getTopCategoryList();
         List<SubCategoryDto> subCategories = categoryService.getSubCategoryList();
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() - 1 : 0, 10);
-        Page<TradeBoardDto> tradeBoards = tradeBoardService.getTradeBoard(tradeBoardSearchDto, pageable);
+        System.out.println(">>"+page);
+
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 20);
+        Slice<TradeBoardDto> tradeBoards = tradeBoardService.getTradeBoard(tradeBoardSearchDto, pageable);
+        System.out.println("isEmpty?"+tradeBoards.isEmpty());
+        System.out.println("hasNext?"+tradeBoards.hasNext());
+        System.out.println(tradeBoards.getNumber());
         Map<String, Object> response = new HashMap<>();
         response.put("sub", subCategories);
         response.put("top", topCategories);
-        response.put("tradeBoards", tradeBoards);
-        response.put("totalPages", tradeBoards.getTotalPages());
+        response.put("tradeBoards", tradeBoards.getContent());
+        response.put("hasNext", tradeBoards.hasNext());
         response.put("page", tradeBoards.getNumber());
 
         return response;
     }
+
 
     @GetMapping("/boardDetail/{boardId}")
     public String tradeBoardDetail() {

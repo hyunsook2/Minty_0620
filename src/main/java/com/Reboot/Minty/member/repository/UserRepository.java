@@ -10,13 +10,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByEmail(String email);
-
 
     User findByNickName(String nickName);
 
@@ -26,7 +26,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
     boolean existsByNickName(String nickName);
+    List<User> findByWithdrawalDateBefore(LocalDate date);
     Page<User> findByNameContainingIgnoreCaseOrNickNameContainingIgnoreCase(String name, String nickName, Pageable pageable);
+
     boolean existsByMobile(String mobile);
     List<User> findByRole(Role role);
     @Modifying

@@ -5,21 +5,20 @@ import com.Reboot.Minty.manager.entity.Admin;
 import com.Reboot.Minty.manager.entity.ManagerStatistics;
 import com.Reboot.Minty.manager.repository.AdminRepository;
 import com.Reboot.Minty.manager.service.ManagerStatisticsService;
-import com.Reboot.Minty.member.constant.Role;
 import com.Reboot.Minty.member.entity.User;
 import com.Reboot.Minty.member.repository.UserRepository;
 import com.Reboot.Minty.member.service.UserService;
 import com.Reboot.Minty.support.entity.Ad;
+import com.Reboot.Minty.support.entity.UserSupport;
 import com.Reboot.Minty.support.repository.AdRepository;
 import com.Reboot.Minty.support.service.AdService;
 
+import com.Reboot.Minty.support.service.PostsService;
 import io.jsonwebtoken.io.IOException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,14 +41,16 @@ public class ManagerController {
     private final AdminRepository adminRepository;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final PostsService postsService;
 
-    public ManagerController(ManagerStatisticsService managerStatisticsService, AdService adService, AdRepository adRepository, AdminRepository adminRepository, UserService userService, UserRepository userRepository) {
+    public ManagerController(ManagerStatisticsService managerStatisticsService, AdService adService, AdRepository adRepository, AdminRepository adminRepository, UserService userService, UserRepository userRepository, PostsService postsService) {
         this.managerStatisticsService = managerStatisticsService;
         this.adService = adService;
         this.adRepository = adRepository;
         this.adminRepository = adminRepository;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.postsService = postsService;
     }
 
     @GetMapping(value = "/manager")
@@ -57,13 +58,17 @@ public class ManagerController {
         List<ManagerStatisticsDto> statisticsList = managerStatisticsService.getAllManagerStatistics();
         List<Ad> ads = adService.getAllAds();
         Collections.reverse(ads);
+        List<UserSupport> support = postsService.getAllUserSupport();
+
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
 
         // 인증 객체에서 로그인된 사용자의 정보를 가져옴
         User loggedInUser = userRepository.findByEmail(authentication.getName());
 
         Page<User> postList = userService.getPostList(pageable);
+        model.addAttribute("support", support);
         model.addAttribute("userList", postList.getContent());
         model.addAttribute("user", loggedInUser);
         model.addAttribute("postList", postList);
@@ -275,36 +280,5 @@ public class ManagerController {
         }
         return ads;
     }
-    //권한 수정
-    @PostMapping("/change/{id}")
-    public String updateUserRole(@PathVariable("id") Long id, @RequestParam("role") String role) {
-        userService.updateUserRole(id, Role.valueOf(role));
-        return "redirect:/userManagement";
-    }
 
-    @GetMapping(value = "/userManagement")
-    public String userManagement(
-            @RequestParam(required = false) String query,
-            Model model,
-            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
-    ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 인증 객체에서 로그인된 사용자의 정보를 가져옴
-        User loggedInUser = userRepository.findByEmail(authentication.getName());
-
-        Page<User> userList;
-
-        if (query != null && !query.isEmpty()) {
-            userList = userService.searchUsersByQuery(query, pageable);
-        } else {
-            userList = userService.getPostList(pageable);
-        }
-
-        model.addAttribute("userList", userList.getContent());
-        model.addAttribute("user", loggedInUser);
-        model.addAttribute("postList", userList);
-        model.addAttribute("pageable", pageable);
-        return "manager/userManagement";
-    }
 }

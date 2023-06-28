@@ -406,9 +406,6 @@
                 <input type="text" th:value="${sellerSchedule.getIntroduction()}" id="introduction2" readonly>
             </div>
         </div>
-
-        <div class="edit">수정하기</div>
-        <div class="edit2 hd">수정완료</div>
     </div>
 
     <!-- 캘린더 섹션 -->
@@ -460,56 +457,6 @@ $('#calendar').on('click', '.fc-day', function() {
     var selectedDate = $(this).data('date');
     $('#selected-date').text(selectedDate);
     $('#selected-date-display').text('거래 희망 날짜: ' + selectedDate);
-});
-
-function updateTradeSchedule() {
-    var selectedDate = $('#selected-date').text();
-    var selectedTime = getSelectedTime();
-    var tradeId = $('input[name="tradeId"]').val(); // tradeId 값을 가져옴
-
-    var formattedDate = moment(selectedDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
-    var formattedTime = moment(selectedTime, 'HH:mm').format('HH:mm');
-
-    console.log('선택된 날짜:', selectedDate);
-    console.log('선택된 시간:', selectedTime);
-
-    // 선택된 날짜와 시간을 폼 데이터로 설정
-    var formData = new FormData();
-    formData.append('tradeId', tradeId); // tradeId 값을 추가
-    formData.append('tradeDate', selectedDate);
-    formData.append('tradeTime', selectedTime);
-
-    // CSRF 토큰과 헤더 설정
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
-    $.ajaxSetup({
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader(header, token);
-        }
-    });
-
-    // AJAX를 사용하여 폼 데이터를 서버로 전송
-    $.ajax({
-        url: $('#tradeForm').attr('action'),
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            console.log('데이터 전송 성공');
-            console.log(response);
-            window.location.href = response;
-        },
-        error: function(xhr, status, error) {
-            console.log(error);
-        }
-    });
-}
-
-$('#tradeForm').submit(function(e) {
-    e.preventDefault();
-
-    updateTradeSchedule();
 });
 
 $(document).ready(function () {

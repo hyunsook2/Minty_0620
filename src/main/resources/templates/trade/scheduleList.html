@@ -5,12 +5,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title>Minty 일정 잡기</title>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"/>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css"/>
     <style>
       .container {
         display: flex;
@@ -128,11 +127,9 @@
           border-right-color 0.1s linear 0.1s,
           border-bottom-color 0.1s linear 0.2s;
       }
-
       .spin::after {
         border: 0 solid transparent;
       }
-
       .spin:hover::after {
         border-top: 2px solid #5bc27e;
         border-left-width: 2px;
@@ -141,28 +138,23 @@
         transition: transform 0.25s linear 0s, border-left-width 0s linear 0.25s,
           -webkit-transform 0.25s linear 0s;
       }
-
       .circle {
         border-radius: 100%;
         box-shadow: none;
       }
-
       .circle::before,
       .circle::after {
         border-radius: 100%;
       }
-
       .spin.selected::before {
         border-top-color: #5bc27e;
         border-right-color: #5bc27e;
         border-bottom-color: #5bc27e;
         background-color: #5bc27d2e;
-
         transition: border-top-color 0.15s linear,
-          border-right-color 0.15s linear 0.1s,
-          border-bottom-color 0.15s linear 0.2s;
+        border-right-color 0.15s linear 0.1s,
+        border-bottom-color 0.15s linear 0.2s;
       }
-
       .spin.selected::after {
         border-top: 2px solid #5bc27e;
         border-left-width: 2px;
@@ -177,8 +169,6 @@
       p {
         margin-top: 30px;
       }
-
-
       .timer {
         --color: rgba(128, 128, 128, 0.471);
         --size: 1rem;
@@ -201,12 +191,10 @@
         transition: backgroundImage 0.25s;
         margin-top: 10px;
       }
-
       .timer:focus {
         outline: 2px dashed white;
         outline-offset: 3px;
       }
-
       .edit,
       .edit2 {
         margin-top: 15px !important;
@@ -219,7 +207,6 @@
         border-radius: 20px;
         transition: background-color 0.3s, color 0.3s; /* 배경색과 폰트색의 변화를 0.3초 동안 적용 */
       }
-
       .edit:hover,
       .edit2:hover {
         background-color: #5bc27e;
@@ -232,7 +219,6 @@
       align-items: center;
       flex-direction: column;
     }
-
     .trade-container {
       position: relative;
       display: flex;
@@ -246,14 +232,12 @@
       padding: 20px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-
     .title {
       position: absolute;
       top: 10px;
       left: 10px;
       font-size: 10pt;
     }
-
     .product-image {
       width: 150px;
       height: 150px;
@@ -264,7 +248,6 @@
       height: 100%;
       object-fit: cover;
     }
-
     .trade-details {
       display: flex;
       flex-direction: column;
@@ -274,21 +257,17 @@
       margin-top: 10px;
       margin-left: 10px;
     }
-    .hd{
-    display:none;
-    }
     </style>
 </head>
 <body>
 <div class="notification">
-      <span th:text="'[' + ${user.nickName} + '] 님의 거래 일정 입니다.'"></span>
+    <span th:text="'[' + ${user.nickName} + '] 님의 거래 일정 입니다.'"></span>
 </div>
 
 <!-- 거래 가능 시간 섹션 -->
 <div class="container">
     <div class="section">
         <span th:text="'[' + ${user.nickName} + '] 님의 거래 희망 시간'"></span>
-
         <div class="userSchedule">
             <div style="cursor: pointer; margin-top: 15px">
                 <div class="image-preview">
@@ -296,79 +275,89 @@
                     <span th:text="${user.nickName}" style="color: #999"></span>
                 </div>
             </div>
-
-            <!-- 거래 희망 요일 -->
-            <div>
+            <!-- 값이 없는 경우 -->
+            <form id="scheduleForm">
+                <!-- 거래 희망 요일 -->
                 <div th:if="${scheduleDay == null}">
                     <p>등록된 거래 희망 요일 정보가 없습니다.</p>
-                    <button class="spin circle hd">일</button>
-                    <button class="spin circle hd">월</button>
-                    <button class="spin circle hd">화</button>
-                    <button class="spin circle hd">수</button>
-                    <button class="spin circle hd">목</button>
-                    <button class="spin circle hd">금</button>
-                    <button class="spin circle hd">토</button>
+                    <button type="button" id="sunday" class="spin circle" name="scheduleDay">일</button>
+                    <button type="button" id="monday" class="spin circle" name="scheduleDay">월</button>
+                    <button type="button" id="tuesday" class="spin circle" name="scheduleDay">화</button>
+                    <button type="button" id="wednesday" class="spin circle" name="scheduleDay">수</button>
+                    <button type="button" id="thursday" class="spin circle" name="scheduleDay">목</button>
+                    <button type="button" id="friday" class="spin circle" name="scheduleDay">금</button>
+                    <button type="button" id="saturday" class="spin circle" name="scheduleDay">토</button>
                 </div>
-
-                <div th:if="${scheduleDay != null}">
-                    <button th:class="${scheduleDay.sunday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">일</button>
-                    <button th:class="${scheduleDay.monday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">월</button>
-                    <button th:class="${scheduleDay.tuesday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">화</button>
-                    <button th:class="${scheduleDay.wednesday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">수</button>
-                    <button th:class="${scheduleDay.thursday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">목</button>
-                    <button th:class="${scheduleDay.friday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">금</button>
-                    <button th:class="${scheduleDay.saturday == 1 ? 'spin circle hd selected' : 'spin circle hd'}">토</button>
-                </div>
-            </div>
-
-            <!-- 거래 희망 시간 -->
-            <div>
+                <!-- 거래 희망 시간 -->
                 <div th:if="${scheduleDuration.isEmpty()}">
                     <p>등록된 거래 희망 시간 정보가 없습니다.</p>
-                        <img id="add-input-button" src="image/plus.png" style="margin-left: 22vw;width: 20px;border: rgba(108, 96, 96, 0.585) dashed 1px;z-index: 50;cursor: pointer;" onclick="addTimers()"/>
+                    <img class="add-input-button" src="image/plus.png" style="margin-left: 22vw;width: 20px;border: rgba(108, 96, 96, 0.585) dashed 1px;z-index: 50;cursor: pointer;" onclick="addTimers()"/>
                     <br />
-                    <input class="timer" type="time" name="time" oninput="updateText()" />
-                    ~
-                    <input class="timer" type="time" name="time" oninput="updateText()" />
-                </div>
-
-                <div th:if="${!scheduleDuration.isEmpty()}">
-                    <th:block id="input-container" th:each="duration : ${scheduleDuration}">
-                        <input class="timer" type="time" name="time" oninput="updateText()" th:value="${duration.startTime}"/>
+                    <div class="timer-container">
+                        <input class="timer" type="time" name="startTime[]" oninput="updateText()" />
                         ~
-                        <input class="timer" type="time" name="time" oninput="updateText()" th:value="${duration.endTime}"/>
-                    </th:block>
+                        <input class="timer" type="time" name="endTime[]" oninput="updateText()" />
+                    </div>
                 </div>
-            </div>
-
-            <!-- 거래 희망 위치 -->
-            <div>
+                <!-- 거래 희망 위치 -->
                 <div th:if="${schedule == null || !checkArea}">
                     <p>등록된 거래희망 위치정보가 없습니다.</p>
                 </div>
-
-                <div th:if="${schedule != null && checkArea}">
-                    <input type="text" th:value="${schedule.getHopeArea()}" id="hopeArea" readonly>
-                </div>
-            </div>
-
-            <!-- 거래 희망 소개 -->
-            <div>
+                <!-- 거래 희망 소개 -->
                 <div th:if="${schedule == null || !checkIntroduction}">
                     <p>등록된 거래희망 소개가 없습니다.</p>
-                    <input class="memo hd" placeholder="거래희망 소개를 등록해주세요" style="width: 50%; text-align: center"/>
+                    <input id="introduction" class="introduction" placeholder="거래희망 소개를 등록해주세요" style="width: 50%; text-align: center" />
                 </div>
 
-                <div th:if="${schedule != null && checkIntroduction}">
-                    <input type="text" th:value="${schedule.getIntroduction()}" id="introduction" readonly>
+                <div th:if="${scheduleDay == null and scheduleDuration.isEmpty() and (schedule == null or !checkIntroduction)}">
+                    <input type="button" id="btnSubmit" onclick="submitForm('btnSubmit')" value="등록하기"/>
                 </div>
+            </form>
+
+            <!-- 값이 있는 경우 -->
+            <!-- 거래 희망 요일 -->
+            <form id="updateDay">
+                <div th:if="${scheduleDay != null}">
+                    <div>
+                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.sunday == 1 ? 'spin circle selected' : 'spin circle'}">일</button>
+                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.monday == 1 ? 'spin circle selected' : 'spin circle'}">월</button>
+                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.tuesday == 1 ? 'spin circle selected' : 'spin circle'}">화</button>
+                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.wednesday == 1 ? 'spin circle selected' : 'spin circle'}">수</button>
+                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.thursday == 1 ? 'spin circle selected' : 'spin circle'}">목</button>
+                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.friday == 1 ? 'spin circle selected' : 'spin circle'}">금</button>
+                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.saturday == 1 ? 'spin circle selected' : 'spin circle'}">토</button>
+                    </div>
+
+                    <input type="button" id="btnDay" onclick="submitForm('btnDay')" value="변경"/>
+                </div>
+            </form>
+            <!-- 거래 희망 시간 -->
+            <div th:if="${!scheduleDuration.isEmpty()}">
+                <img class="add-edit-button" src="image/plus.png" style="margin-left: 22vw;width: 20px;border: rgba(108, 96, 96, 0.585) dashed 1px;z-index: 50;cursor: pointer;" onclick="addEditTimers()"/>
+
+                <div class="editTimer-container" th:each="duration : ${scheduleDuration}">
+                    <input type="hidden" th:value="${duration.id}" name="editDurationId[]" />
+                    <input class="timer" type="time" th:value="${duration.startTime}" name="editStartTime[]" oninput="updateEditText()" />
+                    ~
+                    <input class="timer" type="time" th:value="${duration.endTime}" name="editEndTime[]" oninput="updateEditText()" />
+                    <br />
+                </div>
+
+                <input type="button" id="btnDuration" onclick="submitForm('btnDuration')" value="변경"/>
+            </div>
+            <!-- 거래 희망 위치 -->
+            <div th:if="${schedule != null && checkArea}">
+                <input type="text" th:value="${schedule.getHopeArea()}" id="hopeArea" readonly>
+            </div>
+            <!-- 거래 희망 소개 -->
+            <div th:if="${schedule != null && checkIntroduction}">
+                <input type="text" name="editIntroduction" th:value="${schedule.getIntroduction()}" id="editIntroduction">
+
+                <input type="button" id="btnIntroduction" onclick="submitForm('btnIntroduction')" value="변경"/>
             </div>
 
-            <div class="edit">수정하기</div>
-            <div class="edit2 hd">수정완료</div>
         </div>
     </div>
-
     <!-- 일정 목록 섹션 -->
     <div class="schedule-section">
         <th:block th:each="trade : ${userTrades}">
@@ -380,7 +369,6 @@
                 <div class="product-image">
                     <img th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${trade.boardId.thumbnail}}" alt="Board Image" class="board-img" th:trade_id="${trade.boardId.id}" />
                 </div>
-
                 <div class="trade-details">
                     <p>상품명:<span class="product-name" th:text="${trade.boardId.title}"></span></p>
                     <p>가격:<span class="product-price" th:text="'￦' + ${trade.boardId.price}"></span></p>
@@ -392,47 +380,160 @@
         </th:block>
     </div>
 </div>
-
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-<script
-        src="https://code.jquery.com/jquery-3.6.4.min.js"
-        integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
-        crossorigin="anonymous"
-></script>
-<script>
-      $(document).ready(function () {
-        $("#add-input-button").click(function () {
-          var inputElement1 = $('<input class="timer" type="time" name="time" oninput="updateText()" />'); // 첫 번째 input 요소 생성
-          var textElement = $("<span> ~ </span>"); // "~" 글자 요소 생성
-          var inputElement2 = $('<input class="timer" type="time" name="time" oninput="updateText()" />'); // 두 번째 input 요소 생성
-          var container = $("#input-container");
-          container.append(inputElement1); // 첫 번째 input 요소 추가
-          container.append(textElement); // "~" 글자 추가
-          container.append(inputElement2); // 두 번째 input 요소 추가
-          container.append("<br>"); //
-        });
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<script th:inline="javascript">
+  var token = $("meta[name='_csrf']").attr("content");
+  var header = $("meta[name='_csrf_header']").attr("content");
+  var scheduleDay = [0, 0, 0, 0, 0, 0, 0]; // 일, 월, 화, 수, 목, 금, 토
 
-        $(".spin").click(function () {
-            $(this).toggleClass("selected");
-        });
+  $(document).ready(function() {
+    $(".spin.circle").click(function() {
+      var dayIndex = $(this).index();
+      scheduleDay[dayIndex] = scheduleDay[dayIndex] ? 0 : 1;
+      if (scheduleDay[dayIndex]) {
+        $(this).addClass('selected');
+      } else {
+        $(this).removeClass('selected');
+      }
+    });
+  });
 
-        $(".edit").click(function () {
-          $(this).addClass("hd");
-          $(".spin").removeClass("hd");
-          $(".memo").removeClass("hd");
-          $(".edit2").removeClass("hd");
-        });
+   function addTimers() {
+    const timerContainer = document.getElementsByClassName('timer-container')[0];
+    const startTime = document.createElement('input');
+    const endTime = document.createElement('input');
+    startTime.className = 'timer';
+    startTime.type = 'time';
+    startTime.name = 'startTime[]';
+    startTime.oninput = updateText;
+    endTime.className = 'timer';
+    endTime.type = 'time';
+    endTime.name = 'endTime[]';
+    endTime.oninput = updateText;
+    timerContainer.appendChild(startTime);
+    timerContainer.appendChild(document.createTextNode(' ~ '));
+    timerContainer.appendChild(endTime);
+    timerContainer.appendChild(document.createElement('br'));
+  }
 
-        $(".edit2").click(function () {
-          $(this).addClass("hd");
-          $(".spin").addClass("hd");
-          $(".edit").removeClass("hd");
-          $(".memo").addClass("hd");
-        });
+function addEditTimers() {
+    const timerContainer = document.getElementsByClassName('editTimer-container')[0];
+    const startTime = document.createElement('input');
+    const endTime = document.createElement('input');
+    startTime.className = 'timer';
+    startTime.type = 'time';
+    startTime.name = 'editStartTime[]';
+    startTime.oninput = updateText;
+    endTime.className = 'timer';
+    endTime.type = 'time';
+    endTime.name = 'editEndTime[]';
+    endTime.oninput = updateText;
+    timerContainer.appendChild(startTime);
+    timerContainer.appendChild(document.createTextNode(' ~ '));
+    timerContainer.appendChild(endTime);
+    timerContainer.appendChild(document.createElement('br'));
+  }
+
+  function updateText() {
+    const startTimeElements = document.getElementsByName('startTime[]');
+    const endTimeElements = document.getElementsByName('endTime[]');
+    let startTimeText = '';
+    let endTimeText = '';
+
+    for (let i = 0; i < startTimeElements.length; i++) {
+      startTimeText += startTimeElements[i].value + ',';
+      endTimeText += endTimeElements[i].value + ',';
+    }
+
+    const startTimeInput = document.getElementById('startTime');
+    const endTimeInput = document.getElementById('endTime');
+
+    if (startTimeInput && endTimeInput) {
+      startTimeInput.value = startTimeText.slice(0, -1);
+      endTimeInput.value = endTimeText.slice(0, -1);
+    }
+  }
+
+  function updateEditText() {
+    const startTimeElements = document.getElementsByName('editStartTime[]');
+    const endTimeElements = document.getElementsByName('editEndTime[]');
+    let startTimeText = '';
+    let endTimeText = '';
+
+    for (let i = 0; i < startTimeElements.length; i++) {
+      startTimeText += startTimeElements[i].value + ',';
+      endTimeText += endTimeElements[i].value + ',';
+    }
+
+    const startTimeInput = document.getElementById('editStartTime');
+    const endTimeInput = document.getElementById('editEndTime');
+
+    if (startTimeInput && endTimeInput) {
+      startTimeInput.value = startTimeText.slice(0, -1);
+      endTimeInput.value = endTimeText.slice(0, -1);
+    }
+  }
+
+  function submitForm(buttonId) {
+    const formData = new FormData();
+
+    if (buttonId === 'btnIntroduction') {
+      const editIntroduction = document.getElementById('editIntroduction').value;
+      formData.append('editIntroduction', editIntroduction);
+    }
+    else if (buttonId === 'btnSubmit') {
+      const startTimeElements = Array.from(document.getElementsByName('startTime[]'));
+      const endTimeElements = Array.from(document.getElementsByName('endTime[]'));
+      const startTimeList = startTimeElements.map(element => element.value);
+      const endTimeList = endTimeElements.map(element => element.value);
+      const introduction = document.getElementById('introduction').value;
+
+      startTimeList.forEach(startTime => formData.append('startTime[]', startTime));
+      endTimeList.forEach(endTime => formData.append('endTime[]', endTime));
+      formData.append('scheduleDay', scheduleDay.join(','));
+      formData.append('introduction', introduction);
+    }
+    else if (buttonId === 'btnDay') {
+      const editScheduleDay = [];
+      $('button[name="editScheduleDay"]').each(function() {
+        editScheduleDay.push($(this).hasClass('selected') ? 1 : 0);
       });
-    </script>
+      formData.append('editScheduleDay', editScheduleDay.join(','));
+    }
+    else if (buttonId === 'btnDuration') {
+      const editStartTimeElements = Array.from(document.getElementsByName('editStartTime[]'));
+      const editEndTimeElements = Array.from(document.getElementsByName('editEndTime[]'));
+      const editDurationIdElements = Array.from(document.getElementsByName('editDurationId[]'));
+
+      const editStartTimeList = editStartTimeElements.map(element => element.value);
+      const editEndTimeList = editEndTimeElements.map(element => element.value);
+      const editDurationIdList = editDurationIdElements.map(element => element.value);
+
+      editStartTimeList.forEach(startTime => formData.append('editStartTime[]', startTime));
+      editEndTimeList.forEach(endTime => formData.append('editEndTime[]', endTime));
+      editDurationIdList.forEach(durationId => formData.append('editDurationId[]', durationId));
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST',
+      buttonId === 'btnSubmit' ? '/scheduleRegist' :
+      buttonId === 'btnDay' ? '/updateDay' :
+      buttonId === 'btnDuration' ? '/updateDuration' :
+      buttonId === 'btnIntroduction' ? '/updateIntroduction' :
+      '', true);
+    xhr.setRequestHeader(header, token);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        alert('요청이 성공적으로 처리되었습니다.');
+      } else {
+        alert('오류가 발생하였습니다.');
+      }
+    };
+    xhr.send(formData);
+  }
+</script>
 </body>
 </html>

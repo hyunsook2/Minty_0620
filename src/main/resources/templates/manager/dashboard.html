@@ -6,7 +6,6 @@
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
-
     <style>
     /* 전체 영역 스타일 */
     .container {
@@ -274,7 +273,31 @@
             </div>
 
             <div class="board-Inquiry">
-                <div class="board-item">고객문의</div>
+                <div class="board-item">
+                    <table class="table">
+                        <thead>
+                        <th id="title" scope="col">제목</th>
+                        <th scope="col">작성자</th>
+                        <th scope="col">답변여부</th>
+                        </thead>
+                        <tbody>
+                        <tr th:each="board : ${support}">
+                            <td id="title_rl">
+                                <a th:href="@{'/supportView/'+${board.id}}" target="_blank"
+                                   onclick="window.open(this.href, 'popup', 'width=1000,height=800'); return false;">
+                                    <span th:text="${board.title}"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <span th:text="${board.name}"></span>
+                            </td>
+                            <td>
+                                <span th:text="${board.verifyReply}"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="board-item">
                     <div th:each="ad, status : ${ads}">

@@ -3,78 +3,120 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>GPT Form</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .btn-group {
-            display: flex;
-            flex-direction: row;
-        }
+  <meta charset="UTF-8">
+  <title>시세조회</title>
+  <style>
 
-         .list-group-item {
-            border: 1px solid #66CDAA !important;
-            margin-bottom: 5px !important;
-        }
+    .All {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+    }
 
-        .list-group {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            border: 2px solid #90EE90;
-            border-radius: 5px;
-            padding: 10px;
-            height: 500px;
-            overflow-y: auto;
+    .containerA {
+      border: 1px solid black;
+      padding: 20px;
+      margin: 15px;
+      width: 55%;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+        loadPriceData();
+
+        $('#executeButton').click(function () {
+            var inputValue = $('#inputValue').val();  // 입력값 가져오기
+            executePythonScript(inputValue);  // 값 전달
+            });
+    });
+
+    function loadPriceData() {
+        $.ajax({
+            url: '/gpt/getPriceData',
+            type: 'GET',
+            success: function (data) {
+                var jsonData = data;
+                $('#resultBody').empty();
+
+                jsonData.forEach(function (item) {
+                    var row = $('<tr>');
+                    $('<td>').text(item.title).appendTo(row);
+                    $('<td>').text(item.price).appendTo(row);
+                    row.appendTo('#resultBody');
+                });
+            }
+        });
+    }
+
+    function executePythonScript(inputValue) {
+  $.ajax({
+    url: '/gpt/executePythonScript',
+    type: 'GET',
+    data: { inputValue: inputValue },  // 입력값 전송
+    success: function () {
+      loadPriceData();
+
+      $.ajax({
+        url: '/lowest',
+        type: 'GET',
+        data: { inputValue: inputValue },
+        success: function (data) {
+          $('#mintyResultBody').empty();
+
+          data.forEach(function (item) {
+            var row = $('<tr>');
+            var titleLink = $('<a>').attr('href', '/boardDetail/' + item.id).text(item.title);
+            $('<td>').append(titleLink).appendTo(row);
+            $('<td>').text(item.price).appendTo(row);
+            row.appendTo('#mintyResultBody');
+          });
         }
-    </style>
-<!--    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>-->
-    <script>
-    function deleteMessage() {
-alert("ㅋ");
-<!--        swal('삭제에 성공했습니다.','','success');-->
+      });
     }
-    function successMessage() {
-alert("ㅋ");
-<!--        swal('버튼이 파란색이면 아직 검색중입니다.','새로고침 하지 마시고 기다려주시면 화면이 넘어갑니다.','warning');-->
-    }
-</script>
+  });
+}
+
+  </script>
 </head>
 <body>
-<div layout:fragment="content" class="container">
-
-    <div class="btn-group" th:if="${level >= 5}">
-        <form th:action="@{/pytest}" method="get" onsubmit="successMessage()" sec:authorize="hasAnyRole('Role.ADMIN') or hasAnyAuthority('ADMIN')">
-            <button type="submit" class="btn btn-primary">가격비교 검색</button>
-        </form>
-
-        <form th:action="@{/delete/lowest}" method="get" onsubmit="deleteMessage()" sec:authorize="hasAnyRole('Role.ADMIN') or hasAnyAuthority('ADMIN')">
-            <button type="submit" class="btn btn-primary">가격비교 삭제</button>
-        </form>
-
-        <form th:action="@{/saveName}" method="get">
-            <button type="submit" class="btn btn-primary">물품 등록</button>
-        </form>
+<div layout:fragment="content">
+  <div class="All">
+    <div class="containerA">
+      <h2 class="mt-4" style="display: flex; justify-content: space-between;">현재 시세</h2>
+      <input type="text" id="inputValue" placeholder="검색값을 입력하세요">
+      <button id="executeButton" class="btn btn-primary" >시세조회</button>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>상품명</th>
+          <th>가격</th>
+        </tr>
+        </thead>
+        <tbody id="resultBody">
+        <!-- 여기에 보임 -->
+        </tbody>
+      </table>
     </div>
 
-    <div class="mt-4">
-        <form th:action="@{/lowest}" method="get">
-            <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="제품이름을 명확히 입력해주세요.">
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-primary">검색</button>
-                </div>
-            </div>
-        </form>
-
-        <h2 class="mt-4">가격정보</h2>
+      <div class="containerA">
+        <h2 class="mt-4">Minty 가격정보</h2>
         <div class="list-group mt-4">
-            <li th:each="result : ${results}" class="list-group-item">
-                <span th:text="${result.name}"></span> - <span th:text="${result.price}"></span>
-            </li>
+          <table class="table">
+            <thead>
+            <tr>
+              <th>게시물명</th>
+              <th>가격</th>
+            </tr>
+            </thead>
+            <tbody id="mintyResultBody">
+            <!-- 여기에 보임 -->
+            </tbody>
+          </table>
         </div>
-    </div>
+      </div>
+  </div>
 </div>
 </body>
 </html>

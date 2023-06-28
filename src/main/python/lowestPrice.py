@@ -38,7 +38,7 @@ try:
 
         # gptApi가 상품이름 분석하는 부분
 
-        openai.api_key = "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"
+        openai.api_key = "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"
 
         messages = []
 
@@ -64,7 +64,7 @@ try:
         chrome_options = Options()
         chrome_options.add_argument("--headless")
 
-        chromedriver_path = 'D:/gpt/chromedriver'
+        chromedriver_path = 'D:/gpt/chromedriver.exe'
 
         driver = webdriver.Chrome(options=chrome_options)
         url = 'https://shopping.naver.com/home'
@@ -95,7 +95,7 @@ try:
             price = price_element.text
             data.append([name, price])
 
-            # 10개 아이템만 저장 후 종료
+            # 3개 아이템만 저장 후 종료
             if i + 1 == 10:
                 break
 

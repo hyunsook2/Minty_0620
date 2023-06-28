@@ -98,7 +98,7 @@
 
 <!--    후기-->
 
-    .review-container {
+   .review-container {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -126,31 +126,30 @@
 
     .review_imageUrl {
         position: absolute;
-        top: 10px;
+        top : 0px;
         right: 10px;
     }
 
-    .review_content {
-        position: absolute;
-        top: 5px;
-        left: 100px;
-        width: 200px;
-        height: auto;
-        margin: auto;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 5;
-        -webkit-box-orient: vertical;
-        transition: -webkit-line-clamp 0.3s ease-in-out; /* Added transition for smooth animation */
-    }
+.review_content {
+    position: absolute;
+    top: -10px;
+    left: 100px;
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    transition: -webkit-line-clamp 0.3s ease-in-out;
+}
+
 
     .review_content_container {
         position: relative;
     }
 
-    .more-button {
-        display: none; /* Hide the "더 보기" button by default */
+    .show-more-button {
+        display:none;
         color: black;
         border: none;
         padding: 5px 10px;
@@ -160,7 +159,7 @@
         position: absolute;
         left: 285px;
         top: 85px;
-        background-color: transparent; /* Make background transparent */
+        background-color: transparent;
     }
 
     .review_bottom {
@@ -173,19 +172,19 @@
 
     .review_score {
         position: absolute;
-        bottom: 100px;
+        bottom: 90px;
         left: 40px;
     }
 
     .review_nickname {
         position: absolute;
-        bottom: 60px;
+        bottom: 55px;
         left: 20px;
     }
 
     .review_createdAt {
         position: absolute;
-        bottom: 60px;
+        bottom: 55px;
         left: 90px;
     }
 
@@ -295,7 +294,7 @@
                             </img>
                             <div class="review_content_container">
                                 <span class="review_content" th:text="${review.contents}" th:classappend="${review.imageUrl} ? '' : 'expand-width'"></span>
-                                <button class="more-button">더 보기</button>
+                                <button class="show-more-button">더 보기</button>
                             </div>
                             <span class="review_createdAt" th:text="${T(com.Reboot.Minty.review.time.DateUtils).formatReviewDate(review.writeTime)}"></span>
                             <div class="review_bottom">
@@ -308,7 +307,7 @@
                                 </div>
                             </div>
                             <img class="review_imageUrl" th:if="${review.imageUrl != null}" th:src="@{${review.imageUrl}}"
-                                 width="150" height="150" alt="Review Image"/>
+                                 style="width: 150px; height: 150px;" alt="Review Image"/>
                         </div>
                     </div>
                 </div>
@@ -442,8 +441,8 @@
             </form>
         </div>
     </div>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-<script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script>
     // URL 매개변수에서 reload 값 확인
     const urlParams = new URLSearchParams(window.location.search);
     const shouldReload = urlParams.get('reload');
@@ -452,6 +451,45 @@
     if (shouldReload === 'true') {
         location.reload();
     }
+
+    <!-- 후기 -->
+window.onload = function() {
+  const reviewContainers = document.getElementsByClassName('review');
+  for (let i = 0; i < reviewContainers.length; i++) {
+    const reviewContainer = reviewContainers[i];
+    const reviewContentContainer = reviewContainer.querySelector('.review_content_container');
+    const reviewContent = reviewContainer.querySelector('.review_content');
+    const showMoreButton = reviewContainer.querySelector('.show-more-button');
+    const collapseButton = reviewContainer.querySelector('.collapse-button');
+
+    const lineHeight = parseInt(window.getComputedStyle(reviewContent).lineHeight);
+    const lineClamp = parseInt(window.getComputedStyle(reviewContent).webkitLineClamp);
+    const contentHeight = lineHeight * lineClamp;
+
+    // Hide the "더 보기" button if the content height is less than the calculated height or if content has ellipsis
+    if (reviewContent.scrollHeight > reviewContent.offsetHeight) {
+      showMoreButton.style.display = 'flex';
+    } else {
+      showMoreButton.style.display = 'none';
+    }
+
+    showMoreButton.addEventListener('click', () => {
+  if (reviewContainer.classList.contains('expanded')) {
+    reviewContent.style.webkitLineClamp = '5';
+    showMoreButton.textContent = '더 보기';
+    reviewContainer.classList.remove('expanded');
+    showMoreButton.style.top = '85px'; // Adjust the top position when content is collapsed
+  } else {
+    reviewContent.style.webkitLineClamp = 'initial';
+    reviewContentContainer.style.height = 'auto';
+    showMoreButton.textContent = '접기';
+    reviewContainer.classList.add('expanded');
+    const contentHeight = reviewContentContainer.offsetHeight;
+    showMoreButton.style.top = contentHeight + 200 + 'px'; // Adjust the top position when content is expanded
+  }
+});
+  }
+};
 </script>
 </div>
 </body>

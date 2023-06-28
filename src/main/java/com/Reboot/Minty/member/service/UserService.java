@@ -82,10 +82,7 @@ public class UserService implements UserDetailsService {
         userLocation.setLongitude(longitude);
         userLocation.setAddress(address);
         userLocation.setUser(user);
-        System.out.println(userLocation.getUser());
-        System.out.println(userLocation.getAddress());
-        System.out.println(userLocation.getLatitude());
-        System.out.println(userLocation);
+
         userLocationRepository.save(userLocation);
     }
 
@@ -205,5 +202,16 @@ public class UserService implements UserDetailsService {
 
     public Page<User> searchUsersByQuery(String query, Pageable pageable) {
         return userRepository.findByNameContainingIgnoreCaseOrNickNameContainingIgnoreCase(query, query, pageable);
+    }
+
+    @Transactional
+    public void deleteUserById(Long userId){
+        User user = userRepository.findById(userId).orElseThrow();
+        userRepository.delete(user);
+    }
+
+    // withdrawalDate가 주어진 날짜 이전인 유저들을 조회하는 메소드
+    public List<User> getUsersWithWithdrawalDateBefore(LocalDate date) {
+        return userRepository.findByWithdrawalDateBefore(date);
     }
 }

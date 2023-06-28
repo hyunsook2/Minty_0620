@@ -114,11 +114,13 @@ public class UserController {
     public String joinSubmit(@Valid JoinDto joinDto, BindingResult bindingResult, Model model, HttpSession session, Errors errors) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("JoinDto", joinDto);
+            model.addAttribute("readOnly", true);
             return "member/join";
         }
         joinFormValidator.validate(joinDto, errors);
         if (errors.hasErrors()) {
             model.addAttribute("JoinDto", joinDto);
+            model.addAttribute("readOnly", true);
             return "member/join";
         }
         try {
@@ -128,6 +130,7 @@ public class UserController {
         } catch (IllegalStateException e) {
             model.addAttribute("JoinDto", joinDto);
             model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("readOnly", true);
             return "member/join";
         }
     }

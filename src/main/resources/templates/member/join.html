@@ -31,17 +31,14 @@
             </div>
             <div class="form-group">
                 <label th:for="password">비밀번호</label>
-                <input type="password" id="pw" name="user_pw" class="form-control"  placeholder="8~16자리 영문,숫자,특수문자를 조합해주세요" />
-
-                <span id="pwStatus" style="font-size: 12px;"> </span>
-
+                <input type="password" th:field="*{password}" class="form-control" placeholder="비밀번호 입력" />
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError" th:style="'color:red'">
+                </p>
             </div>
             <div class="form-group">
-                <label>비밀번호 확인</label>
-                <input type="password" id="pwDoubleCheck" name="pwDoubleCheck"  class="form-control" placeholder="위 패스워드와 동일하게 입력해주세요." />
-
-                <span id="pwDoubleCheckStatus" style="font-size: 12px;"> </span>
-
+                <label th:for="passwordConfirm">비밀번호 확인</label>
+                <input type="password" th:field="*{passwordConfirm}" class="form-control" placeholder="비밀번호 확인" />
+                <p th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}" class="fieldError" th:style="'color:red'"></p>
             </div>
             <div class="form-group">
                 <label th:for="name">이름</label>
@@ -79,14 +76,14 @@
                     인증번호발송
                 </button>
                 <p th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}" class="fieldError" th:style="'color:red'"></p>
-                <p th:if="${#fields.hasErrors('isVerified')}" th:errors="*{isVerified}" class="fieldError" style="color: red"></p>
+                <!--<p th:if="${#fields.hasErrors('isVerified')}" th:errors="*{isVerified}" class="fieldError" style="color: red"></p>-->
             </div>
             <div class="form-group chk-code">
                 <label>인증번호</label>
                 <input type="text" id="verificationCode" class="form-control" placeholder="발송된 인증번호를 입력해주세요"/>
                 <span id="verificationTime"></span>
                 <span id="verificationExpirationTime"></span> <!-- 추가: 만료 시간 표시 -->
-                <input type="hidden" id="verification" value="false" th:field="*{isVerified}" />
+                <!--               <input type="hidden" id="verification" value="false" th:field="*{isVerified}" />-->
                 <button type="button" class="chk-button2" style="float: right" onclick="verifyCode()">
                     인증번호확인
                 </button>
@@ -96,16 +93,10 @@
                 </p>
             </div>
             <div class="form-group">
-                <label for="gender">성별</label>
+                <label>성별</label>
                 <div>
-                    <label>
-                        <input type="radio" id="male" th:readonly="${readOnly}" th:field="*{gender}" value="male" required/>
-                        남성
-                    </label>
-                    <label>
-                        <input type="radio" id="female" th:readonly="${readOnly}" th:field="*{gender}" value="female" required/>
-                        여성
-                    </label>
+                    <label><input type="radio" name="gender" id="gender-male" value="male" required /> 남성</label>
+                    <label><input type="radio" name="gender" id="gender-female" value="female" required /> 여성</label>
                 </div>
                 <p th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="fieldError" style="color: red">
                     올바르지 않은 데이터입니다.
@@ -129,21 +120,7 @@
         if (errorMessage !== null){
             alert(errorMessage);
         }
-
-        $('#pwDoubleCheck').on('focusout',function(){
-          let user_pw = $('#pw').val();
-          let double_pw = $('#pwDoubleCheck').val();
-          if(user_pw.trim()!="" && double_pw.trim()!=""){
-             if(user_pw == double_pw){
-                $('#pwDoubleCheckStatus').text("패스워드가 일치합니다.").css('color', 'green');
-             }else{
-                $('#pwDoubleCheckStatus').text("패스워드가 일치하지 않습니다.").css('color', 'red');
-             }
-          }else{
-             $('#pwDoubleCheckStatus').text("필수 입력 정보입니다.").css('color', 'red');
-          }
-       })
-   });
+    });
 </script>
 
 </body>

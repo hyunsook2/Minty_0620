@@ -4,8 +4,6 @@ package com.Reboot.Minty.tradeBoard.entity;
 
 import com.Reboot.Minty.categories.entity.SubCategory;
 import com.Reboot.Minty.categories.entity.TopCategory;
-import com.Reboot.Minty.job.dto.JobFormDto;
-import com.Reboot.Minty.job.entity.Job;
 import com.Reboot.Minty.member.entity.User;
 import com.Reboot.Minty.member.entity.UserLocation;
 import com.Reboot.Minty.tradeBoard.constant.TradeStatus;

@@ -80,7 +80,6 @@
     xhr.send(data);
   };
 
-
     // 리셋 함수
     const rReset = (ele) => {
       setTimeout(() => {

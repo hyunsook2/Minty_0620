@@ -26,13 +26,11 @@
           <p></p>
           <a class="nav-link menu-a" th:href="@{/supportBoard}">일반문의</a>
           <p></p>
-          <a class="nav-link menu-a" th:href="@{#}">신고</a>
+          <a class="nav-link menu-a" th:href="@{/reportBoard}">신고</a>
           <p></p>
-          <a class="nav-link menu-a" href="#">회원복구</a>
+          <a class="nav-link menu-a" th:href="@{/recovery}">회원복구</a>
           <p></p>
-          <a class="nav-link menu-a" href="#">회원탈퇴</a>
-          <p></p>
-          <a class="nav-link menu-a" href="#">카테고리문의</a>
+          <a class="nav-link menu-a" th:href="@{/withdrawal}">회원탈퇴</a>
         </div>
       </div>
     </nav>
@@ -41,6 +39,34 @@
   <th:block layout:fragment="script">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     <script th:inline="javascript">
+        //스크롤바
+
+        $(window).on("scroll", function () {
+        var 스크롤양 = $(window).scrollTop();
+        var 문서높이 = $("html").height();
+        var 윈도우높이 = $(window).height();
+        var 스크롤바길이 = (스크롤양 / (문서높이 - 윈도우높이)) * 100;
+
+        $(".scroll-bar").css("width", `${스크롤바길이}%`);
+      });
+
+      //로그인창
+      $(".close").on("click", function () {
+        $(".black-bg").removeClass("show-modal");
+      });
+
+      $(".login").on("click", function () {
+        $(".black-bg").addClass("show-modal");
+      });
+
+      $(".black-bg").on('click', function(e) {
+         if($(e.target).is('.black-bg')) {
+           $('.black-bg').removeClass('show-modal');
+         }
+        });
+
+
+
         $(document).ready(function () {
             $(".menu-a")
                 .on("mouseover", function () {
@@ -59,6 +85,29 @@
                         transition: "all 0.5s",
                     });
                 });
+
+            var isLoggedIn = false; // 로그인 상태를 나타내는 변수
+
+            // 상태에 따라 로그아웃 버튼을 표시하거나 숨김
+            function updateLogoutStatus() {
+                if (isLoggedIn) {
+                    $(".logout").show(); // 로그인 상태일 때 보이게 함
+                } else {
+                    $(".logout").hide(); // 로그아웃 상태일 때 숨김
+                }
+            }
+
+            // 로그아웃 버튼을 클릭했을 때 로그아웃 상태로 변경
+            $(".logout").on("click", function () {
+                isLoggedIn = false;
+                updateLogoutStatus();
+            });
+
+            // 페이지 로드 시 로그아웃 상태 업데이트
+            updateLogoutStatus();
+        });
+
+
     </script>
   </th:block>
 </th:block>

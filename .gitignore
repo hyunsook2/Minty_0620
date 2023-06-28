@@ -26,6 +26,7 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 application-oauth.properties
+email.properties
 noted-feat-388516-061dc8e316cf
 noted-feat-388516-061dc8e316cf.json
 ### NetBeans ###

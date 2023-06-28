@@ -2,9 +2,7 @@ package com.Reboot.Minty.tradeBoard.dto;
 
 import com.Reboot.Minty.tradeBoard.constant.TradeStatus;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -52,6 +50,23 @@ public class TradeBoardDto {
                 new User(userId, userEmail, userNickName));
         this.status = status;
     }
+
+    public TradeBoardDto(TradeBoardDto v) {
+        this.id = v.getId();
+        this.price = v.getPrice();
+        this.title = v.getTitle();
+        this.createdDate = v.getCreatedDate();
+        this.modifiedDate = v.getModifiedDate();
+        this.interesting = v.getInteresting();
+        this.visit_count = v.getVisit_count();
+        this.thumbnail = v.getThumbnail();
+        this.topCategory = v.getTopCategory();
+        this.subCategory = v.getSubCategory();
+        this.user = v.getUser();
+        this.userLocation = v.getUserLocation();
+        this.status = v.getStatus();
+    }
+
 
     // Nested DTO classes with constructors
     @Getter

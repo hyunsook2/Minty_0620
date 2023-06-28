@@ -1,6 +1,15 @@
 /*$(".chk-button").on("click", function () {
       $(".chk-code").removeClass("chk-code");
     });*/
+document.addEventListener('keydown', function(event) {
+  var disallowedKeys = [38, 40];
+
+  if (disallowedKeys.includes(event.keyCode)) {
+    event.preventDefault();
+  }
+});
+
+var countdown = null;
 
   function requestMessage() {
   var mobileNumber = $("#mobile").val();
@@ -30,7 +39,7 @@
 
         var interval = 1000; // 1 second interval
 
-        var countdown = setInterval(function () {
+        countdown = setInterval(function () {
           if (expirationTime <= 0) {
             clearInterval(countdown);
             $("#verificationExpirationTime").text("만료 시간: 시간 초과").show();
@@ -64,9 +73,6 @@
   });
 }
 
-
-
-
     function verifyCode() {
       var enteredCode = $("#verificationCode").val(); // 입력한 인증번호
       var token = $("meta[name='_csrf']").attr("content");
@@ -83,7 +89,8 @@
           console.log(response);
           if (response === true) {
             alert("인증이 완료되었습니다.");
-            $("#verificationExpirationTime").hide();
+            clearInterval(countdown);
+            $("#verificationExpirationTime").text("").hide();
             $("#verificationCode").prop("readonly", true);
             $("#verifyButton").prop("disabled", true);
             $("#verification").val('true');

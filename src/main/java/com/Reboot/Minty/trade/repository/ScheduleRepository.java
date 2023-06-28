@@ -9,6 +9,7 @@ import java.time.DayOfWeek;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+
     Schedule findByUser(User user);
 
     boolean existsByUserIdAndHopeArea(User user, String hopeArea);

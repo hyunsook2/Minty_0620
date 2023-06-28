@@ -68,6 +68,11 @@ public class PostsService {
                 .build();
     }
 
+    public List<UserSupport> getAllUserSupport() {
+        List<UserSupport> userSupportList = postsRepository.findAll();
+        return userSupportList;
+    }
+
     public UserSupportDto getPost(Long id) {
         Optional<UserSupport> userSupportOptional = postsRepository.findById(id);
         UserSupport userSupport = userSupportOptional.orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
