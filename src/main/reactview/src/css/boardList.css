@@ -175,11 +175,41 @@
   }
 }
 .search{
-width:20%!important;
+    width:20%!important;
 }
 .m-filter{
-margin-top:10px;
+    margin-top:10px;
 }
 .filtertext{
-text-align: right; margin-right: 50px; font-size: 22px;
+    text-align: right; margin-right: 50px; font-size: 22px;
+}
+
+.writebutton{
+     padding: 15px 5em 0;
+     background-color:#6bc27e!important;
+     margin-top: 30%;
+     position: fixed;
+     margin-left: 11%;
+}
+.writebuttontext{
+    text-align:center;
+    font-size:20px;
+    font-weight: 600;
+}
+
+.col-sm-2{
+
+    display:flex;
+    width:20%;
+}
+
+.search-input{
+    width:20vw;
+    height:4vh;
+}
+.col-md-3{
+display:flex !important;
+}
+.justify-content-center{
+justify-content:none !important;
 }
