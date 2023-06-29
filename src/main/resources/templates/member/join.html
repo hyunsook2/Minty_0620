@@ -32,13 +32,13 @@
             <div class="form-group">
                 <label th:for="password">비밀번호</label>
                 <input type="password" th:field="*{password}" class="form-control" placeholder="비밀번호 입력" />
-                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError" th:style="'color:red'">
-                </p>
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError" th:style="'color:red'"></p>
             </div>
             <div class="form-group">
                 <label th:for="passwordConfirm">비밀번호 확인</label>
-                <input type="password" th:field="*{passwordConfirm}" class="form-control" placeholder="비밀번호 확인" />
+                <input type="password" th:field="*{passwordConfirm}" class="form-control" placeholder="비밀번호 확인" onblur="checkPasswordMatch()" />
                 <p th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}" class="fieldError" th:style="'color:red'"></p>
+                <p id="passwordMatchMessage" style="color: green;"></p>
             </div>
             <div class="form-group">
                 <label th:for="name">이름</label>

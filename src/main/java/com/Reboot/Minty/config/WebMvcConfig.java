@@ -28,7 +28,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new UserLocationInterceptor(userService))
-                .addPathPatterns("/loginSuccess"); // 로그인 성공 후 리다이렉트되는 URL
+                .addPathPatterns("/loginSuccess","/generalLoginSuccess"); // 로그인 성공 후 리다이렉트되는 URL
         registry.addInterceptor(globalDataInterceptor)
                 .addPathPatterns("/**"); // 모든 URL에 대해 적용
     }

@@ -85,7 +85,7 @@ public class SecurityConfig {
             session.setAttribute("userId",userId);
             session.setAttribute("userEmail", email);
             session.setAttribute("userNickName",userNickName);
-            response.sendRedirect("/");
+            response.sendRedirect("/generalLoginSuccess");
         }
     }
 
