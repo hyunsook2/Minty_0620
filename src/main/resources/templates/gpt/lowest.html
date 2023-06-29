@@ -1,194 +1,219 @@
 <!DOCTYPE html>
-<html lang="kr" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<html
+        lang="kr"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layout}"
+>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>시세조회</title>
   <style>
+      .All {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+      }
 
-    .All {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      justify-content: center;
-    }
+      .containerA {
+        border: 1px solid black;
+        padding: 20px;
+        margin: 15px;
+        width: 55%;
+        margin-left: 23%;
+      }
+      .spinner {
+        -webkit-animation: rotator 1.4s linear infinite;
+        animation: rotator 1.4s linear infinite;
+      }
 
-    .containerA {
-      border: 1px solid black;
-      padding: 20px;
-      margin: 15px;
-      width: 55%;
-      margin-left:23%;
-    }
-    .spinner {
-  -webkit-animation: rotator 1.4s linear infinite;
-          animation: rotator 1.4s linear infinite;
-}
+      @-webkit-keyframes rotator {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(270deg);
+        }
+      }
 
-@-webkit-keyframes rotator {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(270deg);
-  }
-}
+      @keyframes rotator {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(270deg);
+        }
+      }
+      .path {
+        stroke-dasharray: 187;
+        stroke-dashoffset: 0;
+        transform-origin: center;
+        -webkit-animation: dash 1.4s ease-in-out infinite,
+          colors 5.6s ease-in-out infinite;
+        animation: dash 1.4s ease-in-out infinite,
+          colors 5.6s ease-in-out infinite;
+      }
 
-@keyframes rotator {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(270deg);
-  }
-}
-.path {
-  stroke-dasharray: 187;
-  stroke-dashoffset: 0;
-  transform-origin: center;
-  -webkit-animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
-          animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
-}
+      @-webkit-keyframes colors {
+        0% {
+          stroke: #4285f4;
+        }
+        25% {
+          stroke: #de3e35;
+        }
+        50% {
+          stroke: #f7c223;
+        }
+        75% {
+          stroke: #1b9a59;
+        }
+        100% {
+          stroke: #4285f4;
+        }
+      }
 
-@-webkit-keyframes colors {
-  0% {
-    stroke: #4285F4;
-  }
-  25% {
-    stroke: #DE3E35;
-  }
-  50% {
-    stroke: #F7C223;
-  }
-  75% {
-    stroke: #1B9A59;
-  }
-  100% {
-    stroke: #4285F4;
-  }
-}
-
-@keyframes colors {
-  0% {
-    stroke: #4285F4;
-  }
-  25% {
-    stroke: #DE3E35;
-  }
-  50% {
-    stroke: #F7C223;
-  }
-  75% {
-    stroke: #1B9A59;
-  }
-  100% {
-    stroke: #4285F4;
-  }
-}
-@-webkit-keyframes dash {
-  0% {
-    stroke-dashoffset: 187;
-  }
-  50% {
-    stroke-dashoffset: 46.75;
-    transform: rotate(135deg);
-  }
-  100% {
-    stroke-dashoffset: 187;
-    transform: rotate(450deg);
-  }
-}
-@keyframes dash {
-  0% {
-    stroke-dashoffset: 187;
-  }
-  50% {
-    stroke-dashoffset: 46.75;
-    transform: rotate(135deg);
-  }
-  100% {
-    stroke-dashoffset: 187;
-    transform: rotate(450deg);
-  }
-}
-  </style>
+      @keyframes colors {
+        0% {
+          stroke: #4285f4;
+        }
+        25% {
+          stroke: #de3e35;
+        }
+        50% {
+          stroke: #f7c223;
+        }
+        75% {
+          stroke: #1b9a59;
+        }
+        100% {
+          stroke: #4285f4;
+        }
+      }
+      @-webkit-keyframes dash {
+        0% {
+          stroke-dashoffset: 187;
+        }
+        50% {
+          stroke-dashoffset: 46.75;
+          transform: rotate(135deg);
+        }
+        100% {
+          stroke-dashoffset: 187;
+          transform: rotate(450deg);
+        }
+      }
+      @keyframes dash {
+        0% {
+          stroke-dashoffset: 187;
+        }
+        50% {
+          stroke-dashoffset: 46.75;
+          transform: rotate(135deg);
+        }
+        100% {
+          stroke-dashoffset: 187;
+          transform: rotate(450deg);
+        }
+      }
+    </style>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    $(document).ready(function () {
+      $(document).ready(function () {
         loadPriceData();
-  $('.spinner').hide();
-        $('#executeButton').click(function () {
-            var inputValue = $('#inputValue').val();  // 입력값 가져오기
-            $('.spinner').show();
-            executePythonScript(inputValue);  // 값 전달
-
-            });
-    });
-
-    function loadPriceData() {
-        $.ajax({
-            url: '/gpt/getPriceData',
-            type: 'GET',
-            success: function (data) {
-                var jsonData = data;
-                $('#resultBody').empty();
-
-                jsonData.forEach(function (item) {
-                    var row = $('<tr>');
-                    $('<td>').text(item.title).appendTo(row);
-                    $('<td>').text(item.price).appendTo(row);
-                    row.appendTo('#resultBody');
-                });
-            }
+        $(".spinner").hide();
+        $("#executeButton").click(function () {
+          var inputValue = $("#inputValue").val(); // 입력값 가져오기
+          $(".spinner").show();
+          executePythonScript(inputValue); // 값 전달
         });
-    }
+      });
 
-     function executePythonScript(inputValue) {
-    $.ajax({
-      url: '/gpt/executePythonScript',
-      type: 'GET',
-      data: { inputValue: inputValue }, // 입력값 전송
-      success: function () {
-        loadPriceData();
-
+      function loadPriceData() {
         $.ajax({
-          url: '/lowest',
-          type: 'GET',
-          data: { inputValue: inputValue },
+          url: "/gpt/getPriceData",
+          type: "GET",
           success: function (data) {
-            $('#mintyResultBody').empty();
+            var jsonData = data;
+            $("#resultBody").empty();
 
-            data.forEach(function (item) {
-              var row = $('<tr>');
-              var titleLink = $('<a>').attr('href', '/boardDetail/' + item.id).text(item.title);
-              $('<td>').append(titleLink).appendTo(row);
-              $('<td>').text(item.price).appendTo(row);
-              row.appendTo('#mintyResultBody');
+            jsonData.forEach(function (item) {
+              var row = $("<tr>");
+              $("<td>").text(item.title).appendTo(row);
+              $("<td>").text(item.price).appendTo(row);
+              row.appendTo("#resultBody");
             });
-          }
+          },
         });
-      },
-      complete: function () {
-        $('.spinner').hide(); // 실행이 완료되면 spinner 숨기기
       }
-    });
-  }
 
-  </script>
+      function executePythonScript(inputValue) {
+        $.ajax({
+          url: "/gpt/executePythonScript",
+          type: "GET",
+          data: { inputValue: inputValue }, // 입력값 전송
+          success: function () {
+            loadPriceData();
+
+            $.ajax({
+              url: "/lowest",
+              type: "GET",
+              data: { inputValue: inputValue },
+              success: function (data) {
+                $("#mintyResultBody").empty();
+
+                data.forEach(function (item) {
+                  var row = $("<tr>");
+                  var titleLink = $("<a>")
+                    .attr("href", "/boardDetail/" + item.id)
+                    .text(item.title);
+                  $("<td>").append(titleLink).appendTo(row);
+                  $("<td>").text(item.price).appendTo(row);
+                  row.appendTo("#mintyResultBody");
+                });
+              },
+            });
+          },
+          complete: function () {
+            $(".spinner").hide(); // 실행이 완료되면 spinner 숨기기
+          },
+        });
+      }
+    </script>
 </head>
 <body>
 <div layout:fragment="content">
+  <div style="margin-right: 20vw; text-align: right">
+    <svg
+            class="spinner"
+            width="65px"
+            height="65px"
+            viewBox="0 0 66 66"
+            xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle
+              class="path"
+              fill="none"
+              stroke-width="6"
+              stroke-linecap="round"
+              cx="33"
+              cy="33"
+              r="30"
+      ></circle>
+    </svg>
+    <input type="text" id="inputValue" placeholder="검색값을 입력하세요" />
+    <button id="executeButton" class="btn btn-primary">시세조회</button>
+  </div>
   <div class="All">
     <div class="containerA">
-      <h2 class="mt-4" style="display: flex; justify-content: space-between;">현재 시세</h2>
-      <div style="text-align:right;">
-        <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-          <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
-        </svg>
-      <input type="text" id="inputValue" placeholder="검색값을 입력하세요">
-      <button id="executeButton" class="btn btn-primary">시세조회</button>
-        </div>
+      <h2
+              class="mt-4"
+              style="display: flex; justify-content: space-between"
+      >
+        현재 시세
+      </h2>
+
       <table class="table">
         <thead>
         <tr>
@@ -202,22 +227,22 @@
       </table>
     </div>
 
-      <div class="containerA">
-        <h2 class="mt-4">Minty 가격정보</h2>
-        <div class="list-group mt-4">
-          <table class="table">
-            <thead>
-            <tr>
-              <th>게시물명</th>
-              <th>가격</th>
-            </tr>
-            </thead>
-            <tbody id="mintyResultBody">
-            <!-- 여기에 보임 -->
-            </tbody>
-          </table>
-        </div>
+    <div class="containerA">
+      <h2 class="mt-4">Minty 가격정보</h2>
+      <div class="list-group mt-4">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>게시물명</th>
+            <th>가격</th>
+          </tr>
+          </thead>
+          <tbody id="mintyResultBody">
+          <!-- 여기에 보임 -->
+          </tbody>
+        </table>
       </div>
+    </div>
   </div>
 </div>
 </body>
