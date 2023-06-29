@@ -1,0 +1,18 @@
+.job-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.job-list{
+      width: 19%;
+        box-sizing: border-box;
+        padding: 5px;
+        border: 1px solid gray;
+        border-radius:3px;
+}
+.job-image{
+    width: 100%;
+      height: 200px;
+      object-fit: cover;
+}

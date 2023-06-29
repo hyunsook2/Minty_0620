@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <title>Title</title>
+  <style>
+    body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .centered-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .form-floating {
+            margin-bottom: 10px;
+        }
+
+        .form-control {
+        height: 38px;
+        padding: 6px 16px;
+        font-size: 14px;
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        width: 320px;
+      }
+
+        .btn {
+            height: 38px;
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            cursor: pointer;
+        }
+
+        .btn-outline-secondary {
+            color: #6c757d;
+            background-color: transparent;
+        }
+
+        .btn-outline-secondary {
+            color: #fff;
+            background-color: rgba(91, 194, 126, 0.5);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: rgba(91, 194, 126, 1);
+        }
+
+        .mail-check-warn {
+            margin: 5px 0;
+            font-size: 12px;
+            color: red;
+        }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+        $(document).ready(function() {
+            let code = ''; // 인증번호를 저장할 변수를 초기화합니다.
+
+            $('#mail-check-btn').click(function() {
+                const email = $('#email').val(); // 이메일 주소값 얻어오기
+                console.log('완성된 이메일: ' + email); // 이메일 오는지 확인
+                const checkInput = $('#email-auth'); // 인증번호 입력하는 곳
+
+                $.ajax({
+                    type: "GET",
+                    url: "/account/email",
+                    data: { email: email },
+                    success: function(data) {
+                        console.log("아래는 서버에서 전달 받은 데이터 값");
+                        console.log("data: " + data);
+                        checkInput.prop('disabled', false);
+                        checkInput.css('background', 'white');
+                        code = data;
+                        alert('인증번호가 전송되었습니다.');
+                        console.log("인증번호 전송까지는 오케");
+                    }
+                });
+            });
+
+            // 인증번호 비교
+            // blur -> focus가 벗어나는 경우 발생
+            $('#email-auth').blur(function() {
+                console.log("blur 작동은 하나?");
+                const inputCode = $('#email-auth').val();
+                console.log("inputCode: " + inputCode);
+                const resultMsg = $('#mail-check-warn');
+
+                if (inputCode === code) {
+                    console.log("code: " + code);
+                    console.log("inputCode: " + inputCode);
+                    resultMsg.text('인증번호가 일치합니다.');
+                    resultMsg.css('color', 'green');
+                    $('#recovery-btn').prop('disabled', false);
+                    $('#mail-check-btn').prop('disabled', true);
+                    $('#email').prop('readonly', true);
+
+                    // $('#userEmail2').attr('onFocus', 'this.initialSelect = this.selectedIndex');
+                    // $('#userEmail2').attr('onChange', 'this.selectedIndex = this.initialSelect');
+                } else {
+                    resultMsg.text('인증번호가 일치하지 않습니다. 다시 확인해주세요!');
+                    resultMsg.css('color', 'red');
+                    $('#recovery-btn').prop('disabled', true);
+                }
+            });
+
+            $('#recovery-btn').click(function() {
+                 if (confirm("정말로 탈퇴하시겠습니까?")) {
+                    performRecovery();
+                 }
+            });
+
+            function performRecovery() {
+                const email = $('#email').val();
+                console.log('완성된 이메일: ' + email);
+
+                const csrfToken = $("meta[name='_csrf']").attr("content");
+                const csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
+                // 복구 요청
+                $.ajax({
+
+                    type: "POST",
+                    url: "/withdrawalId",
+                    data: { email: email },
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader(csrfHeader, csrfToken);
+                    },
+                    success: function(response) {
+                        alert('계정 탈퇴가 완료되었습니다.');
+                        window.location.href = "/logout";
+                        window.close();
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                        alert('계정 탈퇴에 실패했습니다. 다시 시도해주세요.');
+                        window.close();
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+<div class="centered-container">
+    <div class="form-floating">
+      <input type="text" class="form-control" id="email" name="email" placeholder="이메일을 입력해주세요.">
+    </div>
+    <div class="form-floating">
+      <button type="button" class="btn btn-outline-secondary" id="mail-check-btn">인증번호 전송</button>
+    </div>
+    <div class="form-floating">
+      <input type="text" class="form-control" id="email-auth" name="email-auth" placeholder="인증번호 6자리를 입력해주세요." disabled style="background-color: #b3b2b217">
+      <p id="mail-check-warn" class="mail-check-warn"></p>
+    </div>
+
+    <button type="button" class="btn btn-outline-secondary" id="recovery-btn" disabled>탈퇴</button>
+</div>
+</body>
+</html>

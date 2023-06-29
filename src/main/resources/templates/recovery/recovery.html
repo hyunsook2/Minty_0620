@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/supportLayout}">
+<head>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .centered-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        border: 1px solid black;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 0;
+    }
+
+    label, ul, p {
+        margin: 10px 0;
+    }
+
+    ul {
+        list-style-type: disc;
+        padding-inline-start: 20px;
+    }
+
+    li {
+        margin-bottom: 5px;
+    }
+
+    button {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        background-color: rgba(91, 194, 126, 0.5);
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: rgba(91, 194, 126, 1);
+    }
+  </style>
+  <script>
+    function popup(){
+      let options = "resizable=no,status=no,width=400,height=400,top=0,left=0";
+      let supportWindow = window.open("http://localhost:8087/signup","_blank", options);
+      supportWindow.addEventListener('load', function() {
+        supportWindow.resizeTo(500, 400);
+      });
+    }
+  </script>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="centered-container">
+    <h1>회원 복구</h1>
+    <div>
+      <label>회원 복구를 신청하기 전에 아래사항을 꼭 확인해주세요.</label>
+      <ul>
+        <li>복구 신청시 즉시 복구 처리됩니다.</li>
+        <li>복구 후 민트머니 및 게시물을 확인해주세요. 문제가 발생됐을경우 일반문의에 문의해주세요.</li>
+        <li>복구시에는 가입당시 사용했던 이메일로 이메일인증을 실시해주셔야 정상적인 복구가 됩니다.</li>
+        <li style="color:red;">탈퇴후 3개월이 지난경우 복구처리가 불가능합니다.</li>
+      </ul>
+      <p>아래 이메일인증 버튼을 누르면 복구가 진행됩니다.</p>
+    </div>
+    <div>
+      <button th:href="@{/signup}" onclick="popup();">이메일인증</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
