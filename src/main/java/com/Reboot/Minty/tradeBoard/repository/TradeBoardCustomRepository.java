@@ -1,6 +1,7 @@
 package com.Reboot.Minty.tradeBoard.repository;
 
 import com.Reboot.Minty.categories.dto.SubCategoryDto;
+import com.Reboot.Minty.tradeBoard.constant.TradeStatus;
 import com.Reboot.Minty.tradeBoard.dto.TradeBoardDto;
 import com.Reboot.Minty.tradeBoard.dto.TradeBoardSearchDto;
 import com.Reboot.Minty.tradeBoard.entity.QTradeBoard;
@@ -79,7 +80,10 @@ public class TradeBoardCustomRepository {
 
     public Slice<TradeBoardDto> getTradeBoardBy(TradeBoardSearchDto searchDto, Pageable pageable) {
         QTradeBoard qtb = QTradeBoard.tradeBoard;
+
         BooleanExpression searchExpression = qtb.isNotNull();
+        BooleanExpression statusExpression = qtb.status.notIn(TradeStatus.BANNED, TradeStatus.DELETING);
+        searchExpression = searchExpression.and(statusExpression);
 
         // Add search conditions
         BooleanExpression likeExpression = searchByLike(searchDto.getSearchQuery());
