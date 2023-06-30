@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>채팅 페이지</title>
+    <style>
+        li {
+            border: 1px solid black;
+        }
+        img {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            var socket = new SockJS("http://localhost:8087/chat");
+            var stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                console.log("WebSocket 연결 성공");
+
+                stompClient.subscribe("/topic/chat", function(message) {
+                    console.log("WebSocket 메시지 수신:", message.body);
+                    var chatMessage = JSON.parse(message.body);
+                    appendMessage(chatMessage.message);
+                });
+            });
+
+            function appendMessage(message) {
+                var messageElement = $('<div class="message"></div>');
+                messageElement.text(message);
+                chatWindow.append(messageElement);
+            }
+
+            socket.onerror = function(error) {
+                console.error("WebSocket 에러:", error);
+            };
+
+            socket.onclose = function() {
+                console.log("WebSocket 연결 종료");
+            };
+
+            $("#chatForm").submit(function(event) {
+                event.preventDefault();
+
+                var message = $("input[name='message']").val();
+                var seller = $("#chatWindow").find("p:contains('Seller')").text().split(': ')[1];
+                var title = $("#chatWindow").find("p:contains('Title')").text().split(': ')[1];
+
+                var chatMessageDto = {
+                    message: message,
+                    seller: seller,
+                    title: title
+                };
+
+                stompClient.send("/app/sendMessage", {}, JSON.stringify(chatMessageDto));
+
+                $("input[name='message']").val("");
+            });
+        });
+    </script>
+
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            var chatList = $('.chat-item');
+            var chatWindow = $('#chatWindow');
+
+            chatList.each(function() {
+                $(this).on('click', function() {
+                    var seller = $(this).data('seller');
+
+                    chatWindow.html(`
+                    <div>
+                        <p>Seller: ${seller}</p>
+                    </div>
+                `);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+
+<h1>채팅 페이지</h1>
+
+<!-- 상품 정보 표시 -->
+
+<!-- 채팅 목록 -->
+<h2>채팅 목록</h2>
+<ul>
+    <li class="chat-item" th:each="chatRoom : ${chatRoomLists}"
+        th:data-seller="${chatRoom.other}">
+        <span th:text="${chatRoom.other}"></span>
+    </li>
+</ul>
+
+<!-- 채팅 창 -->
+<h2>채팅 창</h2>
+<div id="chatWindow"></div>
+<form id="chatForm" method="POST" action="/sendChat" enctype="multipart/form-data">
+    <input type="text" name="message" placeholder="채팅을 입력하세요" required />
+    <button type="submit">전송</button>
+    <input type="file" name="file" />
+</form>
+
+</body>
+</html>
