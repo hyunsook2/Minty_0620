@@ -51,5 +51,5 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     void updateBuyerSchedule(@Param("tradeId") Long tradeId, @Param("schedule") String schedule);
 
 
-
+    Trade findByBoardIdAndBuyerId(TradeBoard tradeBoardId, User buyer);
 }

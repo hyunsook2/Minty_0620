@@ -12,7 +12,7 @@
            box-shadow: 0 0 20px black
       }
       .menu-a {
-        color: black;
+        color: black !important;
         font-size: 22px;
         font-family: 'font', sans-serif;
       }
@@ -208,71 +208,3 @@
     .btn:hover {
     background-color: #438e5d; !important;
     }
-
-
-     .naver {
-      position: relative;
-      transition: opacity 0.5s ;
-    }
-
-   /* .naver img {
-      transition: opacity 0.5s;
-    }
-
-    .naver:hover img {
-      opacity: 0;
-    }
-
-    .naver:hover::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width:190px;
-      height:50px;
-      margin-left:13px;
-      background-image: url("../image/naver_hover.jpg");
-      background-size: cover;
-      opacity: 0;
-      transition: opacity 0.5s ;
-      z-index:1;
-    }
-
-    .naver:hover::after {
-      opacity: 1;
-    }
-*/
-
-       .kakao {
-      position: relative;
-      transition: opacity 0.5s ;
-    }
-
-   /* .kakao img {
-      transition: opacity 0.5s;
-    }
-
-    .kakao:hover img {
-      opacity: 0;
-    }
-
-    .kakao:hover::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width:190px;
-      height:50px;
-      margin-left:13px;
-      background-image: url("../image/kakao_hover.jpg");
-      background-size: cover;
-      opacity: 0;
-      transition: opacity 0.5s ;
-      z-index:1;
-     box-shadow: 0px 0px 15px #953b43;
-    }
-
-    .kakao:hover::after {
-      opacity: 1;
-    }
-    */

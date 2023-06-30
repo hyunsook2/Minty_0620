@@ -6,7 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class GetMessageController {
     @GetMapping("/getchatting")
+//    public String chat() {
+//        return "chat/chat-app";
+//    }
     public String chat() {
-        return "chat/chat-app";
+        return "chat/sample";
     }
 }

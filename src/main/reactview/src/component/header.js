@@ -2,17 +2,34 @@ import React, { useState, useEffect } from 'react';
 import '../css/header.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import $ from 'jquery';
 
 function Header({ csrfToken }) {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userRole, setUserRole] = useState('');
     useEffect(() => {
-        axios.get(`/api/isLoggedIn`).then((response) => {
-            setIsLoggedIn(response.data);
-        }).catch((e) => {
-            console.error(e);
-        })
-    })
+      axios.get(`/api/isLoggedIn`).then((response) => {
+        setIsLoggedIn(response.data.LoggedIn);
+        setUserRole(response.data.userRole);
+      }).catch((e) => {
+        console.error(e);
+      });
+
+      // jQuery script
+      $(window).on("scroll", function() {
+        var 스크롤양 = $(window).scrollTop();
+        var 문서높이 = $("html").height();
+        var 윈도우높이 = $(window).height();
+        var 스크롤바길이 = (스크롤양 / (문서높이 - 윈도우높이)) * 100;
+
+        $(".scroll-bar").css("width", `${스크롤바길이*2}%`);
+      });
+    }, []);
+
+    useEffect(() => {
+        console.log(userRole);
+    }, [userRole]);
 
     const handleLoginClick = () => {
         setIsLoggedIn(true);
@@ -63,6 +80,10 @@ function Header({ csrfToken }) {
                             시세조회
                         </a>
                         <p></p>
+                        <a href="/getchatting" className="nav-link menu-a">
+                            채팅
+                        </a>
+                        <p></p>
                     </div>
                     <div className="navbar-nav d-flex flex-row gap-2">
                         <a href="/usershop" className="nav-link menu-a">
@@ -73,9 +94,12 @@ function Header({ csrfToken }) {
                             마이페이지
                         </a>
                         <p></p>
-                        <a href="/manager" className="nav-link menu-a">
-                            관리자페이지
-                        </a>
+                        {userRole==='ADMIN' ? (<>
+                            <a href="/manager" className="nav-link menu-a">
+                                                        관리자페이지
+                            </a>
+                        </>) : null}
+
                         <p></p>
                         {isLoggedIn ? (
                             <>
@@ -100,8 +124,7 @@ function Header({ csrfToken }) {
                     </div>
                 </div>
             </nav>
-            <div className="scroll-bar" style={{ top: '110px', position: 'fixed', height: '5px', width: 0, background: 'black', zIndex: 10 }}></div>
-
+            <div className="scroll-bar" style={{top: '110px', position: 'fixed', height: '5px', width: 0, background: 'black', zIndex: 10 }}></div>
         </div>
     );
 }

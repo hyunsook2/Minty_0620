@@ -44,7 +44,7 @@ public class SecurityConfig {
 
         http.authorizeRequests()
                 .requestMatchers("/adimage/**","/css/**", "/js/**", "/image/**","/fragments/**","/layout/**").permitAll()
-                .requestMatchers("/login/**", "/join/**", "/map/**","/","/sms/**", "/supportHome/**","/signup/**","/recovery/**","/account/email/**","/account/recovery/**").permitAll()
+                .requestMatchers("/login/**", "/join/**", "/map/**","/","/sms/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .csrf().ignoringRequestMatchers(
@@ -82,9 +82,11 @@ public class SecurityConfig {
             String email = userDetails.getUsername();
             Long userId =  userService.getUserInfo(email).getId();
             String userNickName = userService.getUserInfo(email).getNickName();
+            String userRole = userService.getUserInfoById(userId).getRole().name();
             session.setAttribute("userId",userId);
             session.setAttribute("userEmail", email);
             session.setAttribute("userNickName",userNickName);
+            session.setAttribute("userRole",userRole);
             response.sendRedirect("/generalLoginSuccess");
         }
     }
@@ -130,12 +132,13 @@ public class SecurityConfig {
                     session.setAttribute("userEmail", userService.getUserInfo((String)kakao_account.get("email")).getEmail());
                     session.setAttribute("userId",userService.getUserInfo((String)kakao_account.get("email")).getId());
                     session.setAttribute("userNickName",userService.getUserInfo((String)kakao_account.get("email")).getNickName());
+                    session.setAttribute("userRole",userService.getUserInfo((String)kakao_account.get("email")).getRole().name());
 
                 }else{
                     session.setAttribute("userEmail", userService.getUserInfo((String)naver_account.get("email")).getEmail());
                     session.setAttribute("userId",userService.getUserInfo((String)naver_account.get("email")).getId());
                     session.setAttribute("userNickName",userService.getUserInfo((String)naver_account.get("email")).getNickName());
-
+                    session.setAttribute("userRole",userService.getUserInfo((String)naver_account.get("email")).getRole().name());
                 }
                 response.sendRedirect("/loginSuccess");
             }

@@ -233,4 +233,9 @@ public class TradeService {
         trade.setTradeTime(null);
         tradeRepository.save(trade);
     }
+
+    public Trade findTradeBoardById(TradeBoard tradeBoardId, User buyer) {
+        Trade trade = tradeRepository.findByBoardIdAndBuyerId(tradeBoardId,buyer);
+        return trade;
+    }
 }

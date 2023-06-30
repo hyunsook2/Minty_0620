@@ -24,7 +24,6 @@
                 </a>
                 <div class="navbar-nav me-md-auto d-flex flex-row gap-2">
                     <p></p>
-                    <!--                    <a class="nav-link menu-a" th:href="@{boardList/0}">팝니다</a>-->
                     <a class="nav-link menu-a" th:href="@{/boardList}">거래 게시판</a>
                     <p></p>
                     <a class="nav-link menu-a" th:href="@{/jobList}">급해요</a>
@@ -39,10 +38,14 @@
                     <p></p>
                 </div>
                 <div class="navbar-nav d-flex flex-row gap-2">
+                    <div sec:authorize="hasAnyRole('USER', 'ADMIN') or hasAnyAuthority('USER', 'ADMIN')">
                     <a class="nav-link menu-a " th:href="@{/usershop}">개인상점</a>
                     <p></p>
+                        </div>
+                    <div sec:authorize="hasAnyRole('USER', 'ADMIN') or hasAnyAuthority('USER', 'ADMIN')">
                     <a class="nav-link menu-a " th:href="@{/mypage}">마이페이지</a>
                     <p></p>
+                        </div>
                     <div sec:authorize="hasRole('ADMIN') or hasAnyAuthority('ADMIN')">
                     <a class="nav-link menu-a " th:href="@{/manager}">관리자페이지</a>
                     <p></p>
@@ -65,72 +68,6 @@
 
 
 
-<!--    <div class="black-bg">-->
-<!--        <form id="login-form" role="form" method="post" action="/login">-->
-<!--            <div class="heading">-->
-<!--                <a href="/">-->
-<!--                    <img src="/image/logo.PNG" width="110px"/>-->
-<!--                </a>-->
-<!--            </div>-->
-<!--            <div class="left">-->
-<!--                <label>이메일주소</label> <br />-->
-<!--                <input-->
-<!--                        type="email"-->
-<!--                        name="email"-->
-<!--                        class="form-control"-->
-<!--                        placeholder="이메일을 입력해주세요"-->
-<!--                />-->
-<!--                <label>비밀번호</label> <br />-->
-<!--                <input-->
-<!--                        type="password"-->
-<!--                        name="password"-->
-<!--                        id="password"-->
-<!--                        class="form-control"-->
-<!--                        placeholder="비밀번호 입력"-->
-<!--                />-->
-<!--                <button class="btn btn-primary">로그인</button>-->
-<!--                <button-->
-<!--                        type="button"-->
-<!--                        class="btn btn-primary"-->
-<!--                        onClick="location.href='/join'"-->
-<!--                >-->
-<!--                    회원가입-->
-<!--                </button>-->
-<!--            </div>-->
-<!--            <div class="right">-->
-<!--                <div class="connect">간편 로그인</div>-->
-<!--                <a href="/oauth2/authorization/naver" class="naver">-->
-<!--                    <img-->
-<!--                            src="../image/naver.png"-->
-<!--                            width="190"-->
-<!--                            height="50"-->
-<!--                            alt="네이버 로그인"-->
-<!--                    />-->
-<!--                </a>-->
-<!--                <br />-->
-<!--                <a href="/oauth2/authorization/kakao" class="kakao">-->
-<!--                    <img-->
-<!--                            src="../image/kakao.png"-->
-<!--                            width="190"-->
-<!--                            height="50"-->
-<!--                            alt="카카오 로그인 버튼"-->
-<!--                    />-->
-<!--                </a>-->
-<!--                <br />-->
-<!--            </div>-->
-
-<!--            <div class="errorDiv">-->
-<!--                <p-->
-<!--                        th:if="${loginErrorMsg}"-->
-<!--                        class="error"-->
-<!--                        th:text="${loginErrorMsg}"-->
-<!--                        style="color: red"-->
-<!--                ></p>-->
-<!--            </div>-->
-<!--        </form>-->
-
-
-<!--        <script type="text/javascript" th:src="@{/js/login.js}"></script>-->
     </div>
 
 
@@ -147,22 +84,6 @@
 
         $(".scroll-bar").css("width", `${스크롤바길이}%`);
       });
-
-<!--      //로그인창-->
-<!--      $(".close").on("click", function () {-->
-<!--        $(".black-bg").removeClass("show-modal");-->
-<!--      });-->
-
-<!--      $(".login").on("click", function () {-->
-<!--        $(".black-bg").addClass("show-modal");-->
-<!--      });-->
-
-<!--      $(".black-bg").on('click', function(e) {-->
-<!--         if($(e.target).is('.black-bg')) {-->
-<!--           $('.black-bg').removeClass('show-modal');-->
-<!--         }-->
-<!--        });-->
-
 
 
         $(document).ready(function () {

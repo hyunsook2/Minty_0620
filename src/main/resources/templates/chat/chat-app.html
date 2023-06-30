@@ -3,6 +3,8 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Chat</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -17,14 +19,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
 
-
+        * {
+            box-sizing: border-box;
+        }
 body,
 html {
-    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #e0f7fa;
+    min-height: 100vh;
     margin: 0;
-    background: #7F7FD5;
-    background: -webkit-linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
-    background: linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
+    padding: 0;
 }
 
 .chat {
@@ -282,8 +286,16 @@ html {
         margin-bottom: 15px !important;
     }
 }
-    </style>
+#formMessageBody {
+    overflow-y: scroll;
+    height: 400px;
+}
+#formProductsBody {
+    overflow-y: scroll;
+    height: 200px;
+}
 
+    </style>
 
 </head>
 
@@ -293,21 +305,13 @@ html {
     <div class="row justify-content-center h-100">
         <div class="col-md-4 col-xl-3 chat">
             <div class="card mb-sm-3 mb-md-0 contacts_card">
-                <div class="card-header">
-                    <div class="input-group">
-                        <input type="text" placeholder="Search..." name="" class="form-control search">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
-                        </div>
-                    </div>
-                </div>
                 <div class="card-body contacts_body">
                     <ul class="contacts" id="usersList"></ul>
                     <hr>
                     <h6>My Group</h6>
                     <ul class="contacts" id="groupList"></ul>
                 </div>
-                <button class="input-group-text send_btn" id="logoutBtn" onclick="logout()">home</button>
+                <button class="input-group-text send_btn" id="logoutBtn" onclick="home()">뒤로가기~</button>
             </div>
         </div>
         <div class="col-md-8 col-xl-6 chat">
@@ -324,13 +328,25 @@ html {
                         </div>
                     </div>
                 </div>
+                <div class="card-body msg_card_body" id="formProductsBody">
+                </div>
                 <div class="card-body msg_card_body" id="formMessageBody">
                 </div>
                 <div class="card-footer">
                     <div class="input-group" id="formSubmit">
                         <div class="input-group-append">
-                            <span id="spanElement" class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
-                            <input type="file" id="imageInput" accept="image/*" style="display: none;">
+<!--                                <img src="http://localhost:8087/image/chat/20230621_021506_minty.png">-->
+                            <span id="spanElement" class="input-group-text attach_btn">
+                                <i class="fas fa-paperclip">
+<!--                                    <form action="/sendImage" method="post" enctype="multipart/form-data">-->
+<!--                                        <input type="file" name="image" accept="image/*" required />-->
+<!--                                        <input type="submit" value="Upload Image" />-->
+<!--                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
+<!--                                    </form>-->
+                                        <input type="file" id="imageFile" onchange="uploadImage()" style="display:none" accept="image/*">
+                                        <button onclick="document.getElementById('imageFile').click();">이미지 전송</button>
+                                </i>
+                            </span>
                         </div>
                         <textarea id="message-to-send" name="message-to-send" class="form-control type_msg" placeholder="Type your message..."></textarea>
                         <div class="input-group-append">
@@ -341,6 +357,7 @@ html {
         </div>
     </div>
     <script type="text/javascript" th:src="@{/js/websocket.js}"></script>
+</div>
 </div>
 </body>
 </html>

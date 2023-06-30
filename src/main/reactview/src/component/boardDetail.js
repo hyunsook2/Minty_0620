@@ -72,16 +72,16 @@ const fetchData = () => {
     setShowModal(false);
   };
 
-  const purchasingReq = () => {
+  const chatRoom = () => {
       axios
-        .post('/api/purchasingReq', tradeBoard.id, {
+        .post('/chatRoom', tradeBoard.id, {
           headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': csrfToken,
           },
         })
         .then((response) => {
-          window.location.href = response.data;
+            window.location.href = window.location.origin + '/getchatting';
         })
         .catch((error) => {
              if (error.response && error.response.status === 400) {
@@ -112,7 +112,8 @@ const fetchData = () => {
                   src={`https://storage.cloud.google.com/reboot-minty-storage/${img.imgUrl}`}
                   alt="Board Image"
                   className="board-img"
-                  onClick={() => handleImageClick(index)} // 이미지 클릭 이벤트 처리
+                  onClick={() => handleImageClick(index)}
+                  // 이미지 클릭 이벤트 처리
                 />
               </Carousel.Item>
             ))}
@@ -131,17 +132,17 @@ const fetchData = () => {
           </Col>
           <Col className="button-groups">
             {!isAuthor && <Button variant="primary">찜하기</Button>}
-            {!isAuthor &&<Button variant="secondary">채팅</Button>}
-            {!isAuthor &&<Button variant="success" onClick={purchasingReq}>
-              구매 신청
-            </Button>}
+             {!isAuthor &&<Button variant="secondary" onClick={chatRoom}>채팅</Button>}
+                  {/*{!isAuthor &&<Button variant="success" onClick={purchasingReq}>*/}
+           {/*  구매 신청*/}
+           {/*</Button>}*/}
           </Col>
         </Col>
       </Row>
       <br />
       <br />
       <Row className="board-content">
-        <Col>{tradeBoard.content}</Col>
+        <Col style={{ whiteSpace: "pre-wrap" }}>{tradeBoard.content}</Col>
       </Row>
       <br/><br/>
       <Row>

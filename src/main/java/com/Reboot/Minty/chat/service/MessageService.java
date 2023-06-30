@@ -34,7 +34,6 @@ public class MessageService {
                 "or (message_to=? and message_from=?) order by created_date_time asc",from,to,from,to);
     }
 
-
     public List<Map<String,Object>> getListMessageGroups(@PathVariable("groupid") Integer groupid){
         return jdbcTemplate.queryForList("select gm.*,us.name as name from group_messages gm " +
                 "join user us on us.id=gm.user_id " +
