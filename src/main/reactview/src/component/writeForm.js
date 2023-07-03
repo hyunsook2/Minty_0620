@@ -9,7 +9,7 @@ import '../css/writeForm.css';
 
 function WriteForm(props) {
     const [targetCategory, setTargetCategory] = useState('tradeBoard');
-    const [subCategory, setSubCategory] = useState('sell');
+    const [subCategory, setSubCategory] = useState('trade');
     const [tradeTopCate, setTradeTopCate] = useState([]);
     const [tradeSubCate, setTradeSubCate] = useState([]);
     const [selectedTopCateId, setSelectedTopCateId] = useState(null);
@@ -17,29 +17,37 @@ function WriteForm(props) {
     const [csrfToken, setCsrfToken] = useState('');
     const [tradeBoard, setTradeBoard] = useState(null);
     const [imageList, setImageList] = useState([]);
+    const [state, setState] = useState({});
+    const [addressCode, setAddressCode] = useState([]);
+    const [userLocationList, setUserLocationList] = useState([]);
 
-    const location = useLocation();
-    const state = location.state;
+     const location = useLocation();
     useEffect(() => {
-        if (location.state) {
-            setTargetCategory("tradeBoard");
-            setTradeBoard(location.state.tradeBoard);
-            setSelectedTopCateId(location.state.tradeBoard.topCategory);
-            setSelectedSubCateId(location.state.tradeBoard.subCategory);
-            setImageList(location.state.imageList);
-
+     if (location.state) {
+          const temp = location.state.tradeBoard;
+          setTargetCategory("tradeBoard");
+          setTradeBoard(temp);
+          const topTemp = JSON.stringify(temp.topCategory);
+          const subTemp = JSON.stringify(temp.subCategory);
+          console.log(JSON.parse(topTemp).id);
+          setSelectedTopCateId(JSON.parse(topTemp).id);
+          setSelectedSubCateId(JSON.parse(subTemp).id);
+          setImageList(location.state.imageList);
         }
     }, [location.state]);
-
 
 
     const fetchData = () => {
         axios.get(`/api/writeForm`).then((response) => {
             let top = [...response.data.top];
             let sub = [...response.data.sub];
+            let codes = [...response.data.addressCode];
+            let locList = [...response.data.userLocationList];
             setCsrfToken(response.data.csrfToken);
+            setUserLocationList(locList);
             setTradeTopCate(top);
             setTradeSubCate(sub);
+            setAddressCode(codes);
         })
             .catch((error) => {
                 console.error('Error fetching data:', error);
@@ -49,7 +57,7 @@ function WriteForm(props) {
     function TradeOption() {
         return (
             <>
-                <option value="sell">거래 게시판</option>
+                <option value="trade">거래 게시판</option>
                 <option value="emergencyJob">알바 구인</option>
             </>
         );
@@ -66,14 +74,9 @@ function WriteForm(props) {
     }
 
     useEffect(() => {
-
-    }, [subCategory]);
-
-    useEffect(() => {
         fetchData();
         if (targetCategory === 'tradeBoard') {
-            setSubCategory('sell');
-            setSelectedTopCateId(selectedTopCateId);
+            setSubCategory('trade');
         }
         else { setSubCategory('common'); }
     }, [targetCategory], [subCategory]);
@@ -90,25 +93,24 @@ function WriteForm(props) {
     }) {
         return (
 
-            <Row className={`justify-content-center trade-category-container ${targetCategory !== 'tradeBoard' || (subCategory !== 'sell' && subCategory !== 'buy') ? 'hidden' : ''}`}>
+            <Row className={`justify-content-center trade-category-container ${targetCategory !== 'tradeBoard' || (subCategory !== 'trade') ? 'hidden' : ''}`}>
                 <br /><br />
                 <Col md={12}>
                     <Container>
                         <Row>
-                            {targetCategory === 'tradeBoard' && (subCategory === 'sell' || subCategory === 'buy') && (
+                            {targetCategory === 'tradeBoard' && (subCategory === 'trade') && (
                                 <Col md={1}>
                                     <span className="category-span">카테고리</span>
                                 </Col>
                             )}
                             <Col sm={5}>
-                                {targetCategory === "tradeBoard" && (subCategory === "sell" || subCategory === "buy") &&
+                                {targetCategory === "tradeBoard" && (subCategory === "trade") &&
                                     <ul className="scrollable-list">
                                         {tradeTopCate.map((ttc) => (
                                             <li
                                                 key={ttc.id}
                                                 onClick={() => {
                                                     setSelectedTopCateId(ttc.id);
-                                                    setSelectedSubCateId(null);
                                                 }}
                                                 className={selectedTopCateId === ttc.id ? "active" : ""}
                                                 style={{ cursor: 'pointer' }}
@@ -119,22 +121,23 @@ function WriteForm(props) {
                                     </ul>
                                 }
                             </Col>
-                            <Col sm={5}>
-                                {targetCategory === "tradeBoard" && (subCategory === "sell" || subCategory === "buy") && selectedTopCateId &&
-                                    <ul className="scrollable-list">
-                                        {tradeSubCate.filter(tsc => tsc.topCategory.id === selectedTopCateId).map((tsc) => (
-                                            <li
-                                                key={tsc.id}
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => setSelectedSubCateId(tsc.id)}
-                                                className={selectedSubCateId === tsc.id ? 'active' : ''}
-                                            >
-                                                {tsc.name}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                }
-                            </Col>
+                          <Col sm={5}>
+                            {targetCategory === "tradeBoard" && (subCategory === "trade" || subCategory === "buy") &&
+                              <ul className="scrollable-list">
+                                {tradeSubCate.filter(tsc => tsc.topCategory.id === selectedTopCateId).map((tsc) => (
+                                  <li
+                                    key={tsc.id}
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => setSelectedSubCateId(tsc.id)}
+                                    className={selectedSubCateId === tsc.id ? 'active' : ''}
+                                  >
+                                    {tsc.name}
+                                  </li>
+                                ))}
+                              </ul>
+                            }
+                          </Col>
+
                         </Row>
                     </Container>
                 </Col>
@@ -187,13 +190,15 @@ function WriteForm(props) {
                     setSelectedSubCateId={setSelectedSubCateId}
                 />
 
-                {(subCategory === "sell" || subCategory === "buy") && targetCategory === "tradeBoard" && (
+                {(subCategory === "trade" || subCategory === "buy") && targetCategory === "tradeBoard" && (
                     <TradeForm
                         selectedTopCateId={selectedTopCateId}
                         selectedSubCateId={selectedSubCateId}
                         csrfToken={csrfToken}
                         tradeBoard={tradeBoard}
                         imageList={imageList}
+                        addressCode={addressCode}
+                        userLocationList={userLocationList}
                     />
                 )}
                 {(subCategory === "emergencyJob" && targetCategory === "tradeBoard") && <JobForm csrfToken={csrfToken}/>}

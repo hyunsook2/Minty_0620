@@ -63,4 +63,6 @@ public class Trade {
     @Column(name = "buyer_schedule", columnDefinition = "VARCHAR(1) DEFAULT 'N'", nullable = false)
     private String buyerSchedule;
 
+    @Column
+    private String tradeLocation;
 }

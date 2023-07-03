@@ -3,11 +3,11 @@ package com.Reboot.Minty.tradeBoard.dto;
 import com.Reboot.Minty.categories.entity.SubCategory;
 import com.Reboot.Minty.categories.entity.TopCategory;
 import com.Reboot.Minty.member.entity.User;
-import com.Reboot.Minty.member.entity.UserLocation;
 import com.Reboot.Minty.tradeBoard.entity.TradeBoard;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
@@ -21,9 +21,10 @@ public class TradeBoardFormDto {
     @NotBlank(message = "내용은 필수 입니다.")
     private String content;
 
-    @Positive(message = "양수만 입력해주세요.")
+    @PositiveOrZero(message = "0원 이상만 입력 가능합니다.")
     @NotNull(message = "가격은 필수입니다.")
     private Integer price;
+
 
     private TopCategory topCategory;
 
@@ -32,7 +33,9 @@ public class TradeBoardFormDto {
 
     private User user;
     private int boardType;
-    private UserLocation userLocation;
+
+    @NotNull(message = "판매 지역 입력은 필수 입니다")
+    private String sellArea;
 
     private static ModelMapper modelMapper =  new ModelMapper();
     public static TradeBoard toEntity(TradeBoardFormDto dto) {

@@ -44,7 +44,7 @@ public class SecurityConfig {
 
         http.authorizeRequests()
                 .requestMatchers("/adimage/**","/css/**", "/js/**", "/image/**","/fragments/**","/layout/**").permitAll()
-                .requestMatchers("/login/**", "/join/**", "/map/**","/","/sms/**").permitAll()
+                .requestMatchers("/login/**", "/join/**","/","/sms/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .csrf().ignoringRequestMatchers(

@@ -44,7 +44,7 @@ if (navigator.geolocation) {
          // 위도 경도 locPosition 담아두기
         var locPosition = new kakao.maps.LatLng(lat, lon);
         document.getElementById('latitude').value = lat;
-                document.getElementById('longitude').value = lon;
+        document.getElementById('longitude').value = lon;
         // 마커와 인포윈도우를 표시합니다
         displayMarker(locPosition);
       });

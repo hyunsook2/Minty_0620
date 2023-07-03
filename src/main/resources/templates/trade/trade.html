@@ -4,6 +4,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 <head>
+    <script type="text/javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kaKaoKey} + '&libraries=services'}"></script>
+    <link th:rel="styleSheet" th:href="@{/css/mapOption/mapOption.css}">
     <style>
     .wrapper {
         width: 100%;
@@ -98,112 +100,112 @@
 
 <!--    후기-->
 
-   .review-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
+    .review-container {
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+}
 
-    .review-item {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 20px;
-    }
+.review-item {
+display: flex;
+justify-content: center;
+align-items: center;
+margin-bottom: 20px;
+}
 
-    .review {
-        width: 500px;
-        min-height: 220px;
-        background-color: #F0FFF0;
-        border: 1px solid;
-        border-radius: 10px;
-        margin: auto;
-        position: relative;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: min-height 0.3s ease-in-out;
-    }
+.review {
+width: 500px;
+min-height: 220px;
+background-color: #F0FFF0;
+border: 1px solid;
+border-radius: 10px;
+margin: auto;
+position: relative;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+transition: min-height 0.3s ease-in-out;
+}
 
-    .review_imageUrl {
-        position: absolute;
-        top : 0px;
-        right: 10px;
-    }
+.review_imageUrl {
+position: absolute;
+top : 0px;
+right: 10px;
+}
 
 .review_content {
-    position: absolute;
-    top: -10px;
-    left: 100px;
-    width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    transition: -webkit-line-clamp 0.3s ease-in-out;
+position: absolute;
+top: -10px;
+left: 100px;
+width: 200px;
+overflow: hidden;
+text-overflow: ellipsis;
+display: -webkit-box;
+-webkit-line-clamp: 5;
+-webkit-box-orient: vertical;
+transition: -webkit-line-clamp 0.3s ease-in-out;
 }
 
 
-    .review_content_container {
-        position: relative;
-    }
+.review_content_container {
+position: relative;
+}
 
-    .show-more-button {
-        display:none;
-        color: black;
-        border: none;
-        padding: 5px 10px;
-        font-size: 12px;
-        cursor: pointer;
-        margin-top: 5px;
-        position: absolute;
-        left: 285px;
-        top: 85px;
-        background-color: transparent;
-    }
+.show-more-button {
+display:none;
+color: black;
+border: none;
+padding: 5px 10px;
+font-size: 12px;
+cursor: pointer;
+margin-top: 5px;
+position: absolute;
+left: 285px;
+top: 85px;
+background-color: transparent;
+}
 
-    .review_bottom {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        flex-direction: column;
-        margin-top: 10px;
-    }
+.review_bottom {
+display: flex;
+justify-content: center;
+align-items: flex-start;
+flex-direction: column;
+margin-top: 10px;
+}
 
-    .review_score {
-        position: absolute;
-        bottom: 90px;
-        left: 40px;
-    }
+.review_score {
+position: absolute;
+bottom: 90px;
+left: 40px;
+}
 
-    .review_nickname {
-        position: absolute;
-        bottom: 55px;
-        left: 20px;
-    }
+.review_nickname {
+position: absolute;
+bottom: 55px;
+left: 20px;
+}
 
-    .review_createdAt {
-        position: absolute;
-        bottom: 55px;
-        left: 90px;
-    }
+.review_createdAt {
+position: absolute;
+bottom: 55px;
+left: 90px;
+}
 
-    .product-view-container {
-        width: 485px;
-        height: 40px;
-        border: 1px solid black;
-        padding: 2px;
-        position: absolute;
-        bottom: 5px;
-        left: 5px;
-        border-radius: 10px;
-    }
+.product-view-container {
+width: 485px;
+height: 40px;
+border: 1px solid black;
+padding: 2px;
+position: absolute;
+bottom: 5px;
+left: 5px;
+border-radius: 10px;
+}
 
-    .expanded {
-        min-height: 350px;
-    }
-    .expand-width {
-    width: 350px;
+.expanded {
+min-height: 350px;
+}
+.expand-width {
+width: 350px;
 }
 </style>
 
@@ -294,7 +296,7 @@
                             </img>
                             <div class="review_content_container">
                                 <span class="review_content" th:text="${review.contents}" th:classappend="${review.imageUrl} ? '' : 'expand-width'"></span>
-                                <button class="show-more-button">더 보기</button>
+                                <button class="more-button">더 보기</button>
                             </div>
                             <span class="review_createdAt" th:text="${T(com.Reboot.Minty.review.time.DateUtils).formatReviewDate(review.writeTime)}"></span>
                             <div class="review_bottom">
@@ -307,7 +309,7 @@
                                 </div>
                             </div>
                             <img class="review_imageUrl" th:if="${review.imageUrl != null}" th:src="@{${review.imageUrl}}"
-                                 style="width: 150px; height: 150px;" alt="Review Image"/>
+                                 width="150" height="150" alt="Review Image"/>
                         </div>
                     </div>
                 </div>
@@ -339,8 +341,18 @@
                 거래 시간 :
                 <span class="trade_time" th:text="${trade.tradeTime}"></span>
                 <br>
-                거래 장소:
-                갓 민형이 해줄거임
+                <div th:if="${trade.tradeLocation}">
+                    거래 장소: <span th:text="${trade.tradeLocation}"></span>
+                </div>
+                <div th:if="${trade.tradeLocation==null}">
+                    거래 장소: 거래 장소를 잡아주세요!
+                </div>
+
+                <div th:if="${trade.tradeLocation}">
+                    <div id="map2" style="width:300px;height:300px; ">
+                        <input type="hidden" id="map-value" th:value="${trade.tradeLocation}">
+                    </div>
+                </div>
                 <br>
             </div>
         </div>
@@ -356,6 +368,48 @@
                 <th:block th:if="${trade.buyerSchedule =='N' && trade.sellerSchedule == 'N'}">
                     <a class="button" th:href="@{/schedule/{tradeId}(tradeId=${trade.id})}">일정 잡기</a>
                 </th:block>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">거래 장소 잡기</button>
+                <div class="modal fade" id="exampleModalFullscreen" tabindex="-1" aria-labelledby="exampleModalFullscreenSmLabel"
+                     aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog modal-fullscreen">
+                        <div class="modal-content">
+                            <form th:action="@{'/tradeLocation'}" method="post">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-4" id="exampleModalFullscreenSmLabel">거래 장소 잡기</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="map_wrap">
+                                        <div id="map" style="width: 100%; height: 100%;"></div>
+                                        <div class="hAddr">
+                                            <span class="title">지도중심기준 행정동 주소정보</span>
+                                            <span id="centerAddr"></span>
+                                        </div>
+                                        <div id="menu_wrap" class="bg_white">
+                                            <div class="option">
+                                                <div>
+                                                    <input type="text" th:value="${trade.tradeLocation != null? trade.tradeLocation : sellArea}" id="keyword" size="15" onkeydown="handleKeyDown(event)">
+                                                    <button type="button" onclick="searchPlaces()">검색하기</button>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <ul id="placesList"></ul>
+                                            <div id="pagination"></div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="tradeId" th:value="${trade.id}" />
+                                    <input type="hidden" id="tradeLocation" name="tradeLocation">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">위치 저장</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
 
                 <th:block th:if="${trade.buyerSchedule =='Y' && trade.sellerSchedule == 'Y'}">
                     <a class="button" th:href="@{/changeSchedule/{tradeId}(tradeId=${trade.id})}">일정 변경</a>
@@ -441,7 +495,10 @@
             </form>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+
+
     <script>
     // URL 매개변수에서 reload 값 확인
     const urlParams = new URLSearchParams(window.location.search);
@@ -451,11 +508,20 @@
     if (shouldReload === 'true') {
         location.reload();
     }
+    const exampleModalFullscreen = document.getElementById('exampleModalFullscreen')
+    exampleModalFullscreen.addEventListener('shown.bs.modal', event => {
+         map.relayout();
+    });
+    function handleKeyDown(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            searchPlaces();
+        }
+    }
 
-    <!-- 후기 -->
-window.onload = function() {
-  const reviewContainers = document.getElementsByClassName('review');
-  for (let i = 0; i < reviewContainers.length; i++) {
+    window.onload = function() {
+    const reviewContainers = document.getElementsByClassName('review');
+    for (let i = 0; i < reviewContainers.length; i++) {
     const reviewContainer = reviewContainers[i];
     const reviewContentContainer = reviewContainer.querySelector('.review_content_container');
     const reviewContent = reviewContainer.querySelector('.review_content');
@@ -468,29 +534,31 @@ window.onload = function() {
 
     // Hide the "더 보기" button if the content height is less than the calculated height or if content has ellipsis
     if (reviewContent.scrollHeight > reviewContent.offsetHeight) {
-      showMoreButton.style.display = 'flex';
+    showMoreButton.style.display = 'flex';
     } else {
-      showMoreButton.style.display = 'none';
+    showMoreButton.style.display = 'none';
     }
 
     showMoreButton.addEventListener('click', () => {
-  if (reviewContainer.classList.contains('expanded')) {
+    if (reviewContainer.classList.contains('expanded')) {
     reviewContent.style.webkitLineClamp = '5';
     showMoreButton.textContent = '더 보기';
     reviewContainer.classList.remove('expanded');
     showMoreButton.style.top = '85px'; // Adjust the top position when content is collapsed
-  } else {
+    } else {
     reviewContent.style.webkitLineClamp = 'initial';
     reviewContentContainer.style.height = 'auto';
     showMoreButton.textContent = '접기';
     reviewContainer.classList.add('expanded');
     const contentHeight = reviewContentContainer.offsetHeight;
     showMoreButton.style.top = contentHeight + 200 + 'px'; // Adjust the top position when content is expanded
-  }
-});
-  }
-};
-</script>
+    }
+    });
+    }
+    };
+    </script>
+    <script type="text/javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kaKaoKey} + '&libraries=services'}"></script>
+    <script type="text/javascript" th:src="@{/js/mapOption.js}"></script>
 </div>
 </body>
 </html>

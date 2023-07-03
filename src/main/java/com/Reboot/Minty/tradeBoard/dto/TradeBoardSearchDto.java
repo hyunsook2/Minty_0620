@@ -11,4 +11,5 @@ public class TradeBoardSearchDto {
     int maxPrice;
     String sortBy;
     String searchQuery="";
+    String searchArea="";
 }

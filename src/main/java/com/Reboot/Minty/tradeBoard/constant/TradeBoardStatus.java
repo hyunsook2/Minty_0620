@@ -6,6 +6,4 @@ import lombok.Getter;
 public enum TradeBoardStatus {
     SELL, TRADING, SOLD_OUT, DELETING, BANNED;
 
-
-
 }

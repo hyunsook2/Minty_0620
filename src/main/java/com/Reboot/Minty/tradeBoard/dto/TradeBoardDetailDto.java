@@ -22,6 +22,7 @@ public class TradeBoardDetailDto {
     private Long id;
     private int price;
     private String title;
+    private String content;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
     private int interesting;
@@ -29,7 +30,7 @@ public class TradeBoardDetailDto {
     private TopCategoryDto topCategory;
     private SubCategoryDto subCategory;
     private UserDto user;
-    private UserLocationDto userLocation;
+    private String sellArea;
     private TradeStatus tradeStatus;
 
     @Getter
@@ -56,14 +57,6 @@ public class TradeBoardDetailDto {
         private String email;
     }
 
-    @Getter
-    @Setter
-    public static class UserLocationDto{
-        private Long id;
-        private String address;
-        private UserDto user;
-    }
-
 
     private static ModelMapper modelMapper = new ModelMapper();
 
@@ -76,6 +69,8 @@ public class TradeBoardDetailDto {
         tradeBoardDetailDto.setModifiedDate(tradeBoard.getModifiedDate());
         tradeBoardDetailDto.setInteresting(tradeBoard.getInteresting());
         tradeBoardDetailDto.setVisit_count(tradeBoard.getVisit_count());
+        tradeBoardDetailDto.setContent(tradeBoard.getContent());
+        tradeBoardDetailDto.setSellArea(tradeBoard.getSellArea());
 
         // Create and populate the TopCategoryDto object
         TopCategoryDto topCategoryDto = new TopCategoryDto();
@@ -97,11 +92,7 @@ public class TradeBoardDetailDto {
         userDto.setEmail(tradeBoard.getUser().getEmail());
         tradeBoardDetailDto.setUser(userDto);
 
-        UserLocationDto userLocationDto = new UserLocationDto();
-        userLocationDto.setId(tradeBoard.getUserLocation().getId());
-        userLocationDto.setAddress(tradeBoard.getUserLocation().getAddress());
-        userLocationDto.setUser(userDto);
-        tradeBoardDetailDto.setUserLocation(userLocationDto);
+
 
         tradeBoardDetailDto.setTradeStatus(tradeBoard.getStatus());
         return tradeBoardDetailDto;

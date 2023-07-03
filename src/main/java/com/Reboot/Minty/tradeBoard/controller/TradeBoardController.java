@@ -1,8 +1,12 @@
 package com.Reboot.Minty.tradeBoard.controller;
 
+import com.Reboot.Minty.addressCode.dto.AddressCodeDto;
+import com.Reboot.Minty.addressCode.repository.AddressCodeRepository;
 import com.Reboot.Minty.categories.CategoryService;
 import com.Reboot.Minty.categories.dto.SubCategoryDto;
 import com.Reboot.Minty.categories.dto.TopCategoryDto;
+import com.Reboot.Minty.member.dto.UserLocationResponseDto;
+import com.Reboot.Minty.member.repository.UserLocationRepository;
 import com.Reboot.Minty.tradeBoard.dto.*;
 import com.Reboot.Minty.tradeBoard.repository.TradeBoardRepository;
 import com.Reboot.Minty.tradeBoard.service.TradeBoardService;
@@ -14,11 +18,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -28,6 +34,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,12 +45,15 @@ public class TradeBoardController {
     private final CategoryService categoryService;
     private final TradeBoardService tradeBoardService;
     private final TradeBoardRepository tradeBoardRepository;
+    private final AddressCodeRepository addressCodeRepository;
+
 
     @Autowired
-    public TradeBoardController(CategoryService categoryService, TradeBoardService tradeBoardService, TradeBoardRepository tradeBoardRepository) {
+    public TradeBoardController(CategoryService categoryService, TradeBoardService tradeBoardService, TradeBoardRepository tradeBoardRepository, AddressCodeRepository addressCodeRepository, UserLocationRepository userLocationRepository) {
         this.categoryService = categoryService;
         this.tradeBoardService = tradeBoardService;
         this.tradeBoardRepository = tradeBoardRepository;
+        this.addressCodeRepository = addressCodeRepository;
     }
 
 
@@ -55,53 +66,62 @@ public class TradeBoardController {
     @GetMapping(value = {
             "/api/boardList/",
             "/api/boardList/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/page/{page}",
             // 1 필터
-            "/api/boardList/category/{subCategoryId}/page/{page}",
-            "/api/boardList/sortBy/{sortBy}/page/{page}",
-            "/api/boardList/minPrice/{minPrice}/page/{page}",
-            "/api/boardList/maxPrice/{maxPrice}/page/{page}",
-            "/api/boardList/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/minPrice/{minPrice}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/page/{page}", // 추가
+
             // 2 필터
-            "/api/boardList/category/{subCategoryId}/sortBy/{sortBy}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/page/{page}",
-            "/api/boardList/minPrice/{minPrice}/sortBy/{sortBy}/page/{page}",
-            "/api/boardList/minPrice/{minPrice}/searchQuery/{searchQuery}/page/{page}",
-            "/api/boardList/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
-            "/api/boardList/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
-            "/api/boardList/maxPrice/{maxPrice}/searchQuery/{searchQuery}/page/{page}",
-            "/api/boardList/searchQuery/{searchQuery}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/minPrice/{minPrice}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/minPrice/{minPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/minPrice/{minPrice}/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/maxPrice/{maxPrice}/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/searchQuery/{searchQuery}/sortBy/{sortBy}/page/{page}",
+
             // 3 필터
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/sortBy/{sortBy}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/maxPrice/{maxPrice}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/sortBy/{sortBy}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/searchQuery/{searchQuery}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/searchQuery/{searchQuery}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
-            "/api/boardList/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/searchQuery/{searchQuery}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/searchQuery/{searchQuery}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/minPrice/{minPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/minPrice/{minPrice}/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/maxPrice/{maxPrice}/searchQuery/{searchQuery}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
             // 4 필터
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/sortBy/{sortBy}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
-            "/api/boardList/category/{subCategoryId}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
-            "/api/boardList/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
-            "/api/boardList/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/searchQuery/{searchQuery}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
+            "/api/boardList/searchArea/{searchArea}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}",
             // 모든 필터
-            "/api/boardList/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}"
+            "/api/boardList/searchArea/{searchArea}/category/{subCategoryId}/searchQuery/{searchQuery}/minPrice/{minPrice}/maxPrice/{maxPrice}/sortBy/{sortBy}/page/{page}"
     })
     @ResponseBody
     public Map<String, Object> getBoardList(
+            HttpServletRequest request,
             TradeBoardSearchDto tradeBoardSearchDto,
             @PathVariable(value = "page", required = false) Optional<Integer> page,
             @RequestParam(value = "subCategoryId", required = false) Optional<Long> subCategoryId,
             @RequestParam(value = "searchQuery", required = false) Optional<String> searchQuery,
             @RequestParam(value = "minPrice", required = false) Optional<Integer> minPrice,
             @RequestParam(value = "maxPrice", required = false) Optional<Integer> maxPrice,
-            @RequestParam(value = "sortBy", required = false) Optional<String> sortBy
+            @RequestParam(value = "sortBy", required = false) Optional<String> sortBy,
+            @PathVariable(value = "searchArea", required = false) Optional<String> searchArea
     ) {
+        HttpSession session = request.getSession();
+        Long userId = (Long) session.getAttribute("userId");
+        List<UserLocationResponseDto> userLocationList = tradeBoardService.getLogginedLocationList(userId);
         if (subCategoryId.isPresent()) {
             tradeBoardSearchDto.setSubCategoryId(subCategoryId.get());
         }
@@ -117,16 +137,24 @@ public class TradeBoardController {
         if (sortBy.isPresent()) {
             tradeBoardSearchDto.setSortBy(sortBy.get());
         }
+        if (searchArea.isPresent()) {
+            System.out.println("1" + searchArea.get());
+            tradeBoardSearchDto.setSearchArea(searchArea.get());
+        } else if (!searchArea.isPresent()) {
+            System.out.println("2" + tradeBoardSearchDto.getSearchArea());
+            tradeBoardSearchDto.setSearchArea(userLocationList.get(0).getAddress());
+        }
+
         List<TopCategoryDto> topCategories = categoryService.getTopCategoryList();
         List<SubCategoryDto> subCategories = categoryService.getSubCategoryList();
-        System.out.println(">>"+page);
 
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 20);
         Slice<TradeBoardDto> tradeBoards = tradeBoardService.getTradeBoard(tradeBoardSearchDto, pageable);
-        System.out.println("isEmpty?"+tradeBoards.isEmpty());
-        System.out.println("hasNext?"+tradeBoards.hasNext());
+        System.out.println("isEmpty?" + tradeBoards.isEmpty());
+        System.out.println("hasNext?" + tradeBoards.hasNext());
         System.out.println(tradeBoards.getNumber());
         Map<String, Object> response = new HashMap<>();
+        response.put("userLocationList", userLocationList);
         response.put("sub", subCategories);
         response.put("top", topCategories);
         response.put("tradeBoards", tradeBoards.getContent());
@@ -179,11 +207,16 @@ public class TradeBoardController {
     @GetMapping({"/api/writeForm"})
     @ResponseBody
     public Map<String, Object> getWriteForm(HttpServletRequest request, Optional<Long> boardId) {
-
+        HttpSession session = request.getSession();
+        Long userId= (Long) session.getAttribute("userId");
         Map<String, Object> response = new HashMap<>();
+        List<AddressCodeDto> addressCode = addressCodeRepository.findAll().stream().map(AddressCodeDto::of).collect(Collectors.toList());
         List<TopCategoryDto> topCategories = categoryService.getTopCategoryList();
         List<SubCategoryDto> subCategories = categoryService.getSubCategoryList();
+        List<UserLocationResponseDto> userLocationList = tradeBoardService.getLogginedLocationList(userId);
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+        response.put("userLocationList",userLocationList);
+        response.put("addressCode", addressCode);
         response.put("csrfToken", csrfToken.getToken());
         response.put("sub", subCategories);
         response.put("top", topCategories);
@@ -278,5 +311,43 @@ public class TradeBoardController {
             }
             return ResponseEntity.ok(boardId);
         }
+    }
+
+    @PostMapping("/api/tradeBoard/deleteRequest")
+    @ResponseBody
+    public ResponseEntity<?> deleteRequest(@RequestBody Long tradeBoardId, HttpSession session) {
+        try {
+            Long userId = (Long) session.getAttribute("userId");
+            tradeBoardService.deleteBoardRequest(tradeBoardId, userId);
+            return ResponseEntity.ok().body("해당 물품 삭제를 완료 하였습니다.");
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
+
+    @Value("${kaKao-service.key}")
+    private String kaKaoKey;
+
+    @PostMapping("/api/kakao/location")
+    @ResponseBody
+    public Mono<ResponseEntity<?>> getLocationFromKakaoApi(@RequestBody LocationRequest request) {
+        String apiUrl = "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x="
+                + request.getLongitude() + "&y=" + request.getLatitude();
+
+        WebClient client = WebClient.builder()
+                .baseUrl(apiUrl)
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "KakaoAK " + kaKaoKey)
+                .build();
+
+        return client.get()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .exchangeToMono(response -> {
+                    if (response.statusCode().is2xxSuccessful()) {
+                        return response.bodyToMono(String.class)
+                                .map(body -> ResponseEntity.ok().body(body));
+                    } else {
+                        return Mono.just(ResponseEntity.status(response.statusCode()).build());
+                    }
+                });
     }
 }

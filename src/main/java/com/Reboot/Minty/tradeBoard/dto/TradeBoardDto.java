@@ -24,7 +24,7 @@ public class TradeBoardDto {
 
 
     private User user;
-    private UserLocation userLocation;
+    private String sellArea;
     private TradeStatus status;
 
     @QueryProjection
@@ -32,7 +32,7 @@ public class TradeBoardDto {
                          Timestamp createdDate, Timestamp modifiedDate, int interesting,
                          int visit_count, String thumbnail, Long topCategoryId, String topCategoryName,
                          Long subCategoryId, String subCategoryName, Long userId, String userEmail,
-                         String userNickName, Long userLocationId, String userLocationAddress,
+                         String userNickName, String sellArea,
                          TradeStatus status) {
         this.id = id;
         this.price = price;
@@ -46,8 +46,7 @@ public class TradeBoardDto {
         this.subCategory = new SubCategory(subCategoryId, subCategoryName,
                 new TopCategory(topCategoryId, topCategoryName));
         this.user = new User(userId, userEmail, userNickName);
-        this.userLocation = new UserLocation(userLocationId, userLocationAddress,
-                new User(userId, userEmail, userNickName));
+        this.sellArea= sellArea;
         this.status = status;
     }
 
@@ -63,7 +62,7 @@ public class TradeBoardDto {
         this.topCategory = v.getTopCategory();
         this.subCategory = v.getSubCategory();
         this.user = v.getUser();
-        this.userLocation = v.getUserLocation();
+        this.sellArea = v.getSellArea();
         this.status = v.getStatus();
     }
 
@@ -112,19 +111,5 @@ public class TradeBoardDto {
         }
     }
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    public static class UserLocation {
-        private Long id;
-        private String address;
-        private User user;
-
-        public UserLocation(Long id, String address, User user) {
-            this.id = id;
-            this.address = address;
-            this.user = user;
-        }
-    }
 }
 

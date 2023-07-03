@@ -80,44 +80,44 @@ function displayMarker(locPosition) {
 }
 
 // 맵 드래그시 이벤트 등록
-//kakao.maps.event.addListener(map, 'dragend', updateMyMarkerPosition);
+kakao.maps.event.addListener(map, 'dragend', updateMyMarkerPosition);
 
 // 드래그시 기존의 마커를 제거 하기 위한 함수
-//function removeMyMarker(centerMarker) {
-//    if (centerMarker) {
-//        centerMarker.setMap(null);
-//    }
-//}
+function removeMyMarker(centerMarker) {
+    if (centerMarker) {
+        centerMarker.setMap(null);
+    }
+}
 
 // 드래그 완료시 마커를 변경 할 함수
-//function updateMyMarkerPosition() {
-//    // 기존 마커 지우고
-//    removeMyMarker(centerMarker);
-//    // 센터 잡아서
-//    center = map.getCenter();
-//    console.log(center);
-//    // 마커를 새로 생성(이게 효율적인진 모르겠다)
-//    centerMarker = new kakao.maps.Marker({
-//                    map: map,
-//                    position: center
-//    });
-//    // 마커를 바꿔주고 해당 마커의 상세 주소 찍어주기
-//    searchDetailAddrFromCoords(center, function(result, status) {
-//     if (status === kakao.maps.services.Status.OK) {
-//            var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
-//            detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-//
-//            var content = '<div class="bAddr">' +
-//                            '<span class="title">법정동 주소정보</span>' +
-//                            detailAddr +
-//                        '</div>';
-//
-//            // 인포윈도우에 드래그한 위치에 대한 법정동 상세 주소정보를 표시합니다
-//            infowindow.setContent(content);
-//            infowindow.open(map, centerMarker);
-//        }
-//    });
-//}
+function updateMyMarkerPosition() {
+    // 기존 마커 지우고
+    removeMyMarker(centerMarker);
+    // 센터 잡아서
+    center = map.getCenter();
+    console.log(center);
+    // 마커를 새로 생성(이게 효율적인진 모르겠다)
+    centerMarker = new kakao.maps.Marker({
+                    map: map,
+                    position: center
+    });
+    // 마커를 바꿔주고 해당 마커의 상세 주소 찍어주기
+    searchDetailAddrFromCoords(center, function(result, status) {
+     if (status === kakao.maps.services.Status.OK) {
+            var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
+            detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+
+            var content = '<div class="bAddr">' +
+                            '<span class="title">법정동 주소정보</span>' +
+                            detailAddr +
+                        '</div>';
+
+            // 인포윈도우에 드래그한 위치에 대한 법정동 상세 주소정보를 표시합니다
+            infowindow.setContent(content);
+            infowindow.open(map, centerMarker);
+        }
+    });
+}
 // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
 searchAddrFromCoords(map.getCenter(), displayCenterInfo);
 

@@ -21,3 +21,30 @@
   width: 100%;
   height: 100%;
 }
+.areaButton{
+    width:100%;
+    height: 3rem;
+        text-align: center;
+        border: 1px solid rgb(195, 194, 204);
+        border-radius: 5px;
+        margin-right: 1rem;
+        border-radius: 2px;
+}
+
+.addressResults-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 400px; /* Set the desired maximum height */
+  overflow-y: auto;
+
+}
+
+.modal-body {
+  overflow-y: auto;
+}
+
+.address-link {
+  text-decoration: none;
+  color: black;
+}
