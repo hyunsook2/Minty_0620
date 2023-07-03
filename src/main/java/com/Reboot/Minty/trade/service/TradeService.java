@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.Reboot.Minty.tradeBoard.constant.TradeStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -111,11 +112,36 @@ public class TradeService {
 
     public void updateStatus(Long tradeId, int statusIndex) {
         String[] statuses = {"대화요청", "거래시작", "거래중", "거래완료", "거래취소"};
+        Trade trade = tradeRepository.findById(tradeId).orElseThrow(EntityNotFoundException::new);
+        TradeBoard tradeBoard = trade.getBoardId();
 
         if (statusIndex >= 0 && statusIndex < statuses.length) {
             String newStatus = statuses[statusIndex];
 
             tradeRepository.updateStatusById(tradeId, newStatus);
+            TradeStatus newTradeStatus = null;
+            if (statusIndex == 1) {
+                newTradeStatus = TradeStatus.TRADING;
+            } else if (statusIndex == 3) {
+                newTradeStatus = TradeStatus.SOLD_OUT;
+            } else if (statusIndex == 4) {
+                newTradeStatus = TradeStatus.SELL;
+
+// Reset other values for trade cancellation
+                trade.setMode("직거래");
+                trade.setSellerCheck("N");
+                trade.setBuyerCheck("N");
+                trade.setSellerSchedule("N");
+                trade.setBuyerSchedule("N");
+                tradeRepository.save(trade);
+            }
+
+
+            if(newTradeStatus != null){
+                tradeBoard.setStatus(newTradeStatus);
+                tradeBoardRepository.save(tradeBoard);
+                System.out.println("TradeBoard " + tradeBoard.getId() + "의 TradeStatus가 " + newTradeStatus + "로 변경되었습니다.");
+            }
 
             System.out.println("Trade " + tradeId + "의 상태가 " + newStatus + "로 변경되었습니다.");
         } else {

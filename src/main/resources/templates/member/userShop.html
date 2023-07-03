@@ -1625,48 +1625,55 @@ background-image: linear-gradient(315deg, #4dccc6 0%, #96e4df 74%);
 
 
   <script type="text/javascript" th:src="@{/js/userShop.js}"></script>
-  <script>
-<!-- 후기 -->
+  <script><!-- 후기 -->
 window.onload = function() {
-  const reviewContainers = document.getElementsByClassName('review');
-  for (let i = 0; i < reviewContainers.length; i++) {
-    const reviewContainer = reviewContainers[i];
-    const reviewContentContainer = reviewContainer.querySelector('.review_content_container');
-    const reviewContent = reviewContainer.querySelector('.review_content');
-    const showMoreButton = reviewContainer.querySelector('.show-more-button');
-    const collapseButton = reviewContainer.querySelector('.collapse-button');
+  setTimeout(function() {
+    const reviewContainers = document.getElementsByClassName('review');
+    console.log('Number of review containers:', reviewContainers.length);
 
-    const lineHeight = parseInt(window.getComputedStyle(reviewContent).lineHeight);
-    const lineClamp = parseInt(window.getComputedStyle(reviewContent).webkitLineClamp);
-    const contentHeight = lineHeight * lineClamp;
+    for (let i = 0; i < reviewContainers.length; i++) {
+      const reviewContainer = reviewContainers[i];
+      const reviewContentContainer = reviewContainer.querySelector('.review_content_container');
+      const reviewContent = reviewContainer.querySelector('.review_content');
+      const showMoreButton = reviewContainer.querySelector('.show-more-button');
+      const collapseButton = reviewContainer.querySelector('.collapse-button');
 
-    console.log('Offset height:', reviewContent.offsetHeight);
-    console.log('Content height:', contentHeight);
-    console.log('Scroll height:', reviewContent.scrollHeight);
+      const lineHeight = parseInt(window.getComputedStyle(reviewContent).lineHeight);
+      const lineClamp = parseInt(window.getComputedStyle(reviewContent).webkitLineClamp);
+      const contentHeight = lineHeight * lineClamp;
 
-    // Hide the "더 보기" button if the content height is less than the calculated height or if content has ellipsis
-    if (reviewContent.scrollHeight > reviewContent.offsetHeight) {
-      showMoreButton.style.display = 'flex';
-    } else {
-      showMoreButton.style.display = 'none';
+      console.log('Offset height:', reviewContent.offsetHeight);
+      console.log('Content height:', contentHeight);
+      console.log('Scroll height:', reviewContent.scrollHeight);
+
+      // Hide the "더 보기" button if the content height is less than the calculated height or if content has ellipsis
+      if (reviewContent.scrollHeight > reviewContent.offsetHeight) {
+        showMoreButton.style.display = 'flex';
+        console.log('Show more button displayed');
+      } else {
+        showMoreButton.style.display = 'none';
+        console.log('Show more button hidden');
+      }
+
+      showMoreButton.addEventListener('click', () => {
+        console.log('Show more button clicked');
+
+        if (reviewContainer.classList.contains('expanded')) {
+          reviewContent.style.webkitLineClamp = '5';
+          showMoreButton.textContent = '더 보기';
+          reviewContainer.classList.remove('expanded');
+          showMoreButton.style.top = '85px'; // Adjust the top position when content is collapsed
+        } else {
+          reviewContent.style.webkitLineClamp = 'initial';
+          reviewContentContainer.style.height = 'auto';
+          showMoreButton.textContent = '접기';
+          reviewContainer.classList.add('expanded');
+          const contentHeight = reviewContentContainer.offsetHeight;
+          showMoreButton.style.top = contentHeight + 200 + 'px'; // Adjust the top position when content is expanded
+        }
+      });
     }
-
-    showMoreButton.addEventListener('click', () => {
-  if (reviewContainer.classList.contains('expanded')) {
-    reviewContent.style.webkitLineClamp = '5';
-    showMoreButton.textContent = '더 보기';
-    reviewContainer.classList.remove('expanded');
-    showMoreButton.style.top = '85px'; // Adjust the top position when content is collapsed
-  } else {
-    reviewContent.style.webkitLineClamp = 'initial';
-    reviewContentContainer.style.height = 'auto';
-    showMoreButton.textContent = '접기';
-    reviewContainer.classList.add('expanded');
-    const contentHeight = reviewContentContainer.offsetHeight;
-    showMoreButton.style.top = contentHeight + 200 + 'px'; // Adjust the top position when content is expanded
-  }
-});
-  }
+  }, 500);
 };
 </script>
 </div>
