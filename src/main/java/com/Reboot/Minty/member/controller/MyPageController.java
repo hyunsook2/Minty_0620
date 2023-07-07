@@ -7,6 +7,8 @@ import com.Reboot.Minty.member.repository.UserRepository;
 import com.Reboot.Minty.member.service.UserService;
 import com.Reboot.Minty.review.entity.Review;
 import com.Reboot.Minty.review.service.ReviewService;
+import com.Reboot.Minty.trade.entity.Trade;
+import com.Reboot.Minty.trade.service.TradeService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +25,15 @@ public class MyPageController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final ReviewService reviewService;
+    private final TradeService tradeService;
 
     @Autowired
-    public MyPageController(AttendanceService attendanceService, UserRepository userRepository, UserService userService, ReviewService reviewService) {
+    public MyPageController(AttendanceService attendanceService, UserRepository userRepository, UserService userService, ReviewService reviewService, TradeService tradeService) {
         this.attendanceService = attendanceService;
         this.userRepository = userRepository;
         this.userService = userService;
         this.reviewService = reviewService;
+        this.tradeService = tradeService;
     }
 
     @GetMapping("mypage")
@@ -53,11 +57,16 @@ public class MyPageController {
         double averageRating = reviewService.calculateAverageRating(receivedReviews);
         model.addAttribute("averageRating", averageRating);
 
+        List<Trade> trades = tradeService.getTradeList(userId);
+        List<User> users = tradeService.getTradeUsers(trades, userId);
+
+        model.addAttribute("trades", trades);
+        model.addAttribute("users", users);
+
         return "member/myPage";
     }
     @GetMapping("/event")
     public String showEventForm(){
         return "event/event";
     }
-
 }

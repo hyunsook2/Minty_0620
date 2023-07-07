@@ -4,9 +4,9 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 function Header({ csrfToken }) {
-
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userRole, setUserRole] = useState('');
+
     useEffect(() => {
         axios.get(`/api/isLoggedIn`).then((response) => {
             setIsLoggedIn(response.data.LoggedIn);
@@ -16,8 +16,26 @@ function Header({ csrfToken }) {
         })
     },[]);
 
+
     useEffect(() => {
-    }, [userRole]);
+        const handleScroll = () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const documentHeight = document.documentElement.scrollHeight;
+            const windowHeight = window.innerHeight;
+            const scrollPercentage = (scrollTop / (documentHeight - windowHeight)) * 100;
+
+            const scrollBar = document.querySelector('.scroll-bar');
+            if (scrollBar) {
+                scrollBar.style.width = `${scrollPercentage*2}%`;
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     const handleLoginClick = () => {
         setIsLoggedIn(true);
@@ -35,9 +53,8 @@ function Header({ csrfToken }) {
             })
             .catch(e => {
                 window.alert('로그아웃 처리를 할 수 없습니다');
-            })
+            });
     };
-
     return (
 
         <div className="headerArea">

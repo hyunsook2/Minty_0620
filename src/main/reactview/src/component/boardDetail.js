@@ -132,7 +132,7 @@ const fetchData = () => {
           </Col>
           <Col className="button-groups">
             {!isAuthor && <Button variant="primary">찜하기</Button>}
-             {!isAuthor &&<Button variant="secondary" onClick={chatRoom}>채팅</Button>}
+            {!isAuthor && tradeBoard.tradeStatus === 'SELL' && <Button variant="secondary" onClick={chatRoom}>채팅</Button>}
                   {/*{!isAuthor &&<Button variant="success" onClick={purchasingReq}>*/}
            {/*  구매 신청*/}
            {/*</Button>}*/}

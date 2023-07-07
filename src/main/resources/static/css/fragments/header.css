@@ -17,6 +17,13 @@
         font-family: 'font', sans-serif;
       }
 
+        .menu-a:hover {
+            color: #5bc27e !important;
+            text-shadow: 1px 1px 1px #50871b70;
+            transform-origin: center;
+            transition: all 0.3s;
+        }
+
       .adminPage {
         display: none;
       }

@@ -133,7 +133,6 @@ function BoardList() {
             console.log("setSearchArea?", searchArea);
            fetchData();
     }, [subCategoryId, searchQuery, minPrice, maxPrice, sortBy, searchArea]);
-
  const fetchData = async () => {
    let endpoint = '/api/boardList';
    if (searchArea) {
@@ -173,9 +172,10 @@ function BoardList() {
        let locations = [...response.data.userLocationList];
        setTopCategories(top);
        setSubCategories(sub);
+       if(!searchArea){
+        setSearchArea(response.data.userLocationList[0].address);
+       }
        setUserLocationList(locations);
-
-       console.log(userLocationList);
        const nextPage = page + 1; // Calculate the next page
        setPage(nextPage); // Update the page state to the next page
        setHasMore(response.data.hasNext);
@@ -290,9 +290,9 @@ const fetchDataWithDelay = () => {
                 <span>
                   {filter.type} : {filter.value}
                 </span>
-                <button onClick={() => removeFilter(filter.type)}>x</button>
+                <button onClick={() => removeFilter(filter.type)}>X</button>
               </div>
-              {(index + 1) % 2 === 0 && <br />} {/* 줄바꿈을 위한 br 요소 */}
+              {/*(index + 1) % 2 === 0 && <br />*/} {/* 줄바꿈을 위한 br 요소 */}
             </React.Fragment>
           ))}
         </div>

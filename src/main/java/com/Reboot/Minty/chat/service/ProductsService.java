@@ -18,8 +18,8 @@ public class ProductsService {
 
         return jdbcTemplate.queryForList("SELECT p.*, t.title, t.content, t.price, t.thumbnail FROM products p " +
                 "JOIN tradeboard t ON p.trade_board_id = t.id " +
-                "WHERE (p.my = ? AND p.other = ?)" +
-                "ORDER BY p.created_date_time ASC", from, to);
+                "WHERE (p.my = ? AND p.other = ?) OR (p.other = ? AND p.my = ?)" +
+                "ORDER BY p.created_date_time DESC", from, to, from, to);
 
     }
 }

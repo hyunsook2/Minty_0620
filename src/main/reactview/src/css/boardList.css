@@ -185,11 +185,11 @@
 }
 
 .writebutton{
-     padding: 15px 5em 0;
+     padding: 1em 2em 0em 2em;
      background-color:#6bc27e!important;
-     margin-top: 30%;
+     margin-top: 55vh;
      position: fixed;
-     margin-left: 11%;
+     margin-left: 19%;
 }
 .writebuttontext{
     text-align:center;
@@ -212,4 +212,10 @@ display:flex !important;
 }
 .justify-content-center{
 justify-content:none !important;
+}
+
+.searchArea {
+    margin-left: 71.2vw;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
