@@ -193,7 +193,7 @@ function fetchAll() {
                 '<img src="https://via.placeholder.com/50" alt="User Image" width="50px" height="50px">'+
                 '<div class="user_info" id="userGroupAppender_' + modifiedAddress + '">'+
                 // '<span>'+groups[i]['address']+'</span>'+
-                '<span>'+"지역 채팅방 : "+ groups[i]['address']+ '</span>'+
+                     '<span>'+"지역 채팅방 "+ "<br>" + groups[i]['address']+ '</span>'+
                 '</div>'+
                 '</a>';
         }
