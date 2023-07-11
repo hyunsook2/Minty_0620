@@ -79,8 +79,9 @@ function connectToChat(userName) {                                  // userId
 
                         let messageTemplateHTML = "";
                         messageTemplateHTML = messageTemplateHTML + '<div id="child_message" class="row justify-content-start mb-2">'+
-                            '<div id="child_message" class="col-auto chat_message their_chat">'+'<p>'+ data.message +'</p>' +
-                            '<span>'+ data.nick_name +'</span>' +
+                            '<p>'+ data.nick_name +'</p>' +
+                            '<div id="child_message" class="col-auto chat_message their_chat">'+
+                            '<p>'+ data.message +'</p>' +
                             '</div>' +
                             '</div>';
                         $('#chat-body').append(messageTemplateHTML);
@@ -184,7 +185,7 @@ function fetchAll() {
                 '<img src="https://via.placeholder.com/50" alt="User Image" width="50px" height="50px">'+
                 '<div class="user_info" id="userGroupAppender_' + modifiedAddress + '">'+
                 // '<span>'+groups[i]['address']+'</span>'+
-                '<span>'+"지역 채팅방"+'</span>'+
+                '<span>'+"지역 채팅방 : "+ groups[i]['address']+ '</span>'+
                 '</div>'+
                 '</a>';
         }
@@ -326,7 +327,7 @@ function formMessageLauch(id,name,type,title,content,price,thumbnail){
 
     } else if ((type === "group")) {
 
-        nama.html('<a href="#"><img src="https://via.placeholder.com/50" alt="Selected User Image" class="rounded-circle me-2"></a>' + "지역 채팅방");
+        nama.html('<a href="#"><img src="https://via.placeholder.com/50" alt="Selected User Image" class="rounded-circle me-2"></a>' + "지역 채팅방" );
         nama.attr("data-id",name);
 
     nama1.html(name);
@@ -440,8 +441,9 @@ function formMessageLauch(id,name,type,title,content,price,thumbnail){
                             '</div>';
                     }else{
                         messageGroupTemplateHTML = messageGroupTemplateHTML + '<div id="child_message" class="row justify-content-start mb-2">'+
-                            '<div id="child_message" class="col-auto chat_message their_chat">'+'<p>'+content+'</p>'+
-                            '<span>'+messagesGroup[i]['nick_name']+'</span>' +
+                            '<p>'+messagesGroup[i]['nick_name']+'</p>' +
+                            '<div id="child_message" class="col-auto chat_message their_chat">'+
+                            '<p>'+content+'</p>'+
                             '</div>'+
                             '</div>';
                     }
