@@ -281,9 +281,9 @@ const fetchDataWithDelay = () => {
 
   return (
     <Container fluid>
+
       <Row className="justify-content-start filtertext">
         <div>
-          <p>필터</p>
           {activeFilters.map((filter, index) => (
             <React.Fragment key={filter.type}>
               <div className={`filter ${filter.value.length > 10 ? 'long-text' : ''}`} key={filter.type}>
@@ -363,6 +363,8 @@ const fetchDataWithDelay = () => {
          </Form>
         </Col>
       </Row>
+
+
       <Row>
         <Col sm={1}>
           <Nav className="flex-column">
@@ -386,13 +388,11 @@ const fetchDataWithDelay = () => {
               next={fetchDataWithDelay}
               hasMore={hasMore}
               loader={
-                <div className="loader-container">
+                  <div className="loader-container">
                   <div className="loader"></div>
                 </div>
               }
-
-              scrollableTarget="scrollable-container"
-            >
+              scrollableTarget="scrollable-container">
               <div className="sell-boards-container">
                 {tradeBoards.map((board) => {
                   let timeAgo = formatDistanceToNow(parseISO(board.createdDate), { addSuffix: true, locale: ko });

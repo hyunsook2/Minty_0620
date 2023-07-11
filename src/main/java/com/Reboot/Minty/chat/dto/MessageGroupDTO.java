@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessageGroupDTO extends MessageDTO {
-    private Integer groupId;
+    private String address;
+    private String nick_name;
 
 }

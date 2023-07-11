@@ -12,4 +12,14 @@ public class GetMessageController {
     public String chat() {
         return "chat/sample";
     }
+
+
+    @GetMapping("/groupGetChatting")
+
+    public String groupChat() {
+        return "chat/chat-app";
+    }
 }
+
+
+

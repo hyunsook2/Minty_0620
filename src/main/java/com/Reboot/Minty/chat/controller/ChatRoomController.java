@@ -39,9 +39,9 @@ public class ChatRoomController {
 
         TradeBoard tradeBoard = tradeBoardRepository.findById(tradeBoardId).orElseThrow(EntityNotFoundException::new);
 
+
         User buyer = userService.getUserInfoById((Long) session.getAttribute("userId"));
         User seller = userService.getUserInfoById(tradeBoard.getUser().getId());
-
         tradeService.save(tradeBoard, buyer, seller);
 
         Long my = userService.getUserInfoById((Long) session.getAttribute("userId")).getId();

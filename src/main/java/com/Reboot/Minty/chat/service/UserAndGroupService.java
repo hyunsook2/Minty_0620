@@ -20,11 +20,6 @@ public class UserAndGroupService {
     ChatRoomRepository chatRoomRepository;
 
 
-//    public List<Map<String,Object>> fetchAll(String myId) {
-//        List<Map<String,Object>> getAllUser = jdbcTemplate.queryForList("SELECT * FROM chat_room WHERE my = ? OR other = ? ORDER BY id DESC", myId, myId);
-//        return getAllUser;
-//    }
-
     public List<Map<String,Object>> fetchAll(String myId) {
         String query = "SELECT cr.id, " +
                 "umy.nick_name AS myNickName, " +
@@ -62,17 +57,10 @@ public class UserAndGroupService {
     }
 
 
-    public List<ChatRoom> getChatRoomList(User userId) {
-        List<ChatRoom> chatRoomList = chatRoomRepository.findByOtherOrMyOrderByIdDesc(userId,userId);
-
-        return chatRoomList;
-    }
-
 
     public List<Map<String,Object>> fetchAllGroup(String groupId) {
-        List<Map<String,Object>> getAllUser=jdbcTemplate.queryForList("SELECT gr.* FROM `groupss` gr " +
-                "join group_members gm on gm.group_id=gr.id and gm.user_id=?",groupId);
+        List<Map<String, Object>> addresses = jdbcTemplate.queryForList("SELECT ul.address, ul.user_id, u.nick_name FROM user_location ul JOIN user u ON ul.user_id = u.id WHERE ul.user_id = ?", groupId);
 
-        return getAllUser;
+        return addresses;
     }
 }

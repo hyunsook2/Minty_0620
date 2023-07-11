@@ -20,6 +20,7 @@ public class MessageService {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+
     public void sendMessage(String to, MessageDTO message) {
 
         jdbcTemplate.update("insert into messages (message_text,message_from,message_to,created_date_time) " +
@@ -34,22 +35,30 @@ public class MessageService {
                 "or (message_to=? and message_from=?) order by created_date_time asc",from,to,from,to);
     }
 
-    public List<Map<String,Object>> getListMessageGroups(@PathVariable("groupid") Integer groupid){
-        return jdbcTemplate.queryForList("select gm.*,us.name as name from group_messages gm " +
+    public List<Map<String,Object>> getListMessageGroups(@PathVariable("address") String address){
+        return jdbcTemplate.queryForList("select gm.*,us.nick_name as nick_name from group_messages gm " +
                 "join user us on us.id=gm.user_id " +
-                "where gm.group_id=? order by created_date_time asc",groupid);
+                "where gm.address=? order by created_date_time asc",address);
     }
 
 
-    public void sendMessageGroup(Integer to, MessageGroupDTO message) {
+    public void sendMessageGroup(String to, MessageGroupDTO message) {
 
-        jdbcTemplate.update("INSERT INTO `group_messages`(`group_id`, `user_id`, `messages`, `created_date_time`) " +
+
+        jdbcTemplate.update("INSERT INTO `group_messages`(`address`, `user_id`, `messages`, `created_date_time`) " +
                 "VALUES (?,?,?,current_timestamp )",to,message.getFromLogin(),message.getMessage());
-        message.setGroupId(to);
+
+
+        message.setAddress(to);
+
+        String nickName = jdbcTemplate.queryForObject(
+                "SELECT u.nick_name FROM user u JOIN group_messages g ON u.id = g.user_id WHERE g.user_id = ? ORDER BY g.created_date_time DESC LIMIT 1",
+                new Object[]{message.getFromLogin()},
+                String.class
+        );
+
+        message.setNick_name(nickName);
         simpMessagingTemplate.convertAndSend("/topic/messages/group/" + to, message);
 
     }
-
-
-
 }

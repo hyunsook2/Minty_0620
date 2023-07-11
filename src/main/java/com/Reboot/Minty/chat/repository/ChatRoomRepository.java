@@ -16,8 +16,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     boolean existsByOtherAndMy(User other, User my);
 
-    ChatRoom findByMyAndOther(User my, User other);
-
     @Query("SELECT cr FROM ChatRoom cr WHERE cr.my = :my AND cr.other = :other OR cr.other = :my AND cr.my = :other")
     ChatRoom findByMyAndOtherOrOtherAndMy(@Param("my") User my, @Param("other") User other);
 }

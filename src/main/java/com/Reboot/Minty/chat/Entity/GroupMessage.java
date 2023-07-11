@@ -24,9 +24,8 @@ public class GroupMessage {
     @Column(name="messages")
     private String message;
 
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Groups groupsId;
+    @Column(name="address")
+    private String address;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

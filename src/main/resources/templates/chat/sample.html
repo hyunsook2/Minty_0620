@@ -78,10 +78,22 @@
 
         .product-item {
             margin: 5px;
+            display: flex;
             display: inline-block;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+
             /* float: left; 제거 */
+        }
+        .product-item a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            text-decoration: none;
         }
 
         .product-image {
@@ -153,6 +165,43 @@
         label[for="call-icon"] {
             cursor: pointer;
         }
+        #title-content {
+            display: inline-flex; /* 요소들을 한 줄에 배치함*/
+            align-items: center; /* 이미지와 제목, 가격 사이의 간격을 조정 */
+        }
+
+        /* 타이틀과 가격 영역의 레이아웃 구성 */
+        #title-price {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #userName {
+            display: block;
+        }
+
+        .truncate {
+            display: inline-block;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px; /* 적당한 너비 값을 설정 */
+        }
+
+        #formMessageHeader {
+            display: flex;
+            justify-content: space-between;
+        }
+        #groupList {
+            margin-bottom: 50px;
+        }
+
+        .send_btn {
+            margin-top: 100%;
+            width: 100%;
+            height: 50px;
+        }
 
     </style>
 </head>
@@ -161,6 +210,9 @@
     <div class="container2">
         <div class="row chat-section">
             <div class="col-md-4 col-sm-12 chat-list">
+                <div id="groupList" class="list-group">
+
+                </div>
                 <div id="chat-users" class="list-group">
                     <a href="#" class="list-group-item list-group-item-action">
                         <img src="https://via.placeholder.com/50" alt="User Image" class="rounded-circle">
@@ -171,13 +223,14 @@
                         <span>User 2</span>
                     </a>
                 </div>
-                <button class="input-group-text send_btn" id="backBtn" onclick="back()">뒤로가기~</button>
+                <button class="input-group-text send_btn" id="backBtn" onclick="back()">뒤로가기</button>
             </div>
             <div class="col-md-8 col-sm-12">
                 <div id="chat" class="chat-section">
                     <div id="formMessageHeader" class="header d-flex align-items-center">
                         <!--                    <img src="https://via.placeholder.com/50" alt="Selected User Image" class="rounded-circle me-2">-->
                         <span id="userName" class="username m-0">Selected User</span>
+                        <span id="title-content" class="m-0">Selected User</span>
                     </div>
                     <div id="formProductsBody" class="product-info mt-3">
                     </div>
@@ -185,11 +238,13 @@
                     </div>
                     <div class="footer">
                         <div class="input-group mt-3">
-                            <div class="input-group-prepend">
-                                <input type="file" id="imageFile" accept="image/*" onchange="uploadImage()" hidden>
-                                <label for="imageFile" class="input-group-text mint-border mint-background" ><i class="fas fa-paperclip" style="color: white;"></i></label>
-                                <input type="button" id="call-icon" onclick="getNumber()" hidden>
-                                <label for="call-icon" class="input-group-text mint-border mint-background"><i class="fas fa-phone" style="color: white;"></i></label>
+                            <div class="input-group-prepend" id="ImageAndNumber">
+<!--                                <div class="input-group-prepend" id="imageAndNumber">-->
+<!--                                <input type="file" id="imageFile" accept="image/*" onchange="uploadImage()" hidden>-->
+<!--                                <label for="imageFile" class="input-group-text mint-border mint-background" ><i class="fas fa-paperclip" style="color: white;"></i></label>-->
+<!--                                <input type="button" id="call-icon" onclick="getNumber()" hidden>-->
+<!--&lt;!&ndash;                                <label for="call-icon" class="input-group-text mint-border mint-background"><i class="fas fa-phone" style="color: white;"></i></label>&ndash;&gt;-->
+<!--                                </div>-->
                             </div>
                             <input type="text" id="chat-input" name="chat-input" class="form-control" placeholder="메세지를 입력해주세요.">
                             <div id="formSubmit" class="input-group-append">

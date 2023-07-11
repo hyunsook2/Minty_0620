@@ -1,6 +1,7 @@
 package com.Reboot.Minty.chat.controller;
 
 import com.Reboot.Minty.chat.dto.MessageDTO;
+import com.Reboot.Minty.chat.dto.MessageGroupDTO;
 import com.Reboot.Minty.chat.service.MessageService;
 import com.Reboot.Minty.chat.service.ProductsService;
 import com.Reboot.Minty.chat.service.UserAndGroupService;
@@ -28,6 +29,7 @@ public class MessageController {
 
     @Autowired
     ProductsService productsService;
+
     @Autowired
     UserService userService;
 
@@ -49,16 +51,16 @@ public class MessageController {
     }
 
 
-//    @MessageMapping("/chat/group/{to}")
-//    public void sendMessageToGroup(@DestinationVariable Integer to, MessageGroupDTO message) {
-//        messageService.sendMessageGroup(to,message);
-//
-//    }
-//
-//    @GetMapping("listmessage/group/{groupid}")
-//    public List<Map<String,Object>> getListMessageGroupChat(@PathVariable("groupid") Integer groupid){
-//        return messageService.getListMessageGroups(groupid);
-//    }
+    @MessageMapping("/chat/group/{to}")
+    public void sendMessageToGroup(@DestinationVariable String to, MessageGroupDTO message) {
+        messageService.sendMessageGroup(to,message);
+
+    }
+
+    @GetMapping("listmessage/group/{address}")
+    public List<Map<String,Object>> getListMessageGroupChat(@PathVariable("address") String address){
+        return messageService.getListMessageGroups(address);
+    }
 
     @GetMapping("/fetchAllUsers/{myId}")
     public List<Map<String,Object>> fetchAll(@PathVariable("myId") String myId) {
@@ -67,10 +69,10 @@ public class MessageController {
 
     }
 
-//    @GetMapping("/fetchAllGroups/{groupid}")
-//    public List<Map<String,Object>> fetchAllGroup(@PathVariable("groupid") String groupId) {
-//        return  userAndGroupService.fetchAllGroup(groupId);
-//    }
+    @GetMapping("/fetchAllGroups/{groupid}")
+    public List<Map<String,Object>> fetchAllGroup(@PathVariable("groupid") String groupId) {
+        return  userAndGroupService.fetchAllGroup(groupId);
+    }
 
     @GetMapping("/getUserId")
     public Long getUserId(HttpSession session) {
