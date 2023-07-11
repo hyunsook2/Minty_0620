@@ -27,9 +27,13 @@ function connectToChat(userName) {                                  // userId
             if (selectedUserOrGrup == data.fromLogin) {
                 console.log("selectedUserOrGrup === data.fromLogin")
 
+                let content = data.message.endsWith("images")
+                    ? '<a href="https://storage.googleapis.com/reboot-minty-storage/' + data.message + '" target="_blank"><img src="https://storage.googleapis.com/reboot-minty-storage/' + data.message + '" alt="이미지" width="100px" height="100px"/></a>'
+                    : data.message;
+
                 let messageTemplateHTML = "";
                 messageTemplateHTML = messageTemplateHTML + '<div id="child_message" class="row justify-content-start mb-2">'+
-                    '<div id="child_message" class="col-auto chat_message their_chat">'+'<p>'+ data.message +'</p>' +
+                    '<div id="child_message" class="col-auto chat_message their_chat">'+'<p>'+ content +'</p>' +
                     '</div>' +
                     '</div>';
                 $('#chat-body').append(messageTemplateHTML);
@@ -77,11 +81,15 @@ function connectToChat(userName) {                                  // userId
                     if (selectedUserOrGrup === data.address && groups[i]["user_id"] !== data.fromLogin ) {
                         console.log("selectedUserOrGrup === data.fromLogin")
 
+                        let content = data.message.endsWith("images")
+                            ? '<a href="https://storage.googleapis.com/reboot-minty-storage/' + data.message + '" target="_blank"><img src="https://storage.googleapis.com/reboot-minty-storage/' + data.message + '" alt="이미지" width="100px" height="100px"/></a>'
+                            : data.message;
+
                         let messageTemplateHTML = "";
                         messageTemplateHTML = messageTemplateHTML + '<div id="child_message" class="row justify-content-start mb-2">'+
                             '<p>'+ data.nick_name +'</p>' +
                             '<div id="child_message" class="col-auto chat_message their_chat">'+
-                            '<p>'+ data.message +'</p>' +
+                            '<p>'+ content +'</p>' +
                             '</div>' +
                             '</div>';
                         $('#chat-body').append(messageTemplateHTML);
