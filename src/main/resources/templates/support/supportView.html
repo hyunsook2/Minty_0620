@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/supportLayout}">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        button {
+            padding: 3px 3px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgba(0, 0, 0, 0.75);
+        }
+
+        .centered-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f7f7;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .centered-container p {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+
+        .centered-container ul {
+            margin: 10px 0 0;
+            padding: 0;
+            list-style-type: none;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .centered-container ul li {
+            margin-right: 10px;
+        }
+
+        .centered-container ul li a {
+            color: blue;
+            text-decoration: none;
+            margin-bottom: 5px;
+        }
+
+        .centered-container ul li img {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="centered-container">
+        <div>
+            <p>제목: <span th:text="${postDto.title}"></span></p>
+            <p>날짜: <span th:text="${#temporals.format(postDto.createdDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+        </div>
+        <div>
+            <p>이름: <span th:text="${postDto.name}"></span></p>
+            <p>닉네임: <span th:text="${postDto.nickname}"></span></p>
+        </div>
+        <div>
+            <p>내용: <span th:text="${postDto.content}"></span></p>
+        </div>
+        <div>
+            <p>첨부파일:</p>
+            <ul>
+                <th:block th:each="fileDto : ${postDto.files}">
+                    <li>
+                        <a th:href="@{'/download/' + ${fileDto.id}}" th:text="${fileDto.filename}">다운로드</a>
+                        <br>
+                        <img th:if="${fileDto.id}" th:src="@{'/download/' + ${fileDto.id}}">
+                    </li>
+                </th:block>
+            </ul>
+        </div>
+        <div>
+            <div sec:authorize="hasAnyRole('Role.USER') or hasAnyAuthority('USER') or hasAnyRole('Role.ADMIN') or hasAnyAuthority('ADMIN')" style="text-align: right;">
+                <a th:href="@{'/edit/' + ${id}}"><button>수정하기</button></a>
+                <a th:href="@{'/delete/' + ${id}}"><button>삭제하기</button></a>
+            </div>
+        </div>
+
+        <hr>
+
+        <div th:if="${replyDto != null}">
+            <p>제목: <span th:text="${replyDto.replyTitle}"></span></p>
+            <p>닉네임: <span th:text="${replyDto.nickname}"></span></p>
+            <p>날짜: <span th:text="${#temporals.format(replyDto.createdDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+            <p>내용: <span th:text="${replyDto.replyContent}"></span></p>
+            <div sec:authorize="hasAnyRole('Role.ADMIN') or hasAnyAuthority('ADMIN')">
+                <a th:href="@{'/edit/admin/' + ${id}}"><button>수정하기</button></a>
+                <a th:href="@{'/delete/admin/' + ${id}}"><button>삭제하기</button></a>
+            </div>
+        </div>
+        <div th:if="${replyDto == null}">
+            <div sec:authorize="hasAnyRole('Role.ADMIN') or hasAnyAuthority('ADMIN')" style="text-align: right;">
+                <a th:href="@{'/new/admin/'+${id}}"><button>답변쓰기</button></a>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/supportLayout}">
+<head>
+    <meta charset="UTF-8">
+    <title>고객센터</title>
+    <style>
+        .centered-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+
+        .titleBack {
+            font-size: 18px;
+            text-decoration: none;
+            color: #fff;
+            background-color: rgba(91, 194, 126, 0.8);
+            display: inline-block;
+            padding: 10px 20px;
+            width:80vw;
+        }
+
+        .titleBack:hover,
+        .titleBack:active {
+            background-color: rgba(91, 194, 126, 1);
+        }
+
+        .deleteButton {
+            color: #ff0000;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        .contentBack {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: rgba(91, 194, 126, 0.2);
+            white-space: pre-line;
+            width:80vw;
+        }
+
+        .greenborder{
+            border: 1.5px solid rgba(0, 150, 100, 0.5);
+            border-radius: 10px;
+            width : 90%;
+            margin-left: 50px;
+        }
+
+    </style>
+    <script type="text/javascript">
+        function doDisplay(element) {
+            var con = element.parentElement.nextElementSibling;
+            if (con.style.display === 'none') {
+                con.style.display = 'block';
+            } else {
+                con.style.display = 'none';
+            }
+        }
+    </script>
+</head>
+<body>
+<div layout:fragment="content">
+    <div>
+        <div class="navbar-nav">
+            <div sec:authorize="hasAnyRole('Role.ADMIN') or hasAnyAuthority('ADMIN')">
+                <a class="nav-link" th:href="@{/home/new}" style="font-size:20px;">작성</a>
+            </div>
+        </div>
+        <h1>자주찾는 도움말</h1>
+        <hr>
+        <div class="greenborder">
+            <div th:each="homeDto : ${homeDtos}" class="centered-container" >
+                <div>
+                    <div style="text-align: center;">
+                        <a href="javascript:void(0);" onclick="doDisplay(this)" class="titleBack" th:text="${homeDto.title}"></a>
+                        <div sec:authorize="hasAnyRole('Role.ADMIN') or hasAnyAuthority('ADMIN')" style="text-align: right;">
+                            <a class="deleteButton" th:href="@{'/home/delete/' + ${homeDto.id}}">삭제</a>
+                        </div>
+                    </div>
+                    <div class="contentBack">
+                        <span th:text="${homeDto.content}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

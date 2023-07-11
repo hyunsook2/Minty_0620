@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/supportLayout}">
+<head>
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .centered-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .fieldError {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="centered-container">
+    <h1>문의 답변 수정</h1>
+    <form th:action="@{'/edit/admin/' + ${id}}" method="post" enctype="multipart/form-data" th:object="${replyDto}">
+      <div class="form-group">
+        <label for="replyTitle">제목</label>
+        <input type="text" id="replyTitle" name="replyTitle" th:value="${replyDto.replyTitle}">
+      </div>
+      <div class="form-group">
+        <label for="nickname">닉네임</label>
+        <input type="text" id="nickname" name="nickname" th:value="${replyDto.nickname}" disabled>
+      </div>
+      <div class="form-group">
+        <label for="replyContent">내용</label>
+        <textarea id="replyContent" name="replyContent" rows="10" th:text="${replyDto.replyContent}"></textarea>
+      </div>
+      <div style="text-align: center">
+        <button type="submit" class="btn btn-primary">수정하기</button>
+      </div>
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    </form>
+  </div>
+</div>
+</body>
+</html>
