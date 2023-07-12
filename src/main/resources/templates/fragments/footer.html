@@ -145,6 +145,9 @@
       <div>
         <a class="button"th:href="@{/scheduleList}">일정목록</a>
       </div>
+      <div>
+        <a id="chat" class="button">민팅팅</a>
+      </div>
     </div>
   </th:block>
 
@@ -174,6 +177,19 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
   $(document).ready(function() {
+    $("#chat").click(function() {
+      $.ajax({
+        url: "/minting",
+        type: "GET",
+        success: function(response) {
+          console.log("Ajax request succeeded.");
+        },
+        error: function(xhr, status, error) {
+          console.error("Ajax request failed.");
+        }
+      });
+    });
+
     $(".up").click(function() {
       $("html, body").animate({ scrollTop: 0 }, 800);
     });

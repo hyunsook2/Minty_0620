@@ -1,6 +1,7 @@
 package com.Reboot.Minty.support.dto;
 
 import com.Reboot.Minty.support.entity.Home;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 @Getter

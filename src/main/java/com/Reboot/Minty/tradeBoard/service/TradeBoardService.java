@@ -2,6 +2,7 @@ package com.Reboot.Minty.tradeBoard.service;
 
 import com.Reboot.Minty.config.ResizeFile;
 import com.Reboot.Minty.member.dto.UserLocationResponseDto;
+import com.Reboot.Minty.member.dto.UserResponseDto;
 import com.Reboot.Minty.member.entity.User;
 import com.Reboot.Minty.member.entity.UserLocation;
 import com.Reboot.Minty.member.repository.UserLocationRepository;
@@ -10,7 +11,6 @@ import com.Reboot.Minty.tradeBoard.constant.TradeStatus;
 import com.Reboot.Minty.tradeBoard.dto.*;
 import com.Reboot.Minty.tradeBoard.entity.TradeBoard;
 import com.Reboot.Minty.tradeBoard.entity.TradeBoardImg;
-//import com.Reboot.Minty.tradeBoard.repository.TradeBoardCustomRepository;
 import com.Reboot.Minty.tradeBoard.repository.TradeBoardCustomRepository;
 import com.Reboot.Minty.tradeBoard.repository.TradeBoardImgRepository;
 import com.Reboot.Minty.tradeBoard.repository.TradeBoardRepository;
@@ -27,8 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -260,7 +261,30 @@ public class TradeBoardService {
 
     public List<UserLocationResponseDto> getLogginedLocationList(Long userId){
         List<UserLocation> userLocations = userLocationRepository.findAllByUserId(userId);
+        UserResponseDto userResponseDto = UserResponseDto.of(userRepository.findById(userId).orElseThrow(EntityNotFoundException::new));
         List<UserLocationResponseDto> response = userLocations.stream().map(UserLocationResponseDto::of).collect(Collectors.toList());
+        for(UserLocationResponseDto r : response){
+            System.out.println(r.getLatitude().getClass().getSimpleName());
+            r.setUserId(userResponseDto);
+        }
         return response;
     }
+    public List<TradeBoardDto> getTradeBoardListByUser(Long userId) {
+        List<TradeBoard> tradeBoards = tradeBoardRepository.findByUserId(userId);
+
+        List<TradeBoardDto> tradeBoardDtos = new ArrayList<>();
+        for (TradeBoard tradeBoard : tradeBoards) {
+            TradeBoardDto tradeBoardDto = new TradeBoardDto();
+            tradeBoardDto.setTitle(tradeBoard.getTitle());
+            tradeBoardDto.setPrice(tradeBoard.getPrice());
+            tradeBoardDto.setThumbnail(tradeBoard.getThumbnail());
+            tradeBoardDto.setCreatedDate(tradeBoard.getCreatedDate());
+
+            tradeBoardDtos.add(tradeBoardDto);
+        }
+
+        return tradeBoardDtos;
+    }
+
+
 }

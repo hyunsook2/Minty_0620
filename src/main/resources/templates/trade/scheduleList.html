@@ -319,13 +319,13 @@
             <form id="updateDay">
                 <div th:if="${scheduleDay != null}">
                     <div>
-                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.sunday == 1 ? 'spin circle selected' : 'spin circle'}">일</button>
-                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.monday == 1 ? 'spin circle selected' : 'spin circle'}">월</button>
-                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.tuesday == 1 ? 'spin circle selected' : 'spin circle'}">화</button>
-                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.wednesday == 1 ? 'spin circle selected' : 'spin circle'}">수</button>
-                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.thursday == 1 ? 'spin circle selected' : 'spin circle'}">목</button>
-                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.friday == 1 ? 'spin circle selected' : 'spin circle'}">금</button>
-                        <button type="button" name="editScheduleDay" th:class="${scheduleDay.saturday == 1 ? 'spin circle selected' : 'spin circle'}">토</button>
+                    <button type="button" name="editScheduleDay" th:class="${scheduleDay.sunday == 1 ? 'spin circle selected' : 'spin circle'}">일</button>
+                    <button type="button" name="editScheduleDay" th:class="${scheduleDay.monday == 1 ? 'spin circle selected' : 'spin circle'}">월</button>
+                    <button type="button" name="editScheduleDay" th:class="${scheduleDay.tuesday == 1 ? 'spin circle selected' : 'spin circle'}">화</button>
+                    <button type="button" name="editScheduleDay" th:class="${scheduleDay.wednesday == 1 ? 'spin circle selected' : 'spin circle'}">수</button>
+                    <button type="button" name="editScheduleDay" th:class="${scheduleDay.thursday == 1 ? 'spin circle selected' : 'spin circle'}">목</button>
+                    <button type="button" name="editScheduleDay" th:class="${scheduleDay.friday == 1 ? 'spin circle selected' : 'spin circle'}">금</button>
+                    <button type="button" name="editScheduleDay" th:class="${scheduleDay.saturday == 1 ? 'spin circle selected' : 'spin circle'}">토</button>
                     </div>
 
                     <input type="button" id="btnDay" onclick="submitForm('btnDay')" value="변경"/>
@@ -358,7 +358,7 @@
 
         </div>
     </div>
-    <!-- 일정 목록 섹션 -->
+            <!-- 일정 목록 섹션 -->
     <div class="schedule-section">
         <th:block th:each="trade : ${userTrades}">
             <div class="trade-container">

@@ -63,6 +63,8 @@ public class TradeBoardController {
     }
 
 
+
+
     @GetMapping(value = {
             "/api/boardList/",
             "/api/boardList/page/{page}",
@@ -117,7 +119,7 @@ public class TradeBoardController {
             @RequestParam(value = "minPrice", required = false) Optional<Integer> minPrice,
             @RequestParam(value = "maxPrice", required = false) Optional<Integer> maxPrice,
             @RequestParam(value = "sortBy", required = false) Optional<String> sortBy,
-            @PathVariable(value = "searchArea", required = false) Optional<String> searchArea
+            @PathVariable(value = "searchArea", required = false) List<String> searchArea
     ) {
         HttpSession session = request.getSession();
         Long userId = (Long) session.getAttribute("userId");
@@ -137,31 +139,41 @@ public class TradeBoardController {
         if (sortBy.isPresent()) {
             tradeBoardSearchDto.setSortBy(sortBy.get());
         }
-        if (searchArea.isPresent()) {
-            System.out.println("1" + searchArea.get());
-            tradeBoardSearchDto.setSearchArea(searchArea.get());
-        } else if (!searchArea.isPresent()) {
-            System.out.println("2" + tradeBoardSearchDto.getSearchArea());
-            tradeBoardSearchDto.setSearchArea(userLocationList.get(0).getAddress());
+        if (searchArea==null) {
+            searchArea = new ArrayList<>();
+            searchArea.add(userLocationList.get(0).getAddress());
+            System.out.println("있음 : "+searchArea);
+            tradeBoardSearchDto.setSearchArea(searchArea);
+        }
+        if (searchArea!=null) {
+            System.out.println("있음 : "+searchArea);
+            tradeBoardSearchDto.setSearchArea(searchArea);
         }
 
         List<TopCategoryDto> topCategories = categoryService.getTopCategoryList();
         List<SubCategoryDto> subCategories = categoryService.getSubCategoryList();
+        List<AddressCodeDto> addressCode = addressCodeRepository.findAll().stream().map(AddressCodeDto::of).collect(Collectors.toList());
 
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 20);
         Slice<TradeBoardDto> tradeBoards = tradeBoardService.getTradeBoard(tradeBoardSearchDto, pageable);
-        System.out.println("isEmpty?" + tradeBoards.isEmpty());
-        System.out.println("hasNext?" + tradeBoards.hasNext());
-        System.out.println(tradeBoards.getNumber());
         Map<String, Object> response = new HashMap<>();
+        response.put("addressCode", addressCode);
         response.put("userLocationList", userLocationList);
         response.put("sub", subCategories);
         response.put("top", topCategories);
         response.put("tradeBoards", tradeBoards.getContent());
         response.put("hasNext", tradeBoards.hasNext());
         response.put("page", tradeBoards.getNumber());
-
         return response;
+    }
+    @Value("${kaKao-jsKey}")
+    private String kaKaoJsKey;
+    @GetMapping("/api/getMapData")
+    @ResponseBody
+    public Map<String, String> getMapData() {
+        Map<String, String> data = new HashMap<>();
+        data.put("apiKey", kaKaoJsKey);
+        return data;
     }
 
 
@@ -349,5 +361,11 @@ public class TradeBoardController {
                         return Mono.just(ResponseEntity.status(response.statusCode()).build());
                     }
                 });
+    }
+
+    @GetMapping("/api/boardList/user/{userId}")
+    @ResponseBody
+    public List<TradeBoardDto> getTradeBoardListByUser(@PathVariable("userId") Long userId) {
+        return tradeBoardService.getTradeBoardListByUser(userId);
     }
 }

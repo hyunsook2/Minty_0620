@@ -29,4 +29,6 @@ public class UpdateDto {
     private String gender;
 
     private Role role;
+
+    private String image;
 }

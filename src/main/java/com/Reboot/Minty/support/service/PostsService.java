@@ -52,6 +52,11 @@ public class PostsService {
         replyRepository.save(replyEntity);
     }
 
+    public List<UserSupport> getAllUserSupport() {
+        List<UserSupport> userSupportList = postsRepository.findAll();
+        return userSupportList;
+    }
+
     public UserSupport getUserSupport(Long id){
         return postsRepository.findById(id).orElseThrow(EntityExistsException::new);
     }
@@ -66,11 +71,6 @@ public class PostsService {
                 .filename(fileEntity.getFilename())
                 .filePath(fileEntity.getFilePath())
                 .build();
-    }
-
-    public List<UserSupport> getAllUserSupport() {
-        List<UserSupport> userSupportList = postsRepository.findAll();
-        return userSupportList;
     }
 
     public UserSupportDto getPost(Long id) {

@@ -237,7 +237,7 @@ public class ScheduleListController {
 
     @PostMapping("/updateIntroduction")
     public String updateIntroduction(@RequestParam(name = "editIntroduction") String editIntroduction,
-                                     HttpSession session) {
+                            HttpSession session) {
         try {
             Long userId = (Long) session.getAttribute("userId");
             User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
@@ -257,4 +257,5 @@ public class ScheduleListController {
         }
     }
 }
+
 

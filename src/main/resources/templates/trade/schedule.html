@@ -256,6 +256,14 @@
         color: white;
         box-shadow: 3px 3px 15px #5bc27e;
       }
+      input[type="text"] {
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 5px;
+}
+.no-clock-icon {
+    background-image: none !important;
+}
     </style>
 </head>
 <body>
@@ -280,6 +288,8 @@
                 </div>
             </div>
         </div>
+
+        <br>
 
         <!-- 거래 희망 요일 -->
         <div th:if="${role} == 'seller'">
@@ -328,6 +338,8 @@
             </div>
         </div>
 
+        <br>
+
         <!-- 거래 희망 시간 -->
         <div th:if="${role} == 'seller'">
             <div th:if="${buyerScheduleDuration.isEmpty()}">
@@ -336,12 +348,14 @@
                 <br />
             </div>
 
-            <div th:if="${!buyerScheduleDuration.isEmpty()}">
+            <div style="margin-left:auto; margin-right:auto;width:80%" th:if="${!buyerScheduleDuration.isEmpty()}">
                 <th:block th:each="duration : ${buyerScheduleDuration}">
                     <input class="timer" type="time" name="time" oninput="updateText()" th:value="${duration.startTime}"/>
                     ~
                     <input class="timer" type="time" name="time" oninput="updateText()" th:value="${duration.endTime}"/>
+                    <br>
                 </th:block>
+                <br>
             </div>
         </div>
 
@@ -353,7 +367,7 @@
                 <br />
             </div>
 
-            <div th:if="${!sellerScheduleDuration.isEmpty()}">
+            <div style="margin-left:auto; margin-right:auto;width:80%" th:if="${!sellerScheduleDuration.isEmpty()}">
                 <th:block th:each="duration : ${sellerScheduleDuration}">
                     <input class="timer" type="time" name="time" oninput="updateText()" th:value="${duration.startTime}"/>
                     ~
@@ -362,6 +376,7 @@
             </div>
         </div>
 
+        <br>
 
         <!-- 거래 희망 위치 -->
         <div th:if="${role} == 'seller'">
@@ -370,7 +385,7 @@
             </div>
 
             <div th:if="${buyerSchedule != null && buyerCheckArea}">
-                <input type="text" th:value="${buyerSchedule.getHopeArea()}" id="hopeArea" readonly>
+                <input class="no-clock-icon" type="text" th:value="${buyerSchedule.getHopeArea()}" id="hopeArea" readonly>
             </div>
         </div>
 
@@ -380,30 +395,32 @@
             </div>
 
             <div th:if="${sellerSchedule != null && sellerCheckArea}">
-                <input type="text" th:value="${sellerSchedule.getHopeArea()}" id="hopeArea2" readonly>
+                <input class="no-clock-icon" type="text" th:value="${sellerSchedule.getHopeArea()}" id="hopeArea2" readonly>
             </div>
         </div>
+
+        <br>
 
         <!-- 거래 희망 소개 -->
         <div th:if="${role} == 'seller'">
             <div th:if="${buyerSchedule == null || !buyerCheckIntroduction}">
                 <p>등록된 거래희망 소개가 없습니다.</p>
-                <input class="memo hd" placeholder="거래희망 소개를 등록해주세요" style="width: 50%; text-align: center"/>
+                <input class="memo hd no-clock-icon" placeholder="거래희망 소개를 등록해주세요" style="width: 50%; text-align: center"/>
             </div>
 
             <div th:if="${buyerSchedule != null && buyerCheckIntroduction}">
-                <input type="text" th:value="${buyerSchedule.getIntroduction()}" id="introduction" readonly>
+                <input class="no-clock-icon" type="text" th:value="${buyerSchedule.getIntroduction()}" id="introduction" readonly>
             </div>
         </div>
 
         <div th:if="${role} == 'buyer'">
             <div th:if="${sellerSchedule == null || !sellerCheckIntroduction}">
                 <p>등록된 거래희망 소개가 없습니다.</p>
-                <input class="memo hd" placeholder="거래희망 소개를 등록해주세요" style="width: 50%; text-align: center"/>
+                <input class="memo hd no-clock-icon" placeholder="거래희망 소개를 등록해주세요" style="width: 50%; text-align: center"/>
             </div>
 
             <div th:if="${sellerSchedule != null && sellerCheckIntroduction}">
-                <input type="text" th:value="${sellerSchedule.getIntroduction()}" id="introduction2" readonly>
+                <input class="no-clock-icon" type="text" th:value="${sellerSchedule.getIntroduction()}" id="introduction2" readonly>
             </div>
         </div>
     </div>
@@ -459,114 +476,55 @@ $('#calendar').on('click', '.fc-day', function() {
     $('#selected-date-display').text('거래 희망 날짜: ' + selectedDate);
 });
 
-$(document).ready(function () {
-        $("#add-input-button").click(function () {
-          var inputElement1 = $(
-            '<input class="timer" type="time" name="time" id="time" oninput="updateText()">'
-          ); // 첫 번째 input 요소 생성
-          var textElement = $("<span> ~ </span>"); // "~" 글자 요소 생성
-          var inputElement2 = $(
-            '<input class="timer" type="time" name="time" id="time" oninput="updateText()">'
-          ); // 두 번째 input 요소 생성
+function updateTradeSchedule() {
+    var selectedDate = $('#selected-date').text();
+    var selectedTime = getSelectedTime();
+    var tradeId = $('input[name="tradeId"]').val(); // tradeId 값을 가져옴
 
-          var container = $("#input-container");
-          container.append(inputElement1); // 첫 번째 input 요소 추가
-          container.append(textElement); // "~" 글자 추가
-          container.append(inputElement2); // 두 번째 input 요소 추가
-          container.append("<br>"); //
-        });
+    var formattedDate = moment(selectedDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+    var formattedTime = moment(selectedTime, 'HH:mm').format('HH:mm');
 
-        $("#add-input-button2").click(function () {
-          var inputElement = $(
-            '<input class="timer" type="time" name="time" id="time" oninput="updateText()">'
-          ); // 첫 번째 input 요소 생성
-          var textElement = $("<span> ~ </span>"); // "~" 글자 요소 생성
-          var inputElement2 = $(
-            '<input class="timer" type="time" name="time" id="time" oninput="updateText()">'
-          ); // 두 번째 input 요소 생성
+    console.log('선택된 날짜:', selectedDate);
+    console.log('선택된 시간:', selectedTime);
 
-          var container = $("#input-container");
-          container.append(inputElement1); // 첫 번째 input 요소 추가
-          container.append(textElement); // "~" 글자 추가
-          container.append(inputElement2); // 두 번째 input 요소 추가
-          container.append("<br>"); //
-        });
+    // 선택된 날짜와 시간을 폼 데이터로 설정
+    var formData = new FormData();
+    formData.append('tradeId', tradeId); // tradeId 값을 추가
+    formData.append('tradeDate', selectedDate);
+    formData.append('tradeTime', selectedTime);
 
-        $(".spin").click(function () {
-            $(this).toggleClass("selected");
-        });
-
-        $(".edit").click(function () {
-          $(this).addClass("hd");
-          $(".spin").removeClass("hd");
-          $(".memo").removeClass("hd");
-          $(".edit2").removeClass("hd");
-        });
-
-        $(".edit2").click(function () {
-          $(this).addClass("hd");
-          $(".spin").addClass("hd");
-          $(".edit").removeClass("hd");
-          $(".memo").addClass("hd");
-        });
-
-        function updateTradeSchedule() {
-        var selectedDate = $('#selected-date').text();
-        var selectedTime = getSelectedTime();
-        var tradeId = $('input[name="tradeId"]').val(); // tradeId 값을 가져옴
-
-        var formattedDate = moment(selectedDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
-        var formattedTime = moment(selectedTime, 'HH:mm').format('HH:mm');
-
-        console.log('선택된 날짜:', selectedDate);
-        console.log('선택된 시간:', selectedTime);
-
-        //
-        선택된 날짜와 시간을 폼
-        데이터로 설정
-        var formData = new FormData();
-        formData.append('tradeId', tradeId); // tradeId 값을 추가
-        formData.append('tradeDate', selectedDate);
-        formData.append('tradeTime', selectedTime);
-
-        // CSRF 토큰과 헤더
-        설정
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
-        $.ajaxSetup({
+    // CSRF 토큰과 헤더 설정
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $.ajaxSetup({
         beforeSend: function(xhr) {
-        xhr.setRequestHeader(header, token);
+            xhr.setRequestHeader(header, token);
         }
+    });
 
-        });
-
-        // AJAX를
-        사용하여 폼 데이터를
-        서버로 전송
-        $.ajax({
+    // AJAX를 사용하여 폼 데이터를 서버로 전송
+    $.ajax({
         url: $('#tradeForm').attr('action'),
         type: 'POST',
         data: formData,
         processData: false,
         contentType: false,
         success: function(response) {
-        console.log('데이터
-        전송 성공');
-        console.log(response);
-        window.location.href = response;
+            console.log('데이터 전송 성공');
+            console.log(response);
+            window.location.href = response;
         },
         error: function(xhr, status, error) {
-        console.log(error);
+            console.log(error);
         }
-        });
+    });
+}
 
-        }
+$('#tradeForm').submit(function(e) {
+    e.preventDefault();
 
-        $('#tradeForm').submit(function(e) {
-        e.preventDefault();
-
-        updateTradeSchedule();
-      });
+    updateTradeSchedule();
+});
 </script>
 <script type="text/javascript" th:src="@{/js/weather.js}"></script>
 </body>

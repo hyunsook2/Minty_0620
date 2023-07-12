@@ -59,10 +59,9 @@ public class TradeBoardCustomRepository {
         return new OrderSpecifier<>(order, QTradeBoard.tradeBoard.modifiedDate);
     }
 
-    private BooleanExpression searchByArea(String searchArea){
-        if (searchArea != null){
-            System.out.println("does it reach CustomRepo?");
-            return QTradeBoard.tradeBoard.sellArea.eq(searchArea);
+    private BooleanExpression searchByArea(List<String> searchAreaList) {
+        if (searchAreaList != null && !searchAreaList.isEmpty()) {
+            return QTradeBoard.tradeBoard.sellArea.in(searchAreaList);
         }
         return null;
     }

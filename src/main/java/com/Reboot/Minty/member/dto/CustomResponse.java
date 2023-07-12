@@ -3,6 +3,7 @@ package com.Reboot.Minty.member.dto;
 import lombok.*;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor

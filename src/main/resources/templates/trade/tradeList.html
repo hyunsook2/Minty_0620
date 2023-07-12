@@ -52,11 +52,12 @@
                     <span th:if="${trade.status == '거래시작'}" th:text="'님과 [' + ${trade.boardId.title} + '] 거래시작'"></span>
                     <span th:if="${trade.status == '거래중'}" th:text="'님과 [' + ${trade.boardId.title} + '] 거래중'"></span>
                     <span th:if="${trade.status == '거래완료'}" th:text="'님과 [' + ${trade.boardId.title} + '] 거래완료'"></span>
+                    <span th:if="${trade.status == '거래취소'}" th:text="'님과 [' + ${trade.boardId.title} + '] 거래가 취소되었습니다.'"></span>
                 </div>
             </div>
 
             <a style="text-decoration:none;" th:href="@{|/trade/${trade.id}|}">
-            <div class="space" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중' || trade.status == '거래완료'}">
+            <div class="space" th:if="${trade.status == '대화요청' || trade.status == '거래시작' || trade.status == '거래중' || trade.status == '거래완료' || trade.status == '거래취소'}">
                 <div class="info">
                     <div class="product-image">
                         <img th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${trade.boardId.thumbnail}}" alt="Board Image" class="board-img" th:trade_id="${trade.boardId.id}" />

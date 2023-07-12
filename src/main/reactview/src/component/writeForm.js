@@ -6,6 +6,8 @@ import CommonForm from './commonForm';
 import TradeForm from './tradeForm';
 import JobForm from './jobForm';
 import '../css/writeForm.css';
+import AdForm from './adForm';
+import NoticeForm from './noticeForm';
 
 function WriteForm(props) {
     const [targetCategory, setTargetCategory] = useState('tradeBoard');
@@ -20,8 +22,9 @@ function WriteForm(props) {
     const [state, setState] = useState({});
     const [addressCode, setAddressCode] = useState([]);
     const [userLocationList, setUserLocationList] = useState([]);
+    const [userRole, setUserRole] = useState('');
 
-     const location = useLocation();
+    const location = useLocation();
     useEffect(() => {
      if (location.state) {
           const temp = location.state.tradeBoard;
@@ -35,7 +38,6 @@ function WriteForm(props) {
           setImageList(location.state.imageList);
         }
     }, [location.state]);
-
 
     const fetchData = () => {
         axios.get(`/api/writeForm`).then((response) => {
@@ -53,7 +55,14 @@ function WriteForm(props) {
                 console.error('Error fetching data:', error);
             });
     };
-
+    useEffect(() => {
+              axios.get(`/api/isLoggedIn`).then((response) => {
+                console.log("useEffect?");
+                setUserRole(response.data.userRole);
+              }).catch((e) => {
+                console.error(e);
+              });
+    }, []);
     function TradeOption() {
         return (
             <>
@@ -62,17 +71,15 @@ function WriteForm(props) {
             </>
         );
     }
-
     function CommonOption() {
-        return (
-            <>
-                <option value="common">일반게시판</option>
-                <option value="notice">공지</option>
-                <option value="advertise">광고  </option>
-            </>
-        );
+            return (
+                <>
+                    <option value="common">일반게시판</option>
+                    {userRole === 'ADMIN' ? (<option value="notice">공지</option>) : null}
+                    <option value="advertise">광고  </option>
+                </>
+            );
     }
-
     useEffect(() => {
         fetchData();
         if (targetCategory === 'tradeBoard') {
@@ -80,7 +87,6 @@ function WriteForm(props) {
         }
         else { setSubCategory('common'); }
     }, [targetCategory], [subCategory]);
-
     function TradeCategoryContainer({
         targetCategory,
         subCategory,
@@ -92,7 +98,6 @@ function WriteForm(props) {
         setSelectedSubCateId
     }) {
         return (
-
             <Row className={`justify-content-center trade-category-container ${targetCategory !== 'tradeBoard' || (subCategory !== 'trade') ? 'hidden' : ''}`}>
                 <br /><br />
                 <Col md={12}>
@@ -144,9 +149,6 @@ function WriteForm(props) {
             </Row>
         );
     }
-
-
-
     return (
         <div className="App">
             <Container>
@@ -202,7 +204,9 @@ function WriteForm(props) {
                     />
                 )}
                 {(subCategory === "emergencyJob" && targetCategory === "tradeBoard") && <JobForm csrfToken={csrfToken}/>}
-                {(subCategory === "common" && targetCategory === "commonBoard") && <CommonForm />}
+                {(subCategory === "common" && targetCategory === "commonBoard") && <CommonForm status="GENERAL" />}
+                {(subCategory === "notice" && targetCategory === "commonBoard") && <NoticeForm status="NOTICE" />}
+                {(subCategory === "advertise" && targetCategory === "commonBoard") && <AdForm status="AD" />}
                 <br />
             </Container>
         </div>

@@ -28,7 +28,64 @@
         width: 60vw;
         margin: auto;
     }
-  </style>
+
+    .homeMainContent{
+        width: 2000px;
+        height: 650px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        background-color: #FBF7F2;
+        flex-wrap: wrap;
+        flex-direction: row;
+        margin-top:20px;
+    }
+
+    .homeMainContent img{
+        width: 800px;
+        height: 550px;
+    }
+
+    .homeMainTitle{
+        font-size: 2.5rem;
+        line-height: 1.3;
+        margin-bottom: 3.2rem;
+        letter-spacing: -0.4px;
+        font-weight: bold;
+    }
+
+    .home-list{
+        display: flex;
+        margin-top: 40px;
+        justify-content: space-between;
+        list-style-type: none;
+    }
+
+    .btn {
+            height: 38px;
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            cursor: pointer;
+          }
+
+    .btn-outline-secondary {
+         color: #6c757d;
+         background-color: transparent;
+        }
+
+    .btn-outline-secondary {
+         color: #fff;
+         background-color: rgba(91, 194, 126, 0.5);
+     }
+
+    .btn-outline-secondary:hover {
+         background-color: rgba(91, 194, 126, 1);
+    }
+
+</style>
 
     <div>
         <!--    <div style="overflow: hidden">-->
@@ -51,70 +108,126 @@
         <!--            </div>-->
         <!--        </div>-->
         <!--        </div>-->
-
-        <div id="carouselExample" class="carousel slide">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <a href="roulette">
-                        <img src="/image/eventmain1.jpg" class="d-block w-100" alt="..." />
-                    </a>
-                </div>
-                <div class="carousel-item">
-                    <a href="attendance">
-                        <img src="/image/mainPage/main-2.png" class="d-block w-100" alt="..." />
-                    </a>
-                </div>
-                <div class="carousel-item">
-                    <img src="/image/mainPage/main-3.png" class="d-block w-100" alt="..." />
-                </div>
+        <div class="homeMainContent">
+            <div>
+                <h1 class="homeMainTitle">
+                    이웃과 함께하는
+                    <br>
+                    중고거래 민티
+                </h1>
+                <p class="homeText">
+                    중고 거래부터 동네 정보까지, 이웃과 함께해요.
+                    <br>
+                    가깝고 따뜻한 당신의 근처를 만들어요.
+                </p>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+            <div>
+                <img src="/static/image/mainPage/main1.jpg">
+            </div>
+        </div>
+
+        <div class="homeMainContent" style="background-color:white; margin-top: 100px;">
+            <div id="carouselExample" class="carousel slide" style="width:700px; height:600px;">
+                <div class="carousel-inner">
+                    <div class="carousel-item">
+                        <img src="/image/mainPage/main-3.png" class="d-block w-100" alt="..." />
+                    </div>
+                    <div class="carousel-item active">
+                        <a href="roulette">
+                            <img src="/image/eventmain1.jpg" class="d-block w-100" alt="..." />
+                        </a>
+                    </div>
+                    <div class="carousel-item">
+                        <a href="attendance">
+                            <img src="/image/mainPage/main-2.png" class="d-block w-100" alt="..." />
+                        </a>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+            <div style="margin-right:420px;">
+                <h1 class="homeMainTitle">
+                    민티와 함께하는
+                    <br>
+                    참여 이벤트!
+                </h1>
+                <p class="homeText">
+                    민티 이벤트에 참가하셔서 포인트를 얻고
+                    <br>
+                    여러가지 상품을 구입해 보세요.
+                </p>
+            </div>
         </div>
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
         <script>
-              function autoSlide() {
-                var activeSlideIndex = $(".carousel-item.active").index();
-                $(".carousel").carousel("next");
-                if (activeSlideIndex === $(".carousel-item").length - 1) {
-                  $(".carousel").carousel(0);
-                }
-              }
 
-              setInterval(autoSlide, 3000);
-        </script>
+  function autoSlide() {
+    var activeSlideIndex = $(".carousel-item.active").index();
+    $(".carousel").carousel("next");
+    if (activeSlideIndex === $(".carousel-item").length - 1) {
+      $(".carousel").carousel(0);
+    }
+  }
 
-
-        <div style="margin-top:6%; width:100vw; text-align:center;">
-            <img src="/image/mainPage/main1.jpg" />
+  setInterval(autoSlide, 5000);
+</script>
+        <div class="homeMainContent" style="background-color: #E6F3E6;">
+            <div>
+                <h1 class="homeMainTitle">
+                    이웃과 함께 하는
+                    <br>
+                    동네생활
+                </h1>
+                <p class="homeText">
+                    우리 동네의 다양한 이야기를 이웃과 함께 나누어요.
+                </p>
+                <ul class="home-list">
+                    <li style="margin-right:20px;"><img src="/image/house-icon.png" style="width:56px; height:56px;">
+                        <p style="font-weight:bold;">우리 동네 질문</p>
+                        <p>궁금한 게 있을 땐 이웃에게
+                            <br>
+                            물어보세요.
+                        </p>
+                    </li>
+                    <li><img src="/image/dialog-icon.png" style="width:56px; height:56px;">
+                        <p style="font-weight:bold;">동네모임</p>
+                        <p>관심사가 비슷한 이웃과
+                            <br>
+                            온오프라인으로 만나요.
+                        </p>
+                    </li>
+                </ul>
+                <button type="button" class="btn btn-outline-secondary"><a th:href="@{#community}" style="text-decoration:none; color:white;">커뮤니티 바로가기</a></button>
+            </div>
+            <div>
+                <img src="/image/mainPage/main1.jpg">
+            </div>
         </div>
 
-        <div style="margin-top:2%; width:100vw; text-align:center;">
-            <img src="/image/mainPage/main2.jpg" />
-        </div>
-
-        <div style="margin-top:2%; width:100vw; text-align:center;">
-            <img src="/image/mainPage/main3.jpg" />
-        </div>
-
-        <div style="margin-top:2%; width:100vw; text-align:center;">
-            <img src="/image/mainPage/main4.jpg" />
-        </div>
-
-        <div style="margin-top:2%; width:100vw; text-align:center;">
-            <img src="/image/mainPage/main5.jpg" />
-        </div>
-
-        <div style="margin-top:2%; width:100vw; text-align:center;">
-            <img src="/image/mainPage/main6.jpg" />
+        <div class="homeMainContent" style="background-color:white;">
+            <div>
+                <img src="/image/mainPage/main1.jpg">
+            </div>
+            <div>
+                <h1 class="homeMainTitle">
+                    우리 동네
+                    <br>
+                    중고 직거래 마켓
+                </h1>
+                <p class="homeText">
+                    동네 주민들과 가깝고 따뜻한 거래를 지금 경험해보세요.
+                </p>
+                <button type="button" class="btn btn-outline-secondary"><a th:href="@{/boardList/0}" style="text-decoration:none; color:white;">매물 보러가기</a></button>
+            </div>
         </div>
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>

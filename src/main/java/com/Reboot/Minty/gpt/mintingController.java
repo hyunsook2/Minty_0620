@@ -26,7 +26,7 @@ public class mintingController {
     @GetMapping("/minting")
     @ResponseBody
     public void executeGpt(HttpSession session, HttpServletRequest request, @Value("${gpt-api-key}") String apiKey) {
-        String pythonScriptPath = "D:/IntelliJPrac/Minty/src/main/python/chatGpt.py";
+        String pythonScriptPath = "D:/Minty-master/Minty-master/src/main/python/chatGpt.py";
 
         String userEmail = (String) session.getAttribute("userEmail");
         User user = userService.getUserInfo(userEmail);

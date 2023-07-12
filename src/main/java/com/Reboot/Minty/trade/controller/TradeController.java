@@ -8,6 +8,7 @@ import com.Reboot.Minty.review.entity.Review;
 import com.Reboot.Minty.review.service.ReviewService;
 import com.Reboot.Minty.trade.entity.Trade;
 import com.Reboot.Minty.trade.repository.ScheduleRepository;
+import com.Reboot.Minty.trade.repository.TradeRepository;
 import com.Reboot.Minty.trade.service.TradeService;
 import com.Reboot.Minty.tradeBoard.entity.TradeBoard;
 import com.Reboot.Minty.tradeBoard.repository.TradeBoardRepository;
@@ -16,13 +17,13 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -30,25 +31,23 @@ import java.util.List;
 public class TradeController {
     private final TradeService tradeService;
     private final TradeBoardService tradeBoardService;
-
     private final UserService userService;
-
     private final ReviewService reviewService;
-
     private final ScheduleRepository scheduleRepository;
-
-    private final TradeBoardRepository tradeBoardRepository;
-
     private final UserLocationRepository userLocationRepository;
+    private final TradeBoardRepository tradeBoardRepository;
+    private final TradeRepository tradeRepository;
+
     @Autowired
-    public TradeController(TradeService tradeService, TradeBoardService tradeBoardService, UserService userService, ReviewService reviewService, ScheduleRepository scheduleRepository, TradeBoardRepository tradeBoardRepository, UserLocationRepository userLocationRepository) {
+    public TradeController(TradeService tradeService, TradeBoardService tradeBoardService, UserService userService, ReviewService reviewService, ScheduleRepository scheduleRepository, UserLocationRepository userLocationRepository, TradeBoardRepository tradeBoardRepository, TradeRepository tradeRepository) {
         this.tradeService = tradeService;
         this.tradeBoardService = tradeBoardService;
         this.userService = userService;
         this.reviewService = reviewService;
         this.scheduleRepository = scheduleRepository;
-        this.tradeBoardRepository = tradeBoardRepository;
         this.userLocationRepository = userLocationRepository;
+        this.tradeBoardRepository = tradeBoardRepository;
+        this.tradeRepository = tradeRepository;
     }
 
     @GetMapping("/tradeList")
@@ -63,23 +62,20 @@ public class TradeController {
         return "trade/tradeList";
     }
 
-    @Value("${kaKao-jsKey}")
-    private String kaKaoKey;
-
     @GetMapping(value = "/trade/{tradeId}")
     public String trade(@PathVariable(value = "tradeId") Long tradeId, Model model, HttpServletRequest request)  {
         HttpSession session = request.getSession();
         Long userId = (Long)session.getAttribute("userId");
         User writerId = userService.getUserInfoById(userId);
         Trade trade = tradeService.getTradeDetail(tradeId);
-        String sellArea = trade.getBoardId().getSellArea();
         String role = tradeService.getRoleForTrade(tradeId, userId);
         User buyer= userService.getUserInfoById(trade.getBuyerId().getId());
         User seller= userService.getUserInfoById(trade.getSellerId().getId());
         Review review = reviewService.getReviewByTradeIdAndWriterId(trade,writerId);
         boolean isExistReview = reviewService.existsByIdAndWriterId(trade,writerId);
-        model.addAttribute("kaKaoKey",kaKaoKey);
-        model.addAttribute("sellArea", sellArea);
+        UserLocation userLocation = userLocationRepository.findByUserId(userId);
+
+        model.addAttribute("userLocation",userLocation);
         model.addAttribute("userId", userId);
         model.addAttribute("trade", trade);
         model.addAttribute("role",role);
@@ -129,25 +125,36 @@ public class TradeController {
 
     @PostMapping("/updateMode")
     @Transactional
-    public String updateMode(@RequestParam("tradeId") Long tradeId, @RequestParam("modeIndex") int modeIndex) {
-        try {
-            tradeService.updateMode(tradeId, modeIndex);
-            // 현재 페이지를 리로드하는 JavaScript 코드를 반환
-            return "redirect:/trade/" + tradeId;
-        } catch (Exception e) {
-            e.printStackTrace(); // 에러 정보를 로그에 출력하거나 원하는 방식으로 처리할 수 있습니다.
-            // 오류 페이지로 리다이렉트하거나 오류 메시지를 표시하는 등의 처리를 수행합니다.
-            return "error";
+    public String updateMode(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes,
+                             @RequestParam("tradeId") Long tradeId, @RequestParam("modeIndex") int modeIndex) {
+        HttpSession session = request.getSession();
+        Long userId = (Long)session.getAttribute("userId");
+        Trade trade = tradeRepository.findById(tradeId).orElseThrow(EntityNotFoundException::new);
+        TradeBoard tradeBoard = trade.getBoardId();
+        User buyer= userService.getUserInfoById(trade.getBuyerId().getId());
+        User seller= userService.getUserInfoById(trade.getSellerId().getId());
+        String errorMessage = tradeService.updateMode(tradeId, modeIndex, buyer, seller);
+
+        if (errorMessage != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
         }
+
+        return "redirect:/trade/" + tradeId;
     }
+
+
 
     @PostMapping("/completionTrade")
     @Transactional
     public String completionTrade(HttpSession session ,@RequestParam("tradeId") Long tradeId){
         Long userId = (Long) session.getAttribute("userId");
         String role = tradeService.getRoleForTrade(tradeId, userId);
+        Trade trade = tradeRepository.findById(tradeId).orElseThrow(EntityNotFoundException::new);
+        TradeBoard tradeBoard = trade.getBoardId();
+        User buyer= userService.getUserInfoById(trade.getBuyerId().getId());
+        User seller= userService.getUserInfoById(trade.getSellerId().getId());
         System.out.println(role);
-        tradeService.completionTrade(tradeId ,role);
+        tradeService.completionTrade(tradeId ,role, buyer, seller);
 
         return "redirect:/trade/" + tradeId;
     }

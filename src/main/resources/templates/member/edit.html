@@ -37,6 +37,7 @@
         method="post"
         th:object="${updateDto}"
         class="editform"
+        enctype="multipart/form-data"
 >
     <div
             th:if="${not #strings.isEmpty(updateSuccessMessage)}"
@@ -199,6 +200,11 @@
                 th:value="${_csrf.token}"
         />
     </div>
+    <div class="form-group">
+        <label th:for="image">이미지</label>
+        <input type="file" name="imageFile" required>
+    </div>
+
     <div style="text-align: center">
         <button type="submit" class="btn btn-primary" style="margin-right:auto;margin-left:auto;width:50vw;margin-top:5vh;">변경하기</button>
     </div>

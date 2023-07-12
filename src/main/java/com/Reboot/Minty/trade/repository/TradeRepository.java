@@ -49,7 +49,9 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     @Modifying
     @Query("UPDATE Trade t SET t.buyerSchedule = :schedule WHERE t.id = :tradeId")
     void updateBuyerSchedule(@Param("tradeId") Long tradeId, @Param("schedule") String schedule);
+
     List<Trade> findAllByTradeDateBeforeAndStatus(LocalDate tradeDate, String status);
 
     Trade findByBoardIdAndBuyerId(TradeBoard tradeBoardId, User buyer);
+
 }

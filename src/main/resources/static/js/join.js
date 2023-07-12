@@ -1,24 +1,6 @@
 /*$(".chk-button").on("click", function () {
       $(".chk-code").removeClass("chk-code");
     });*/
-document.addEventListener('keydown', function(event) {
-  var disallowedKeys = [38, 40];
-
-  if (disallowedKeys.includes(event.keyCode)) {
-    event.preventDefault();
-  }
-});
-
-function checkPasswordMatch() {
-    var password = $("#password").val();
-    var passwordConfirm = $("#passwordConfirm").val();
-
-    if (password === passwordConfirm) {
-      $("#passwordMatchMessage").text("비밀번호가 일치합니다.");
-    } else {
-      $("#passwordMatchMessage").text("비밀번호가 일치하지 않습니다.");
-    }
-  }
 
 var countdown = null;
 

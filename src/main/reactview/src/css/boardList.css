@@ -185,11 +185,11 @@
 }
 
 .writebutton{
-     padding: 1em 2em 0em 2em;
+     padding: 15px 5em 0;
      background-color:#6bc27e!important;
-     margin-top: 55vh;
+     margin-top: 30%;
      position: fixed;
-     margin-left: 19%;
+     margin-left: 11%;
 }
 .writebuttontext{
     text-align:center;
@@ -210,12 +210,32 @@
 .col-md-3{
 display:flex !important;
 }
-.justify-content-center{
-justify-content:none !important;
+
+
+
+
+.dark-dropdown .dropdown-menu {
+  background-color: #343a40;
 }
 
-.searchArea {
-    margin-left: 71.2vw;
-    margin-top: 5px;
-    margin-bottom: 10px;
+.dropdown-item {
+    color : white;
 }
+
+
+.range-slider__wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.range-slider {
+    width : 80%;
+}
+
+
+.modal-content {
+    height: 100%;
+    width: 100%;
+}
+

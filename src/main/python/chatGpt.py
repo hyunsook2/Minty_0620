@@ -31,6 +31,8 @@ def send_message():
     messages.append({"role": "user", "content": user_content})
 
     loading_label.config(text="민팅이가 열심히 생각하고 있으니 기다려주세요!")
+    loading_label.lift()
+    loading_label.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
     root.update()
 
@@ -61,6 +63,9 @@ def send_message():
     root.after(10, scroll_to_bottom)
 
 def scroll_to_bottom():
+    if loading_label:
+            loading_label.lift()
+            loading_label.place_forget()
     chat_history.see(tk.END)
 
 class SpeechBubble(tk.Frame):
@@ -89,12 +94,13 @@ send_button = tk.Button(root, text="전송", command=send_message, font=custom_f
 send_button.pack(pady=10)
 
 loading_label = tk.Label(root, text="", font=("Pacifico", 15), bg="white")
-loading_label.pack()
-loading_label.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
 # Initial message
 chat_history.tag_configure("Minting", background="#f0f0f0")
 chat_history.insert(tk.END, "AI(MINTING)가 대답해주는 대화창입니다. 질문을 하실때 명확한 질문을 하실때 정확한 답변을 얻으실 수 있습니다.\n\n")
+
+loading_label.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+
 root.mainloop()
 
 print(data)

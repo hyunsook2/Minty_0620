@@ -1,6 +1,5 @@
 package com.Reboot.Minty.member.constant;
 
-
 import lombok.Getter;
 
 @Getter

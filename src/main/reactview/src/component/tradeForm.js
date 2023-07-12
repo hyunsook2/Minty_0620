@@ -181,7 +181,8 @@ function TradeForm({ selectedTopCateId, selectedSubCateId,  csrfToken, tradeBoar
         setShowPostCodeModal(false);
     };
 
-    const setShowPostCode = () => {
+    const setShowPostCode = (e) => {
+        e.preventDefault();
         setShowPostCodeModal(true);
     };
     const handleAddressChange = (data) => {
@@ -412,7 +413,7 @@ function TradeForm({ selectedTopCateId, selectedSubCateId,  csrfToken, tradeBoar
                         <Row className="d-flex">
                             <Col sm={12}>
                                <input type="text" placeholder="시,도 / 시군구 / 동 중 하나를 검색해주세요" className="search-input" name="searchAddress" value={searchAddressInput} onChange={(e) => setSearchAddressInput(e.target.value)} />
-                                 <button type="submit">
+                                 <button type="button" onClick={handleAddressSearch}>
                                     <BiSearch />
                                  </button>
                             </Col>

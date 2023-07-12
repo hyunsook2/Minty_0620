@@ -190,10 +190,10 @@ function fetchAll() {
             console.log(groups[i]['user_id'])
             groupsTemplateHTML = groupsTemplateHTML +
                 '<a class="list-group-item list-group-item-action" id="child_message" onclick="formMessageLauch('+groups[i]['user_id']+',\''+groups[i]['address']+'\',\'group\')" data-groupid="'+groups[i]['user_id']+'" data-type="group">'+
-                '<img src="https://via.placeholder.com/50" alt="User Image" width="50px" height="50px">'+
+                '<img src="/image/chat2.PNG" alt="User Image" width="50px" height="50px">'+
                 '<div class="user_info" id="userGroupAppender_' + modifiedAddress + '">'+
                 // '<span>'+groups[i]['address']+'</span>'+
-                     '<span>'+"지역 채팅방 "+ "<br>" + groups[i]['address']+ '</span>'+
+                '<span>'+"지역 채팅방 : "+ groups[i]['address']+ '</span>'+
                 '</div>'+
                 '</a>';
         }

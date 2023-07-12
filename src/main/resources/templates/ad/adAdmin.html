@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
@@ -69,7 +69,7 @@
 
     .button-container {
       margin-top: 20px;
-      display:flex;
+
     }
 
     .button-container form {
@@ -165,10 +165,10 @@
 <div class="container">
   <div class="ad-details">
     <div class="ad-content">
+      <h2>제목: <span th:text="${ad.title}"></span></h2>
       <div class="image-preview">
         <img th:if="${ad.image}" th:src="@{'/adimage/' + ${ad.image}}" alt="Ad Image" />
       </div>
-      <h2>제목: <span th:text="${ad.title}"></span></h2>
       <p><strong>작성자:</strong> <span th:text="${ad.advertiserName}"></span></p>
       <p><strong>작성 내용:</strong> <span th:text="${ad.content}"></span></p>
       <p><strong>상태:</strong> <span th:text="${ad.status}"></span></p>
