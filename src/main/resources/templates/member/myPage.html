@@ -472,7 +472,6 @@
             <div class="profile">
                 <div class="front">
                     <img class="profileImg" th:if="${user.image}" th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${user.image}}" alt="User Image" style="max-height: 100%; width: max-height: 100%;"/>
-                    <img class="profileImg" th:unless="${user.image}" src="/image/manager.PNG" alt="Profile Picture"/>
                     <div class="info">
                         <div class="ratings">
                             <img src="/image/myPage/score.PNG" alt="평점 이미지">

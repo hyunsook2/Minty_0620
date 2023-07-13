@@ -121,6 +121,17 @@
             alert(errorMessage);
         }
     });
+     function checkPasswordMatch() {
+        var password = document.getElementById("password").value;
+        var confirmPassword = document.getElementById("passwordConfirm").value;
+        var passwordMatchMessage = document.getElementById("passwordMatchMessage");
+
+        if (password !== confirmPassword) {
+            passwordMatchMessage.innerHTML = "비밀번호가 일치하지 않습니다.";
+        } else {
+            passwordMatchMessage.innerHTML = ""; // Clear the error message if passwords match
+        }
+    }
 </script>
 
 </body>

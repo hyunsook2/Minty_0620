@@ -68,7 +68,6 @@ public class ScheduleListController {
         boolean checkIntroduction = false;
 
         if (schedule != null) {
-            checkArea = scheduleService.checkArea(schedule, schedule.getHopeArea());
             checkIntroduction = scheduleService.checkIntroduction(schedule);
         }
 
@@ -112,7 +111,8 @@ public class ScheduleListController {
                                  @RequestParam(name = "introduction") String introduction,
                                  @RequestParam(name = "startTime[]") List<String> startTimeStrings,
                                  @RequestParam(name = "endTime[]") List<String> endTimeStrings,
-                                 HttpSession session) {
+                                 HttpSession session, Model model) {
+
         Long userId = (Long) session.getAttribute("userId");
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
 

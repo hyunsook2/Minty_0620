@@ -34,10 +34,6 @@ public class ScheduleService {
     }
 
     // 해당 유저의 Schedule 정보가 있는지 확인
-    // 해당 유저의 Schedule 정보가 있는지 확인
-    public boolean checkArea(Schedule schedule, String hopeArea) {
-        return schedule != null && schedule.getHopeArea() != null && schedule.getHopeArea().equals(hopeArea);
-    }
 
     public boolean checkDay(User user) {
         Optional<ScheduleDay> scheduleDay = Optional.ofNullable(scheduleDayRepository.findByUserId(user));

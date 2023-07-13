@@ -23,8 +23,21 @@ const navigate = useNavigate();
    };
 
    const handleDeleteClick = () => {
-
-   }
+     axios
+     .post('/api/tradeBoard/deleteRequest', tradeBoard.id, {
+       headers: {
+         'Content-Type': 'application/json',
+         'X-CSRF-TOKEN': csrfToken,
+       },
+     }).then((response)=> {
+       alert('삭제 처리 되었습니다.');
+       window.location.href = "/boardList/";
+     })
+     .catch((error) => {
+       console.log(error);
+       alert(error);
+     })
+   };
 
 
 const fetchData = () => {

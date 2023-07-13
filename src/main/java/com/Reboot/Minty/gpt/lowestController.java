@@ -77,7 +77,7 @@ public class lowestController {
     @GetMapping("/gpt/executePythonScript")
     @ResponseBody
     public void executePythonScript(@RequestParam("inputValue") String inputValue, HttpSession session) {
-        String pythonScriptPath = "D:/Minty-master/Minty-master/src/main/python/test.py";
+        String pythonScriptPath = "D:/intellijPrac/Minty/src/main/python/test.py";
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("python", pythonScriptPath, inputValue);

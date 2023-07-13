@@ -4,32 +4,46 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
     <style>
+
+    .titleBorder{
+        margin: 10px;
+        width: 80%;
+        margin-left: 10%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        background-color: white;
+        margin-top: 5vh;
+        margin-bottom: 3vh;
+    }
+
+    .center{
+        display:flex;
+        justify-content: center;
+        padding-top:20px;
+    }
+
     .navbar>.container{
       border-bottom: none;
     }
 
     .board-item {
-         flex: 1;
-    width: 550px;
-    height: auto;
-    background-color: #f9f9f9;
-    margin: 5px;
-    position: inherit;
-    border: 1px solid grey;
-    overflow: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    float: left;
+        flex: 1;
+        width: 550px;
+        height: auto;
+        background-color: #f9f9f9;
+        position: inherit;
+        border: 1px solid grey;
+        overflow: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        float: left;
+        margin: 20px 0px 10px 70px;
     }
 
-
-
-
-
     .board-item img {
-         width: 28.5vw;
-    height: 29vh;
+        width: 500px;
+        height: 300px;
+
     }
 
     /* 네비게이션 바 영역 스타일 */
@@ -42,9 +56,12 @@
 
     /* 보드 영역 스타일 */
     .board-area {
-      padding: 10px;
-      border: 2px solid #000;
-      height: 3000px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      background-color: white;
+      height:1500px;
+      width:90%;
+      margin:30px 0px 30px 69px;
     }
 
     .tab-button {
@@ -54,6 +71,7 @@
       text-decoration: none;
       cursor: pointer;
       font-family: 'font';
+      font-size: 20px;
       margin-right: 10px;
       margin-top: 5px;
       margin-bottom: 5px;
@@ -80,7 +98,8 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="container">
+    <div class="titleBorder">
+        <h1 class="center">이벤트</h1>
         <div class="Categories">
             <ul class="list">
                 <li class="tab-button o select">진행중</li>

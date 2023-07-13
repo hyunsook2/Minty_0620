@@ -24,6 +24,8 @@ public class UserAndGroupService {
         String query = "SELECT cr.id, " +
                 "umy.nick_name AS myNickName, " +
                 "uother.nick_name AS otherNickName, " +
+                "umy.image AS myProfileImage, " +
+                "uother.image AS otherProfileImage, " +
                 "cr.my AS my, " +
                 "cr.other AS other, " +
                 "tb.title AS title, " +

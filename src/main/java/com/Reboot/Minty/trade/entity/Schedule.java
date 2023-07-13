@@ -23,8 +23,6 @@ public class Schedule {
     @JoinColumn
     private User user;
 
-    private String hopeArea;
-
     private String introduction;
 
 }

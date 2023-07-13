@@ -17,13 +17,37 @@
         justify-content: center;
       }
 
+      .titleBorder{
+        margin: 10px;
+        width: 70%;
+        margin-left: 15%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        background-color: white;
+        margin-top: 3vh;
+        margin-bottom: 3vh;
+      }
+
+      .top{
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .center{
+        display:flex;
+        text-align: center;
+        width:76%;
+      }
+
       .containerA {
         border: 1px solid black;
+        border-radius:5px;
         padding: 20px;
         margin: 15px;
-        width: 55%;
-        margin-left: 23%;
+        width: 75%;
+        margin-left: 12%;
       }
+
       .spinner {
         -webkit-animation: rotator 1.4s linear infinite;
         animation: rotator 1.4s linear infinite;
@@ -184,66 +208,72 @@
 </head>
 <body>
 <div layout:fragment="content">
-  <div style="margin-right: 20vw; text-align: right">
-    <svg
-            class="spinner"
-            width="65px"
-            height="65px"
-            viewBox="0 0 66 66"
-            xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle
-              class="path"
-              fill="none"
-              stroke-width="6"
-              stroke-linecap="round"
-              cx="33"
-              cy="33"
-              r="30"
-      ></circle>
-    </svg>
-    <input type="text" id="inputValue" placeholder="검색값을 입력하세요" />
-    <button id="executeButton" class="btn btn-primary">시세조회</button>
-  </div>
-  <div class="All">
-    <div class="containerA">
-      <h2
-              class="mt-4"
-              style="display: flex; justify-content: space-between"
+  <div class="titleBorder">
+    <div class="top">
+      <h1 style="margin:15px;">시세조회</h1>
+      <svg
+              class="spinner"
+              width="65px"
+              height="65px"
+              viewBox="0 0 66 66"
+              xmlns="http://www.w3.org/2000/svg"
       >
-        현재 시세
-      </h2>
-
-      <table class="table">
-        <thead>
-        <tr>
-          <th>상품명</th>
-          <th>가격</th>
-        </tr>
-        </thead>
-        <tbody id="resultBody">
-        <!-- 여기에 보임 -->
-        </tbody>
-      </table>
+        <circle
+                class="path"
+                fill="none"
+                stroke-width="6"
+                stroke-linecap="round"
+                cx="33"
+                cy="33"
+                r="30"
+        ></circle>
+      </svg>
+      <div class="center">
+        <input type="text" id="inputValue" placeholder="검색값을 입력하세요" style="width:80%; margin-right:50px;"/>
+        <button id="executeButton" class="btn btn-primary">시세조회</button>
+      </div>
     </div>
+    <div class="All">
+      <div class="containerA">
+        <h2
+                class="mt-4"
+                style="display: flex; justify-content: space-between"
+        >
+          현재 시세
+        </h2>
 
-    <div class="containerA">
-      <h2 class="mt-4">Minty 가격정보</h2>
-      <div class="list-group mt-4">
         <table class="table">
           <thead>
           <tr>
-            <th>게시물명</th>
+            <th>상품명 </th>
             <th>가격</th>
           </tr>
           </thead>
-          <tbody id="mintyResultBody">
+          <tbody id="resultBody">
           <!-- 여기에 보임 -->
           </tbody>
         </table>
+      </div>
+
+      <div class="containerA">
+        <h2 class="mt-4">Minty 가격정보</h2>
+        <div class="list-group mt-4">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>게시물명</th>
+              <th>가격</th>
+            </tr>
+            </thead>
+            <tbody id="mintyResultBody">
+            <!-- 여기에 보임 -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </div>
 </body>
 </html>
+

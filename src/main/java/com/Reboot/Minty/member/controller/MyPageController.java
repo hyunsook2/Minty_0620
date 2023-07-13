@@ -96,7 +96,6 @@ public class MyPageController {
         boolean checkIntroduction = false;
 
         if (schedule != null) {
-            checkArea = scheduleService.checkArea(schedule, schedule.getHopeArea());
             checkIntroduction = scheduleService.checkIntroduction(schedule);
         }
 
@@ -124,7 +123,6 @@ public class MyPageController {
         model.addAttribute("user", user);
         model.addAttribute("schedule", schedule);
         model.addAttribute("checkDay", checkDay);
-        model.addAttribute("checkArea", checkArea);
         model.addAttribute("checkDuration", checkDuration);
         model.addAttribute("checkIntroduction", checkIntroduction);
 

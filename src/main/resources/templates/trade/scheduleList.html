@@ -297,21 +297,20 @@
                         <input class="timer" type="time" name="startTime[]" oninput="updateText()" />
                         ~
                         <input class="timer" type="time" name="endTime[]" oninput="updateText()" />
+                        <br />
                     </div>
-                </div>
-                <!-- 거래 희망 위치 -->
-                <div th:if="${schedule == null || !checkArea}">
-                    <p>등록된 거래희망 위치정보가 없습니다.</p>
+                    <br />
                 </div>
                 <!-- 거래 희망 소개 -->
                 <div th:if="${schedule == null || !checkIntroduction}">
-                    <p>등록된 거래희망 소개가 없습니다.</p>
+                    <p>등록된 소개가 없습니다.</p>
                     <input id="introduction" class="introduction" placeholder="거래희망 소개를 등록해주세요" style="width: 50%; text-align: center" />
                 </div>
 
-                <div th:if="${scheduleDay == null and scheduleDuration.isEmpty() and (schedule == null or !checkIntroduction)}">
-                    <input type="button" id="btnSubmit" onclick="submitForm('btnSubmit')" value="등록하기"/>
+                <div th:if="${errorMessage}" class="error-message">
+                    <p th:text="${errorMessage}"></p>
                 </div>
+
             </form>
 
             <!-- 값이 있는 경우 -->
@@ -345,10 +344,7 @@
 
                 <input type="button" id="btnDuration" onclick="submitForm('btnDuration')" value="변경"/>
             </div>
-            <!-- 거래 희망 위치 -->
-            <div th:if="${schedule != null && checkArea}">
-                <input type="text" th:value="${schedule.getHopeArea()}" id="hopeArea" readonly>
-            </div>
+
             <!-- 거래 희망 소개 -->
             <div th:if="${schedule != null && checkIntroduction}">
                 <input type="text" name="editIntroduction" th:value="${schedule.getIntroduction()}" id="editIntroduction">

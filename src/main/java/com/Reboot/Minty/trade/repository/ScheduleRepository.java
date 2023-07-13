@@ -12,7 +12,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     Schedule findByUser(User user);
 
-    boolean existsByUserIdAndHopeArea(User user, String hopeArea);
 
     boolean existsByUserIdAndIntroduction(User user, String introduction);
 }

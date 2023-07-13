@@ -378,29 +378,6 @@
 
         <br>
 
-        <!-- 거래 희망 위치 -->
-        <div th:if="${role} == 'seller'">
-            <div th:if="${buyerSchedule == null || !buyerCheckArea}">
-                <p>등록된 거래희망 위치정보가 없습니다.</p>
-            </div>
-
-            <div th:if="${buyerSchedule != null && buyerCheckArea}">
-                <input class="no-clock-icon" type="text" th:value="${buyerSchedule.getHopeArea()}" id="hopeArea" readonly>
-            </div>
-        </div>
-
-        <div th:if="${role} == 'buyer'">
-            <div th:if="${sellerSchedule == null || !sellerCheckArea}">
-                <p>등록된 거래희망 위치정보가 없습니다.</p>
-            </div>
-
-            <div th:if="${sellerSchedule != null && sellerCheckArea}">
-                <input class="no-clock-icon" type="text" th:value="${sellerSchedule.getHopeArea()}" id="hopeArea2" readonly>
-            </div>
-        </div>
-
-        <br>
-
         <!-- 거래 희망 소개 -->
         <div th:if="${role} == 'seller'">
             <div th:if="${buyerSchedule == null || !buyerCheckIntroduction}">

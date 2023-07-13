@@ -1519,7 +1519,6 @@ background-image: linear-gradient(315deg, #4dccc6 0%, #96e4df 74%);
       <!-- 프로필 영역 내용 -->
       <div class="profile">
         <img class="profileImg" th:if="${user.image}" th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${user.image}}" alt="User Image" style="height: 190px; width: 100%;"/>
-        <img th:unless="${user.image}" src="/image/manager.PNG" alt="Profile Picture" />
         <div class="info">
           <div class="ratings">
             <img src="/image/myPage/score.PNG" alt="평점 이미지">
@@ -1578,7 +1577,7 @@ background-image: linear-gradient(315deg, #4dccc6 0%, #96e4df 74%);
           <h2></h2>
         </div>
         <div class="cool_btn1 teal">
-          <h1 class="u-score">4.7 <i>리뷰</i></h1>
+          <h1 class="u-score">0.0<i>리뷰</i></h1>
           <h2></h2>
         </div>
         <div class="cool_btn1 blue">

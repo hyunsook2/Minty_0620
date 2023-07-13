@@ -104,9 +104,13 @@
 .updown {
   background: rgba(0,0,0,0) !important;
   cursor: pointer;
-  margin-right:2vw;
 }
-
+.up{
+  margin-bottom:2vh;
+}
+.down{
+  margin-top:2vh;
+}
 .close-btn{
   cursor:pointer;
   font-weight:bolder;
@@ -133,10 +137,11 @@
     <div class="remote">
       <div>
         <a class="updown up"><img src="/image/up.png" alt="맨위로" /></a>
+      </div>
+      <div>
         <a class="button" th:href="@{/supportHome}">고객센터</a>
       </div>
       <div>
-        <a class="updown down"><img src="/image/down.png" alt="맨아래로" /></a>
         <a class="button" th:href="@{/writeForm}">글쓰기</a>
       </div>
       <div>
@@ -146,7 +151,10 @@
         <a class="button"th:href="@{/scheduleList}">일정목록</a>
       </div>
       <div>
-        <a id="chat" class="button">민팅팅</a>
+        <a id="minting" class="button">민팅팅</a>
+      </div>
+      <div>
+        <a class="updown down"><img src="/image/down.png" alt="맨아래로" /></a>
       </div>
     </div>
   </th:block>
@@ -174,10 +182,10 @@
       <p>© 2023 Your Company. All rights reserved.</p>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
   $(document).ready(function() {
-    $("#chat").click(function() {
+    $("#minting").click(function() {
       $.ajax({
         url: "/minting",
         type: "GET",

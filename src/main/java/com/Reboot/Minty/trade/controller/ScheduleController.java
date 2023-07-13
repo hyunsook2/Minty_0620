@@ -76,10 +76,6 @@ public class ScheduleController {
         boolean sellerCheckIntroduction = false;
 
         if (buyerSchedule != null) {
-            if (buyerSchedule.getHopeArea() != null) {
-                // buyerSchedule의 HopeArea 정보가 있는 경우
-                buyerCheckArea = scheduleService.checkArea(buyerSchedule, buyerSchedule.getHopeArea());
-            }
             if (buyerSchedule.getIntroduction() != null) {
                 // buyerSchedule의 Introduction 정보가 있는 경우
                 buyerCheckIntroduction = scheduleService.checkIntroduction(buyerSchedule);
@@ -87,10 +83,6 @@ public class ScheduleController {
         }
 
         if (sellerSchedule != null) {
-            if (sellerSchedule.getHopeArea() != null) {
-                // sellerSchedule의 HopeArea 정보가 있는 경우
-                sellerCheckArea = scheduleService.checkArea(sellerSchedule, sellerSchedule.getHopeArea());
-            }
             if (sellerSchedule.getIntroduction() != null) {
                 // sellerSchedule의 Introduction 정보가 있는 경우
                 sellerCheckIntroduction = scheduleService.checkIntroduction(sellerSchedule);

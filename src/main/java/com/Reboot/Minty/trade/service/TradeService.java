@@ -60,23 +60,24 @@ public class TradeService {
         tradeBoard = tradeBoardRepository.save(tradeBoard);
         Trade existingTrades = tradeRepository.findByBoardIdAndBuyerIdAndSellerId(tradeBoard, buyer, seller);
         if(existingTrades != null){
-            throw new IllegalStateException(String.valueOf(existingTrades.getId()));
+            return null;
         }
-        else {
-            Trade trade = new Trade();
-            trade.setBoardId(tradeBoard);
-            trade.setBuyerId(buyer);
-            trade.setSellerId(seller);
-            trade.setMode("직거래");
-            trade.setStatus("대화요청");
-            trade.setSellerCheck("N");
-            trade.setBuyerCheck("N");
-            trade.setSellerSchedule("N");
-            trade.setBuyerSchedule("N");
-            trade.setStartDate(LocalDateTime.now());
-            return tradeRepository.save(trade);
-        }
+
+        Trade trade = new Trade();
+        trade.setBoardId(tradeBoard);
+        trade.setBuyerId(buyer);
+        trade.setSellerId(seller);
+        trade.setMode("직거래");
+        trade.setStatus("대화요청");
+        trade.setSellerCheck("N");
+        trade.setBuyerCheck("N");
+        trade.setSellerSchedule("N");
+        trade.setBuyerSchedule("N");
+        trade.setStartDate(LocalDateTime.now());
+        return tradeRepository.save(trade);
+
     }
+
 
     public String getRoleForTrade(Long tradeId, Long userId) {
         Trade trade = tradeRepository.findById(tradeId).orElse(null);
