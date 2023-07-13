@@ -9,6 +9,28 @@
   text-overflow: ellipsis; /* 넘친 부분에 대한 생략 (...) 표시 */
 }
 
+.pStyle{
+    display:flex;
+    font-size:2.5rem;
+    justify-content:center;
+}
+
+.titleBorder{
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    background-color: white;
+    margin: 15px;
+    padding: 20px;
+    padding-bottom: 500px;
+    height: auto;
+}
+
+.flexFilter{
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
 .category-link:hover{
     color:black;
     font-weight:bold;
@@ -178,7 +200,7 @@
     width:20%!important;
 }
 .m-filter{
-    margin-top:10px;
+    margin-top:3px;
 }
 .filtertext{
     text-align: right; margin-right: 50px; font-size: 22px;
@@ -189,7 +211,7 @@
      background-color:#6bc27e!important;
      margin-top: 30%;
      position: fixed;
-     margin-left: 11%;
+     margin-left: 3%;
 }
 .writebuttontext{
     text-align:center;
@@ -198,21 +220,19 @@
 }
 
 .col-sm-2{
-
     display:flex;
     width:20%;
 }
 
 .search-input{
-    width:20vw;
+    width:12vw;
     height:4vh;
 }
 .col-md-3{
-display:flex !important;
+    display:flex !important;
+    width: 100%;
+    margin-left: 10px;
 }
-
-
-
 
 .dark-dropdown .dropdown-menu {
   background-color: #343a40;
@@ -238,4 +258,3 @@ display:flex !important;
     height: 100%;
     width: 100%;
 }
-

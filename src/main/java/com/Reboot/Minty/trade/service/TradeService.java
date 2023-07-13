@@ -60,24 +60,23 @@ public class TradeService {
         tradeBoard = tradeBoardRepository.save(tradeBoard);
         Trade existingTrades = tradeRepository.findByBoardIdAndBuyerIdAndSellerId(tradeBoard, buyer, seller);
         if(existingTrades != null){
-            return null;
+            throw new IllegalStateException(String.valueOf(existingTrades.getId()));
         }
-
-        Trade trade = new Trade();
-        trade.setBoardId(tradeBoard);
-        trade.setBuyerId(buyer);
-        trade.setSellerId(seller);
-        trade.setMode("직거래");
-        trade.setStatus("대화요청");
-        trade.setSellerCheck("N");
-        trade.setBuyerCheck("N");
-        trade.setSellerSchedule("N");
-        trade.setBuyerSchedule("N");
-        trade.setStartDate(LocalDateTime.now());
-        return tradeRepository.save(trade);
-
+        else {
+            Trade trade = new Trade();
+            trade.setBoardId(tradeBoard);
+            trade.setBuyerId(buyer);
+            trade.setSellerId(seller);
+            trade.setMode("직거래");
+            trade.setStatus("대화요청");
+            trade.setSellerCheck("N");
+            trade.setBuyerCheck("N");
+            trade.setSellerSchedule("N");
+            trade.setBuyerSchedule("N");
+            trade.setStartDate(LocalDateTime.now());
+            return tradeRepository.save(trade);
+        }
     }
-
 
     public String getRoleForTrade(Long tradeId, Long userId) {
         Trade trade = tradeRepository.findById(tradeId).orElse(null);
@@ -322,6 +321,13 @@ public class TradeService {
         return trade;
     }
 
-
+    public int getTradeCountForStoreOwner(Long ownerId) {
+        User owner = userRepository.findById(ownerId).orElse(null);
+        if (owner == null) {
+            // 상점 주인을 찾을 수 없는 경우 처리
+            return 0;
+        }
+        return tradeRepository.countByStatusAndSellerIdOrStatusAndBuyerId("거래완료", owner, "거래완료", owner);
+    }
 
 }

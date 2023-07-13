@@ -14,4 +14,9 @@ import java.util.List;
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     Attendance findByDate(LocalDate date);
     Attendance findByDateAndUserId(LocalDate date, Long userId);
+
+    @Query("SELECT COUNT(a) FROM Attendance a WHERE a.userId = :ownerId")
+    int getAttendanceTotalCount(@Param("ownerId") Long ownerId);
+
+
 }

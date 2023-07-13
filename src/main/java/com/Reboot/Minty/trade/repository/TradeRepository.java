@@ -3,6 +3,7 @@ package com.Reboot.Minty.trade.repository;
 
 import com.Reboot.Minty.member.entity.User;
 import com.Reboot.Minty.trade.entity.Trade;
+import com.Reboot.Minty.tradeBoard.constant.TradeStatus;
 import com.Reboot.Minty.tradeBoard.entity.TradeBoard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,5 +54,7 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     List<Trade> findAllByTradeDateBeforeAndStatus(LocalDate tradeDate, String status);
 
     Trade findByBoardIdAndBuyerId(TradeBoard tradeBoardId, User buyer);
+    int countByStatusAndSellerIdOrStatusAndBuyerId(String status1, User seller, String status2, User buyer);
+
 
 }

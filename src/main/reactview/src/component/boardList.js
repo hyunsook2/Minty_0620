@@ -465,103 +465,105 @@ function BoardList() {
   };
 
   return (
-    <Container fluid>
-      <Row className="justify-content-start filtertext">
-        <div>
-          <p>필터</p>
-          {activeFilters.map((filter, index) => (
-            <React.Fragment key={filter.type}>
-              <div className={`filter ${filter.value.length > 10 ? 'long-text' : ''}`} key={filter.type}>
-                <span>
-                  {filter.type} : {filter.value}
-                </span>
-                <button onClick={() => removeFilter(filter.type)}>x</button>
-              </div>
-              {(index + 1) % 2 === 0 && <br />} {/* 줄바꿈을 위한 br 요소 */}
-            </React.Fragment>
-          ))}
-        </div>
-      </Row>
-      <Row className="justify-content-start">
-        <Col md={1}>
-          <Dropdown className="dark-dropdown">
-            <Dropdown.Toggle id="dropdown-button-dark" variant="secondary">
-              {selectedArea ? selectedArea : userLocationList.length > 0 ? extractDong(userLocationList[0].address) : ''}
-            </Dropdown.Toggle>
+    <Container fluid className="titleBorder">
+      <p className="pStyle">거래 게시판</p>
+      <div className="flexFilter">
+          <Row className="justify-content-start filtertext">
+            <div>
+              {activeFilters.map((filter, index) => (
+                <React.Fragment key={filter.type}>
+                  <div className={`filter ${filter.value.length > 10 ? 'long-text' : ''}`} key={filter.type}>
+                    <span>
+                      {filter.type} : {filter.value}
+                    </span>
+                    <button onClick={() => removeFilter(filter.type)}>x</button>
+                  </div>
+                  {(index + 1) % 2 === 0 && <br />} {/* 줄바꿈을 위한 br 요소 */}
+                </React.Fragment>
+              ))}
+            </div>
+          </Row>
+          <Row className="justify-content-start">
+            <Col md={1}>
+              <Dropdown className="dark-dropdown">
+                <Dropdown.Toggle id="dropdown-button-dark" variant="secondary">
+                  {selectedArea ? selectedArea : userLocationList.length > 0 ? extractDong(userLocationList[0].address) : ''}
+                </Dropdown.Toggle>
 
-            <Dropdown.Menu>
-              {userLocationList.map((loc) => {
-                const dong = extractDong(loc.address);
-                return (
-                  <Dropdown.Item key={loc.id} onClick={() => handleAreaSearch(loc, dong)}>
-                    {dong}
+                <Dropdown.Menu>
+                  {userLocationList.map((loc) => {
+                    const dong = extractDong(loc.address);
+                    return (
+                      <Dropdown.Item key={loc.id} onClick={() => handleAreaSearch(loc, dong)}>
+                        {dong}
+                      </Dropdown.Item>
+                    );
+                  })}
+                  <Dropdown.Divider style={{ borderColor: "white" }} />
+                  <Dropdown.Item onClick={setShowUserLocationList}>
+                    동네 범위 설정
                   </Dropdown.Item>
-                );
-              })}
-              <Dropdown.Divider style={{ borderColor: "white" }} />
-              <Dropdown.Item onClick={setShowUserLocationList}>
-                동네 범위 설정
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </Col>
-      </Row>
-      <Row className="justify-content-end">
-        <Col md={3}>
-          <Form.Select className="sortBy" onChange={handleSortByChange}>
-            <option value="">정렬 방식</option>
-            <option value="itemDesc">최신순</option>
-            <option value="priceAsc">낮은 가격순</option>
-            <option value="priceDesc">높은 가격순</option>
-          </Form.Select>
-          <form onSubmit={handleSearch}>
-            <Row className="d-flex ">
-              <Col sm={2}>
-                <input type="text" className="search-input" name="searchQuery" value={searchQueryInput} onChange={(e) => setSearchQueryInput(e.target.value)} />
-                <button type="submit">
-                  <BiSearch />
-                </button>
-              </Col>
-            </Row>
-          </form>
-        </Col>
-      </Row>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Col>
+          </Row>
+          <Row className="justify-content-end">
+            <Col md={3}>
+              <Form.Select className="sortBy" onChange={handleSortByChange}>
+                <option value="">정렬 방식</option>
+                <option value="itemDesc">최신순</option>
+                <option value="priceAsc">낮은 가격순</option>
+                <option value="priceDesc">높은 가격순</option>
+              </Form.Select>
+              <form onSubmit={handleSearch}>
+                <Row className="d-flex ">
+                  <Col sm={2}>
+                    <input type="text" className="search-input" name="searchQuery" value={searchQueryInput} onChange={(e) => setSearchQueryInput(e.target.value)} />
+                    <button type="submit">
+                      <BiSearch />
+                    </button>
+                  </Col>
+                </Row>
+              </form>
+            </Col>
+          </Row>
 
-      <Row className="justify-content-end">
-        <Col xs="auto">
-          <a href="/writeForm" className="ml-auto">
-            <Button className="writebutton">
-              <p className="writebuttontext">글쓰기</p>
-            </Button>
-          </a>
-        </Col>
-        <Col md={3}>
-          <Form onSubmit={searchByPrice} className="d-flex align-items-center m-filter">
-            <Form.Group className="mr-2">
-              <Form.Control
-                type="number"
-                name="minPrice"
-                placeholder="최소 가격"
-                value={minPriceInput}
-                onChange={(e) => setMinPriceInput(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mr-2">
-              <Form.Control
-                type="number"
-                name="maxPrice"
-                placeholder="최대 가격"
-                value={maxPriceInput}
-                onChange={(e) => setMaxPriceInput(e.target.value)}
-              />
-            </Form.Group>
-            <Button variant="primary" type="submit" className="mr-2 search" >
-              검색
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-      <Row>
+          <Row className="justify-content-end">
+            <Col xs="auto">
+              <a href="/writeForm" className="ml-auto">
+                <Button className="writebutton">
+                  <p className="writebuttontext">글쓰기</p>
+                </Button>
+              </a>
+            </Col>
+            <Col md={3}>
+              <Form onSubmit={searchByPrice} className="d-flex align-items-center m-filter">
+                <Form.Group className="mr-2">
+                  <Form.Control
+                    type="number"
+                    name="minPrice"
+                    placeholder="최소 가격"
+                    value={minPriceInput}
+                    onChange={(e) => setMinPriceInput(e.target.value)}
+                  />
+                </Form.Group>
+                <Form.Group className="mr-2">
+                  <Form.Control
+                    type="number"
+                    name="maxPrice"
+                    placeholder="최대 가격"
+                    value={maxPriceInput}
+                    onChange={(e) => setMaxPriceInput(e.target.value)}
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit" className="mr-2 search" >
+                  검색
+                </Button>
+              </Form>
+            </Col>
+          </Row>
+        </div>
+          <Row>
         <Col sm={1}>
           <Nav className="flex-column">
             <div>

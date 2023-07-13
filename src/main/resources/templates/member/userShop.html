@@ -1519,6 +1519,7 @@ background-image: linear-gradient(315deg, #4dccc6 0%, #96e4df 74%);
       <!-- 프로필 영역 내용 -->
       <div class="profile">
         <img class="profileImg" th:if="${user.image}" th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${user.image}}" alt="User Image" style="height: 190px; width: 100%;"/>
+        <img th:unless="${user.image}" src="/image/manager.PNG" alt="Profile Picture" />
         <div class="info">
           <div class="ratings">
             <img src="/image/myPage/score.PNG" alt="평점 이미지">
@@ -1573,16 +1574,16 @@ background-image: linear-gradient(315deg, #4dccc6 0%, #96e4df 74%);
 
       <div class="deco">
         <div class="cool_btn1 green">
-          <h1 class="u-day">126 <i>출석일수</i></h1>
-          <h2></h2>
+          <h1 class="u-day" th:text="${totalCount}"></h1>
+          <h2></h2><i>출석일수</i>
         </div>
         <div class="cool_btn1 teal">
-          <h1 class="u-score">0.0<i>리뷰</i></h1>
-          <h2></h2>
+          <h1 class="u-score" th:text="${averageRating}"></h1>
+          <h2></h2><i>리뷰</i>
         </div>
         <div class="cool_btn1 blue">
-          <h1 class="u-trade">240 <i>거래횟수</i></h1>
-          <h2></h2>
+          <h1 class="u-trade" th:text="${tradeCount}"></h1>
+          <h2></h2><i>거래횟수</i>
         </div>
 
         <!--        <div class="frame" >-->

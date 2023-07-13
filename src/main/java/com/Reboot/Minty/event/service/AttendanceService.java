@@ -54,4 +54,9 @@ public class AttendanceService {
     public Attendance getAttendanceByDateAndUserId(LocalDate date, Long userId) {
         return attendanceRepository.findByDateAndUserId(date, userId);
     }
+
+    public int getAttendanceTotalCount(Long ownerId) {
+        return attendanceRepository.getAttendanceTotalCount(ownerId);
+    }
+
 }
