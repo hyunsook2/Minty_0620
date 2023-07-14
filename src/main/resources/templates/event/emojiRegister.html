@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>이모티콘 샵 - 등록 폼</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dongle:wght@700&display=swap');
+
+    body {
+      font-family: 'Dongle', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 46px;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 26px;
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    input[type="file"] {
+      padding: 0;
+    }
+
+    button[type="submit"] {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+<h1>이모티콘 등록</h1>
+<form th:action="@{/emojiRegister}" method="post" th:object="${emojiShop}" enctype="multipart/form-data">
+  <div>
+    <label for="name">이름:</label>
+    <input type="text" id="name" name="name" required>
+  </div>
+  <div>
+    <label for="price">가격:</label>
+    <input type="text" id="price" name="price" required>
+  </div>
+  <div>
+    <label>이모티콘:</label>
+    <input type="file" name="imageFiles" multiple required>
+  </div>
+  <div>
+    <label>이모티콘 설명:</label>
+    <input type="text" id="description" name="description" required>
+  </div>
+
+  <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+  <div>
+    <button type="submit">등록</button>
+  </div>
+</form>
+</body>
+</html>

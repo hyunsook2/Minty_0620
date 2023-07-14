@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+  <style>
+    .profileImg {
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      max-width: 40px;
+      max-height: 40px;
+      object-fit: cover;
+    }
+    .container2 {
+      margin: auto;
+      width: 80%;
+      max-width: 1200px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      margin-top: 5vh;
+      margin-bottom: 3vh;
+    }
+    .writer {
+      font-size: 16px;
+    }
+    .date {
+      font-size: 12px;
+      color: lightgray;
+    }
+    .heart {
+      width: 20px;
+      height: 20px;
+    }
+    .comment-list {
+      margin-bottom: 10px;
+    }
+
+    .comment {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      border-bottom: 1px solid whitesmoke;
+      padding: 10px 0;
+    }
+
+    .comment .comment-content-horizontal {
+      display: flex;
+      align-items: center;
+    }
+
+    .comment .comment-image {
+      margin-right: 10px;
+    }
+
+    .comment .comment-details {
+      flex-grow: 1;
+    }
+
+    .comment .comment-details .comment-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .comment .comment-details .comment-info .profileImg {
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      max-width: 40px;
+      max-height: 40px;
+      object-fit: cover;
+      margin-right: 10px;
+    }
+
+    .comment .comment-details .comment-info .comment-nickname {
+      font-weight: bold;
+    }
+
+    .comment .comment-details .comment-content-date {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .comment .comment-details .comment-content {
+      margin: 0;
+    }
+
+    .comment .comment-details .comment-date {
+      font-size: 12px;
+      color: lightgray;
+    }
+
+    .like{
+      margin-top: 2px;
+    }
+
+    .comment-box {
+    display: flex;
+    align-items: center;
+}
+
+.comment-box .col-auto,
+.comment-box .col {
+    display: flex;
+    align-items: center;
+}
+
+.comment-box textarea {
+    width: 100%;
+}
+
+.register-button {
+    margin-left: auto;
+}
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <script>
+function toggleLike(likeButton) {
+  var communityId = likeButton.getAttribute("data-community-id");
+  var isLiked = likeButton.getAttribute("data-is-liked") === "true";
+  var csrfToken = $("meta[name='_csrf']").attr("content");
+  var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
+  $.ajax({
+    url: "/likes/" + communityId,
+    type: "PUT",
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader(csrfHeader, csrfToken);
+    },
+    success: function(response) {
+      // Toggle isLiked attribute
+      isLiked = response.isLiked;
+      likeButton.setAttribute("data-is-liked", isLiked);
+
+      // Update like button image
+      if (isLiked) {
+        $(likeButton).attr("src", "/image/heart2.PNG");
+      } else {
+        $(likeButton).attr("src", "/image/heart1.PNG");
+      }
+
+      // Update likes count
+      var likesCountElement = document.querySelector(".like");
+      likesCountElement.textContent = "좋아요 " + response.likesCount;
+    },
+    error: function(error) {
+      console.log(error);
+    }
+  });
+}
+</script>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="container2">
+    <div class="row align-items-center">
+      <div class="col">
+        <h2><span th:text="'[' + ${status} + '] ' + ${community.title}"></span></h2>
+      </div>
+      <div class="col-auto">
+        <a href="/communityList" class="btn btn-primary">목록으로</a>
+      </div>
+    </div>
+    <div class="row align-items-center">
+      <div class="col-auto">
+        <a th:href="@{/usershop/{userId}(userId=${writer.id})}">
+          <img class="profileImg" th:if="${writer.image}" th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${writer.image}}" alt="writer Image" />
+        </a>
+      </div>
+      <div class="col">
+        <h3><span class="writer" th:text="'작성자 : ' + ${writer.nickName}"></span></h3>
+        <span class="date" th:text="${T(com.Reboot.Minty.community.time.DateUtils).formatTimestamp(community.createdDate)}"></span>
+        <span class="date" th:text="'조회수 : ' + ${community.visitCount}"> </span>
+      </div>
+      <div class="col-auto">
+        <div th:if="${writer.id == user.id}">
+          <a th:href="@{/editPost/{postId}(postId=${community.id})}" class="btn btn-primary">수정</a>
+          <form th:action="@{/deletePost/{postId}(postId=${community.id})}" method="post" style="display: inline">
+            <button class="btn btn-primary" type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+          </form>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+      <div class="col">
+        <pre style="font-family: 'font', sans-serif;"><span th:text="${community.content}"></span></pre>
+      </div>
+    </div>
+    <hr />
+    <div class="row align-items-center">
+      <div class="col-auto">
+        <a th:href="@{/usershop/{userId}(userId=${writer.id})}">
+          <img class="profileImg" th:if="${writer.image}" th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${writer.image}}" alt="user Image" />
+        </a>
+      </div>
+      <div class="col">
+        <a th:href="@{/usershop/{userId}(userId=${user.id})}" style="text-decoration: none;">
+          <span class="writer" th:text="${writer.nickName} +' 님의 개인상점 >'"></span>
+        </a>
+        <br>
+        <div>
+          <img id="like-button" th:src="${isLiked} ? '/image/heart2.PNG' : '/image/heart1.PNG'" class="heart" th:attr="data-community-id=${community.id}" data-is-liked="${isLiked}" onclick="toggleLike(this)" />
+          <span class="like" th:text="'좋아요 '+ ${community.interesting}"></span>
+        </div>
+      </div>
+    </div>
+    <hr />
+
+    <!-- 댓글 목록 -->
+    <div class="row comment-list">
+      <div class="col">
+        <h4>댓글</h4>
+        <div th:if="${not #lists.isEmpty(comments)}">
+          <div th:each="comment : ${comments}">
+            <div class="comment">
+              <div class="comment-content-horizontal">
+                <div class="comment-image">
+                  <a th:href="@{/usershop/{userId}(userId=${comment.user.id})}">
+                    <img class="profileImg" th:if="${comment.user.image}" th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${comment.user.image}}" alt="user Image" />
+                  </a>
+                </div>
+                <div class="comment-details">
+                  <div classclassclass="comment-info">
+                    <span class="comment-nickname" th:text="${comment.user.nickName}"></span>
+                  </div>
+                  <div class="comment-content-date">
+                    <p class="comment-content" th:text="${comment.content}"></p>
+                    <span class="comment-date" th:text="${T(com.Reboot.Minty.community.time.DateUtils).formatTimestamp(comment.createdDate)}"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div th:unless="${not #lists.isEmpty(comments)}">
+          <p>댓글이 없습니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 댓글 입력란 -->
+    <div class="row comment-form">
+      <div class="col">
+        <form th:action="@{/comments}" method="post">
+          <input type="hidden" name="communityId" th:value="${community.id}">
+          <div class="comment-box">
+            <div class="row align-items-center">
+              <div class="col-auto">
+                <a th:href="@{/usershop/{userId}(userId=${user.id})}">
+                  <img class="profileImg" th:if="${user.image}" th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${user.image}}" alt="user Image" />
+                </a>
+              </div>
+              <div class="col d-flex align-items-center">
+                <div style="display: flex; margin-right: 10px; white-space: nowrap;">
+                  <span th:text="${user.nickName}"></span>
+                </div>
+                <textarea name="commentContent" placeholder="댓글을 남겨보세요.." rows="4" cols="50"></textarea>
+              </div>
+              <div class="col-auto">
+                <button type="submit" class="register-button btn btn-primary">등록</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>이모티콘 상세 정보</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Dongle:wght@700&display=swap');
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+       font-family: 'Dongle', sans-serif;
+      font-size: 23px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    header {
+
+    }
+
+    .emoji-details {
+
+      display: flex;
+      align-items: center;
+
+    }
+
+    .emoji-info {
+      flex: 1;
+      text-align: center;
+    }
+
+
+.emoji-text {
+ display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0 auto;
+  font-size: 32px;
+  font-weight: bold;
+  color: #4c4c4c;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+
+    .emoji-info p {
+    font-size: 39px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    padding-right: 17px;
+    text-overflow: ellipsis;
+
+    text-align: center; /* 가격을 오른쪽으로 정렬합니다. */
+    }
+
+
+    tr {
+      font-size: 26px;
+    }
+
+    th {
+      background-color: #ffffff;
+      font-weight: bold;
+    }
+
+    /* 버튼 스타일 변경 */
+    .buy-button {
+      font-size: 26px;
+      padding: 4px 20px;
+      border-radius: 10px;
+      background-color: #ffcccc;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+      font-weight: bold;
+
+
+    }
+
+
+    .emoji-image {
+      display: flex;
+      margin-top: 50px;
+      transition: transform 0.3s;
+    }
+     .emoji-image:hover {
+    transform: scale(1.1);
+  }
+
+    .image-container {
+      display: grid;
+      grid-template-columns: 150px 150px 150px 150px;
+      grid-template-rows: 150px 150px;
+      grid-gap: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+
+
+  </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+  <div class="container">
+    <img class="banner" src="/image/eventPage/이모티콘샵-배너.jpg" alt="배너 이미지" style="display: block; margin: 0 auto;">
+
+    <div class="emoji-details">
+      <div class="emoji-image">
+        <img th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${emojiShop.images[0]}}"
+             alt="이모티콘 이미지" style="width: 160px; height: 160px; margin-left: 200%; margin-bottom: 20%" >
+      </div>
+      <div class="emoji-info">
+        <p><span th:text="${emojiShop.name}"  class="emoji-text" ></span></p>
+        <br>
+
+        <p><span th:text="${emojiShop.price} + ' P'"></span></p>
+        <button class="buy-button">구매하기</button>
+        <button class="buy-button">찜하기</button>
+      </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <div class="emoji-description">
+
+
+      <img class="banner" src="/image/manager/첫거래시-이모티콘.png" alt="배너 이미지" style=" margin: 0px -61px 31px ;">
+
+    </div>
+  </div>
+
+  <div class="emoji-images">
+    <div class="image-container">
+      <div th:each="imageUrl : ${emojiShop.images}">
+        <img th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${imageUrl}}" alt="more image" class="emoji-image" style="margin-left: 35px;">
+      </div>
+    </div>
+  </div><br><br><br><br>
+
+</div>
+</body>
+</html>

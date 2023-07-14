@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>이모티콘 샵</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+   @import url('https://fonts.googleapis.com/css2?family=Dongle:wght@700&display=swap');
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+       font-family: 'Dongle', sans-serif;
+      font-size: 26px;
+
+    }
+
+    body {
+
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+      text-align: center; /* 가로 중앙 정렬 */
+    }
+
+    .banner {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      max-width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #ffffff;
+      padding: 10px;
+
+    }
+
+
+
+    th {
+      background-color: #ffffff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+  <main>
+    <img class="banner" src="/image/eventPage/이모티콘샵-배너.jpg" alt="배너 이미지">
+
+    <table style="margin: 0 auto;"> <!-- 가운데 정렬 -->
+      <thead>
+      <tr>
+        <th>제목</th>
+        <th>포인트</th>
+        <th>이모티콘</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="emojiShop, index : ${emojiShops}">
+        <td th:if="${index.index == 0}" rowspan="${#lists.size(emojiShops)}" style="display: none;"></td>
+        <td th:text="${emojiShop.name}" ></td>
+        <td th:text="${emojiShop.price}" ></td>
+        <td>
+          <a th:href="@{/emojiDetail/{id}(id=${emojiShop.id})}">
+            <img th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${emojiShop.images[0]}}"
+                 alt="이모티콘 이미지" />
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+</body>
+</html>

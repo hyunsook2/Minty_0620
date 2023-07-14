@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+
+  <style>
+  body {
+    background-color: #f9f9f9;
+    font-family: 'font', sans-serif;
+  }
+
+  .container2 {
+     margin: auto;
+    width: 80%;
+    max-width: 1200px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    margin-top: 5vh;
+    margin-bottom: 3vh;
+  }
+
+  .profile-image {
+    border-radius: 50%;
+  }
+
+  h1 {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align:center;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  tr:hover {
+    background-color: #ddd;
+  }
+
+  a {
+    text-decoration: none;
+    color: #007BFF;
+  }
+
+  a:hover {
+    color: #0056b3;
+  }
+  .profile-image {
+        border-radius: 50%;
+    }
+    .hover-no:hover{
+    background : white !important;
+    }
+</style>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="container2">
+
+    <h1>커뮤니티 게시판</h1><button type="button"><a href="/writeForm">글쓰기</a></button>
+
+    <table>
+      <thead>
+      <tr class="hover-no">
+        <th>말머리</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+        <th>조회</th>
+        <th>좋아요</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="community : ${communities}" th:unless="${#lists.isEmpty(communities)}">
+        <td th:text="${community.id}"></td>
+        <td>
+          <a th:href="@{'/communityDetail/' + ${community.id}}">
+            <span>
+                <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    var statusText = '';
+                    if ([[${community.status}]] === 'GENERAL') {
+                        statusText = '일반';
+                    } else if ([[${community.status}]] === 'NOTICE') {
+                        statusText = '공지';
+                    } else if ([[${community.status}]] === 'AD') {
+                        statusText = '광고';
+                    }
+                    document.write('[' + statusText + '] ');
+                    /*]]>*/
+                </script>
+                <span th:text="${community.title}"></span>
+            </span>
+          </a>
+        </td>
+        <td th:text="${community.user.nickName}"></td>
+        <td th:text="${T(com.Reboot.Minty.community.time.DateUtils).formatTimestamp(community.createdDate)}"></td>
+        <td th:text="${community.visitCount}"></td>
+        <td th:text="${community.interesting}"></td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(communities)}">
+        <td colspan="6">등록된 게시글이 없습니다.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

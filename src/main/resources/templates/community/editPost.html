@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+  <style>
+    .profileImg {
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      max-width: 40px;
+      max-height: 40px;
+      object-fit: cover;
+    }
+    .container2 {
+      margin: auto;
+      width: 80%;
+      max-width: 1200px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      margin-top: 5vh;
+      margin-bottom: 3vh;
+    }
+    .writer {
+      font-size: 16px;
+    }
+    .date {
+      font-size: 12px;
+      color: lightgray;
+    }
+    .heart {
+      width: 20px;
+      height: 20px;
+    }
+    .comment-list {
+      margin-bottom: 10px;
+    }
+
+    .comment {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      border-bottom: 1px solid whitesmoke;
+      padding: 10px 0;
+    }
+
+    .comment .comment-content-horizontal {
+      display: flex;
+      align-items: center;
+    }
+
+    .comment .comment-image {
+      margin-right: 10px;
+    }
+
+    .comment .comment-details {
+      flex-grow: 1;
+    }
+
+    .comment .comment-details .comment-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .comment .comment-details .comment-info .profileImg {
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      max-width: 40px;
+      max-height: 40px;
+      object-fit: cover;
+      margin-right: 10px;
+    }
+
+    .comment .comment-details .comment-info .comment-nickname {
+      font-weight: bold;
+    }
+
+    .comment .comment-details .comment-content-date {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .comment .comment-details .comment-content {
+      margin: 0;
+    }
+
+    .comment .comment-details .comment-date {
+      font-size: 12px;
+      color: lightgray;
+    }
+
+    .like{
+      margin-top: 2px;
+    }
+    .col input[type="text"],
+    .col textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid lightgray;
+    }
+    #content {
+  height: 300px;
+}
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="container2">
+    <div class="row">
+      <div class="col">
+        <h2>게시물 수정</h2>
+      </div>
+    </div>
+    <hr />
+    <form th:action="@{/editPost/{postId}(postId=${community.id})}" th:object="${community}" method="post">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <img class="profileImg" th:if="${writer.image}" th:src="@{'https://storage.cloud.google.com/reboot-minty-storage/' + ${writer.image}}" alt="writer Image" />
+        </div>
+        <div class="col">
+          <h3><span class="writer" th:text="'작성자 : ' + ${writer.nickName}"></span></h3>
+          <span class="date" th:text="${T(com.Reboot.Minty.community.time.DateUtils).formatTimestamp(community.createdDate)}"></span>
+          <span class="date" th:text="'조회수 : ' + ${community.visitCount}"> </span>
+        </div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col">
+          <label for="title">제목:</label><br>
+          <input type="text" id="title" th:field="*{title}" name="title"><br>
+          <label for="content">내용:</label><br>
+          <textarea id="content" th:field="*{content}" name="content"></textarea><br>
+        </div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col">
+          <input class="btn btn-primary" type="submit" value="수정하기">
+          <a href="#" onclick="window.history.back();"><button  class="btn btn-primary">취소하기</button></a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

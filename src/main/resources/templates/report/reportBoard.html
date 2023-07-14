@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/supportLayout}">
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script th:inline="javascript">
+   $(document).ready(function() {
+      $(".menu-a")
+        .on("mouseover", function() {
+          $(this).css({
+            color: "#5cf6c7",
+            "text-shadow": "1px 1px 2px black",
+            "transform-origin": "center",
+            transition: "all 0.5s"
+          });
+        })
+        .on("mouseout", function() {
+          $(this).css({
+            color: "black",
+            "text-shadow": "none",
+            "transform-origin": "center",
+            transition: "all 0.5s"
+          });
+        });
+      $(".status-button").click(function() {
+        var verifyReply = $(this).data("verify-reply");
+        $(".status-button").removeClass("active");
+        $(this).addClass("active");
+        $("input[name=verifyReply]").val(verifyReply);
+        $("form.search-form").submit();
+      });
+   });
+</script>
+    <style>
+            .menu-a {
+                color: black;
+                font-size: 22px;
+                font-weight: bold;
+            }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 style="display: flex; flex-direction: column; align-items: center; font-weight: 400;">신고 게시판</h1>
+    <div class="navbar-nav me-md-auto d-flex flex-row gap-2">
+        <a class="nav-link menu-a" th:href="@{/report/new}">글쓰기</a>
+    </div>
+
+    <form th:action="@{/reportBoard}" method="get" class="search-form">
+        <div class="input-group">
+            <select name="searchBy" class="form-select">
+                <option value="이름" th:selected="${searchBy == 'name'}">작성자</option>
+                <option value="닉네임" th:selected="${searchBy == 'nickname'}">닉네임</option>
+            </select>
+            <input type="text" name="keyword" class="form-control" placeholder="검색어">
+            <input type="hidden" name="verifyReply" th:value="${verifyReply}">
+            <button type="submit" class="btn btn-primary">검색</button>
+        </div>
+    </form>
+
+    <div class="d-flex justify-content-center mt-3">
+        <div class="btn-group" role="group" aria-label="Status Buttons">
+            <button type="button" class="btn btn-secondary status-button" data-verify-reply="">전체</button>
+            <button type="button" class="btn btn-secondary status-button" data-verify-reply="처리중">처리중</button>
+            <button type="button" class="btn btn-secondary status-button" data-verify-reply="처리완료">처리완료</button>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr style="text-align: center;">
+            <th scope="col">#</th>
+            <th id="title" scope="col">제목</th>
+            <th scope="col">작성자</th>
+            <th scope="col">닉네임</th>
+            <th scope="col">날짜</th>
+            <th scope="col">답변여부</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr style="text-align: center;" th:each="board : ${reportList.content}">
+            <th scope="row">
+                <span th:text="${board.id}"></span>
+            </th>
+            <td id="title_rl">
+                <a th:href="@{'/reportView/'+${board.id}}">
+                    <span th:text="${board.title}"></span>
+                </a>
+            </td>
+            <td>
+                <span th:text="${board.name}"></span>
+            </td>
+            <td>
+                <span th:text="${board.nickname}"></span>
+            </td>
+            <td>
+                <span th:text="${#temporals.format(board.createdDate, 'yyyy-MM-dd HH:mm')}"></span>
+            </td>
+            <td>
+                <span th:text="${board.verifyReply}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination justify-content-center">
+        <ul class="pagination">
+            <li th:if="${reportList.number > 0}" class="page-item">
+                <a class="page-link" th:href="@{/reportBoard(page=${reportList.number - 1})}">Previous page</a>
+            </li>
+            <li th:each="page : ${#numbers.sequence(1, reportList.totalPages)}"
+                th:if="${page != 1 or reportList.totalElements > 0}"
+                th:class="${reportList.number +1 == page ? 'page-item active' : 'page-item'}">
+                <a class="page-link" th:href="@{/reportBoard(page=${page-1})}"><span th:text="${page}"></span></a>
+            </li>
+            <li th:if="${reportList.number + 1 < reportList.totalPages}" class="page-item">
+                <a class="page-link" th:href="@{/reportBoard(page=${reportList.number + 1})}">Next page</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+</body>
+</html>
